@@ -1,23 +1,25 @@
-var game = new Phaser.Game(1600, 1200, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, render:render, update: update});
+
+var xEmp=4; var yEmp=1; var T = 64;
+var texto;
+var lineV; var lineH;
+
+var game = new Phaser.Game(25*T, 20*T, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, render:render, update: update});
 
 function preload() {
     
-    game.load.spritesheet('item', 'img/Diente.png', 64, 64);
-    game.load.spritesheet('caries_central', 'img/CariesCentral.png', 64, 64);
-    game.load.spritesheet('caries_derecha', 'img/CariesDerecha.png', 64, 64);
-    game.load.spritesheet('caries_izquierda', 'img/CariesIzquierda.png', 64, 64);
-    game.load.image('background', 'img/background.png', 1600, 1200);
+    game.load.image('recycle', 'img/Recycle.png', T, T);
+    game.load.image('item', 'img/Diente.png', T, T);
+    game.load.image('caries_central', 'img/CariesCentral.png', T, T);
+    game.load.image('caries_derecha', 'img/CariesDerecha.png', T, T);
+    game.load.image('caries_izquierda', 'img/CariesIzquierda.png', T, T);
+    game.load.image('background', 'img/background.png', 25*T, 20*T);
 
 }
-
-
-var xEmp=4; var yEmp=1;
-var texto;
-var lineV; var lineH;
 
 function create() {
 
     game.add.image(0, 0, 'background');
+    game.add.sprite(T, 4*T, 'recycle');
 
     for (var i = 1; i <= 16; i++)
     {
@@ -28,36 +30,36 @@ function create() {
         }
         addDiente(i, 4);
 
-        text = game.add.text(64, 64*(yEmp+5), '', { fill: '#000' });
+        text = game.add.text(T, T*(yEmp+5), '', { fill: '#000' });
         text.text = 'Nombre de diente: ';
 
     }
 
-    lineV = new Phaser.Line(64*(xEmp+8), 64*yEmp, 64*(xEmp+8), 64*(yEmp+4));
-    lineH = new Phaser.Line(64*xEmp, 64*(yEmp+2), 64*(xEmp+16), 64*(yEmp+2));
+    lineV = new Phaser.Line(T*(xEmp+8), T*yEmp, T*(xEmp+8), T*(yEmp+4));
+    lineH = new Phaser.Line(T*xEmp, T*(yEmp+2), T*(xEmp+16), T*(yEmp+2));
 
     //Agregando las opciones
 
     //Caries
     //debugger
-    item = game.add.sprite(64*(xEmp-1), 64*(yEmp+6), 'caries_central');
+    item = game.add.sprite(T*(xEmp-1), T*(yEmp+6), 'caries_central');
     item.inputEnabled = true;
     item.input.useHandCursor = true;
-    item.input.enableSnap(64, 64, false, true);
+    item.input.enableSnap(T, T, false, true);
     item.events.onInputDown.add(DuplicateAndDrag, this);
     //item.events.onInputOver.add(Nombre, this);
 
-    item = game.add.sprite(64*(xEmp-1), 64*(yEmp+7), 'caries_derecha');
+    item = game.add.sprite(T*(xEmp-1), T*(yEmp+7), 'caries_derecha');
     item.inputEnabled = true;
     item.input.useHandCursor = true;
-    item.input.enableSnap(64, 64, false, true);
+    item.input.enableSnap(T, T, false, true);
     item.events.onInputDown.add(DuplicateAndDrag, this);
     //item.events.onInputOver.add(Nombre, this);
 
-    item = game.add.sprite(64*(xEmp-1), 64*(yEmp+8), 'caries_izquierda');
+    item = game.add.sprite(T*(xEmp-1), T*(yEmp+8), 'caries_izquierda');
     item.inputEnabled = true;
     item.input.useHandCursor = true;
-    item.input.enableSnap(64, 64, false, true);
+    item.input.enableSnap(T, T, false, true);
     item.events.onInputDown.add(DuplicateAndDrag, this);
     //item.events.onInputOver.add(Nombre, this);
 
@@ -82,12 +84,31 @@ function update() {
 }*/
 
 function DuplicateAndDrag(item){
-
+    //debugger
     var tmpItem = game.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, item.generateTexture());
     tmpItem.inputEnabled = true;
     tmpItem.input.enableDrag();
-    tmpItem.input.enableSnap(64, 64, false, true);
+    tmpItem.input.enableSnap(T, T, false, true);
     tmpItem.input.startDrag(game.input.activePointer);
+    tmpItem.events.onDragStop.add(ValidationDrop, this);
+}
+
+function ValidationDrop(item){
+    //debugger
+    item.data = { validating : 1 }
+    if (item.x == T && item.y == 4*T){
+        item.destroy();
+    }
+    var encontrado = 0;
+    game.world.forEach(function(it) {
+        if (it.x == item.x && it.y == item.y && it.data.validating != 1)
+        {
+            encontrado = 1;
+        }
+    });
+    if (encontrado == 0){
+        item.destroy();
+    }
 }
 
 function Nombre(item){
@@ -147,7 +168,8 @@ function obtenerNumero(i){
 
 function addDiente(i, y){
     var x = 0;
-    item = game.add.sprite(64*(xEmp-1) + 64*i, 64*(y+yEmp-1), 'item');
+    item = game.add.sprite(T*(xEmp-1) + T*i, T*(y+yEmp-1), 'item');
+    //item.scale.setTo(T, T);
     item.data = {
         Nombre: obtenerNombre(i, y),
         x: item.x,
@@ -156,7 +178,7 @@ function addDiente(i, y){
     item.inputEnabled = true;
     item.input.useHandCursor = true;
     item.input.enableDrag();
-    item.input.enableSnap(64, 64, false, true);
+    item.input.enableSnap(T, T, false, true);
     //item.events.onDragStop.add(fixLocation);
     item.events.onInputDown.add(Nombre, this);
     item.events.onInputOver.add(Nombre, this);
