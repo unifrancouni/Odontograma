@@ -98,6 +98,18 @@ function ValidationDrop(item){
     item.data = { validating : 1 }
     if (item.x == T && item.y == 4*T){
         item.destroy();
+
+        /*$.ajax( "http://wbsrv.usuracero.gob.ni/test/Home/AllCitas" )
+        .done(function() {
+            alert( "success" );
+        })
+        .fail(function() {
+            alert( "error" );
+        })
+        .always(function() {
+            alert( "complete" );
+        });*/
+
     }
     var encontrado = 0;
     game.world.forEach(function(it) {
