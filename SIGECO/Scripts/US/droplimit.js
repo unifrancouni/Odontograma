@@ -2,7 +2,6 @@
 var xEmp = 2; var yEmp = 1; var T = 80;
 var lineV; var lineH; var rectangle;
 
-
 var images = [
     { key: 'arrow_right', value: '../Content/img/arrow_right.png', width: T, height: T, },
     { key: 'arrow_left', value: '../Content/img/arrow_left.png', width: T, height: T, },
@@ -15,7 +14,6 @@ var images = [
     { key: 'panel', value: '../Content/img/panel.png', width: T, height: T, },
     { key: 'background', value: '../Content/img/background.png', width: T, height: T, },
 ];
-
 
 var init_config = {
     "sim_defaults": [],
