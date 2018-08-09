@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f3034d18412d4c5f9e564031dd376758" Name="Diagram1">
+        <EntityTypeShape EntityType="SMUSURA0_FrancoModel.Catalogo" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SMUSURA0_FrancoModel.Diente" Width="1.5" PointX="5.25" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SMUSURA0_FrancoModel.Simbolo" Width="1.5" PointX="5.25" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SMUSURA0_FrancoModel.SimboloDiente" Width="1.5" PointX="7.5" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SMUSURA0_FrancoModel.ValorCatalogo" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <AssociationConnector Association="SMUSURA0_FrancoModel.FK_ValorCatalogo_Catalogo" ManuallyRouted="false" />
+        <AssociationConnector Association="SMUSURA0_FrancoModel.FK_Diente_ValorCatalogo" ManuallyRouted="false" />
+        <AssociationConnector Association="SMUSURA0_FrancoModel.FK_SimboloDiente_Diente" ManuallyRouted="false" />
+        <AssociationConnector Association="SMUSURA0_FrancoModel.FK_SimboloDiente_Simbolo" ManuallyRouted="false" />
+        <AssociationConnector Association="SMUSURA0_FrancoModel.FK_SimboloDiente_ValorCatalogo" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="SMUSURA0_FrancoModel.vwSimboloDiente" Width="1.5" PointX="0.875" PointY="5.5" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
