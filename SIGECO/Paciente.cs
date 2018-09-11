@@ -12,18 +12,28 @@ namespace SIGECO
     using System;
     using System.Collections.Generic;
     
-    public partial class Diente
+    public partial class Paciente
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Diente()
+        public Paciente()
         {
-            this.OdontogramaDetalle = new HashSet<OdontogramaDetalle>();
-            this.PlacagramaDetalle = new HashSet<PlacagramaDetalle>();
+            this.Expediente = new HashSet<Expediente>();
         }
     
-        public int nDienteID { get; set; }
-        public int nTipoDiente { get; set; }
-        public string sNombreDiente { get; set; }
+        public int nPacienteID { get; set; }
+        public int nCodigo { get; set; }
+        public string sNombre { get; set; }
+        public string sApellido1 { get; set; }
+        public string sApellido2 { get; set; }
+        public int nGeneroID { get; set; }
+        public string sLugarNacimiento { get; set; }
+        public System.DateTime dFechaNacimiento { get; set; }
+        public string sDireccion { get; set; }
+        public string sCedula { get; set; }
+        public string sTelefono { get; set; }
+        public string sEmergenciaNombre { get; set; }
+        public string sEmergenciaParentesco { get; set; }
+        public string sEmergenciaTelefono { get; set; }
         public int nEstadoID { get; set; }
         public System.DateTime dFechaCreacion { get; set; }
         public string sUsuarioCreacion { get; set; }
@@ -31,8 +41,6 @@ namespace SIGECO
         public string sUsuarioModificacion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OdontogramaDetalle> OdontogramaDetalle { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PlacagramaDetalle> PlacagramaDetalle { get; set; }
+        public virtual ICollection<Expediente> Expediente { get; set; }
     }
 }

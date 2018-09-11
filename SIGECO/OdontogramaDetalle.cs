@@ -12,15 +12,20 @@ namespace SIGECO
     using System;
     using System.Collections.Generic;
     
-    public partial class SimboloDiente
+    public partial class OdontogramaDetalle
     {
-        public int nSimboloDienteID { get; set; }
+        public int nOdontogramaDetalleID { get; set; }
         public int nOdontogramaID { get; set; }
         public int nSimboloID { get; set; }
         public int nDienteID { get; set; }
+        public int nEstadoID { get; set; }
         public System.DateTime dFechaCreacion { get; set; }
         public string sUsuarioCreacion { get; set; }
         public Nullable<System.DateTime> dFechaModificacion { get; set; }
         public string sUsuarioModificacion { get; set; }
+    
+        public virtual Diente Diente { get; set; }
+        public virtual Odontograma Odontograma { get; set; }
+        public virtual Simbolo Simbolo { get; set; }
     }
 }

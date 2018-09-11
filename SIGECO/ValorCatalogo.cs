@@ -17,7 +17,8 @@ namespace SIGECO
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ValorCatalogo()
         {
-            this.Diente = new HashSet<Diente>();
+            this.Tratamiento = new HashSet<Tratamiento>();
+            this.TratamientoRealizado = new HashSet<TratamientoRealizado>();
         }
     
         public int nValorCatalogoID { get; set; }
@@ -32,6 +33,8 @@ namespace SIGECO
     
         public virtual Catalogo Catalogo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Diente> Diente { get; set; }
+        public virtual ICollection<Tratamiento> Tratamiento { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TratamientoRealizado> TratamientoRealizado { get; set; }
     }
 }

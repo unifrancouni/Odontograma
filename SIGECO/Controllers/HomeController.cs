@@ -18,7 +18,7 @@ namespace SIGECO.Controllers
         public ActionResult Simbolos(int id)
         {
             var db = new SIGECO_Entities();
-            var consulta = db.vwSimboloDiente
+            var consulta = db.vwOdontogramaDetalle
                 .Select(c => new { c.sNombreDiente, c.sDescripcion }).ToList();
             return Json(consulta, JsonRequestBehavior.AllowGet);
         }

@@ -1,18 +1,176 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="SMUSURA0_FrancoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="SIGECO_Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="AntecedenteDental" EntityType="SMUSURA0_FrancoModel.AntecedenteDental" />
+    <EntitySet Name="AntecedenteFamiliar" EntityType="SMUSURA0_FrancoModel.AntecedenteFamiliar" />
+    <EntitySet Name="Catalogo" EntityType="SMUSURA0_FrancoModel.Catalogo" />
+    <EntitySet Name="Cita" EntityType="SMUSURA0_FrancoModel.Cita" />
+    <EntitySet Name="Diente" EntityType="SMUSURA0_FrancoModel.Diente" />
+    <EntitySet Name="ExamenComplementario" EntityType="SMUSURA0_FrancoModel.ExamenComplementario" />
+    <EntitySet Name="Expediente" EntityType="SMUSURA0_FrancoModel.Expediente" />
+    <EntitySet Name="Odontograma" EntityType="SMUSURA0_FrancoModel.Odontograma" />
+    <EntitySet Name="OdontogramaDetalle" EntityType="SMUSURA0_FrancoModel.OdontogramaDetalle" />
+    <EntitySet Name="Paciente" EntityType="SMUSURA0_FrancoModel.Paciente" />
+    <EntitySet Name="Periodontograma" EntityType="SMUSURA0_FrancoModel.Periodontograma" />
+    <EntitySet Name="PeriodontogramaDetalle" EntityType="SMUSURA0_FrancoModel.PeriodontogramaDetalle" />
+    <EntitySet Name="Placagrama" EntityType="SMUSURA0_FrancoModel.Placagrama" />
+    <EntitySet Name="PlacagramaDetalle" EntityType="SMUSURA0_FrancoModel.PlacagramaDetalle" />
+    <EntitySet Name="Simbolo" EntityType="SMUSURA0_FrancoModel.Simbolo" />
+    <EntitySet Name="Tratamiento" EntityType="SMUSURA0_FrancoModel.Tratamiento" />
+    <EntitySet Name="TratamientoRealizado" EntityType="SMUSURA0_FrancoModel.TratamientoRealizado" />
+    <EntitySet Name="ValorCatalogo" EntityType="SMUSURA0_FrancoModel.ValorCatalogo" />
+    <EntitySet Name="vwOdontogramaDetalle" EntityType="SMUSURA0_FrancoModel.vwOdontogramaDetalle" />
+    <AssociationSet Name="FK_AntecedenteDental_Expediente" Association="SMUSURA0_FrancoModel.FK_AntecedenteDental_Expediente">
+      <End Role="Expediente" EntitySet="Expediente" />
+      <End Role="AntecedenteDental" EntitySet="AntecedenteDental" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AntecedenteFamiliar_Expediente" Association="SMUSURA0_FrancoModel.FK_AntecedenteFamiliar_Expediente">
+      <End Role="Expediente" EntitySet="Expediente" />
+      <End Role="AntecedenteFamiliar" EntitySet="AntecedenteFamiliar" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ValorCatalogo_Catalogo" Association="SMUSURA0_FrancoModel.FK_ValorCatalogo_Catalogo">
+      <End Role="Catalogo" EntitySet="Catalogo" />
+      <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Cita_Expediente" Association="SMUSURA0_FrancoModel.FK_Cita_Expediente">
+      <End Role="Expediente" EntitySet="Expediente" />
+      <End Role="Cita" EntitySet="Cita" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OdontogramaDetalle_Diente" Association="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Diente">
+      <End Role="Diente" EntitySet="Diente" />
+      <End Role="OdontogramaDetalle" EntitySet="OdontogramaDetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlacagramaDetalle_Diente" Association="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Diente">
+      <End Role="Diente" EntitySet="Diente" />
+      <End Role="PlacagramaDetalle" EntitySet="PlacagramaDetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ExamenComplementario_Expediente" Association="SMUSURA0_FrancoModel.FK_ExamenComplementario_Expediente">
+      <End Role="Expediente" EntitySet="Expediente" />
+      <End Role="ExamenComplementario" EntitySet="ExamenComplementario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Expediente_Paciente" Association="SMUSURA0_FrancoModel.FK_Expediente_Paciente">
+      <End Role="Paciente" EntitySet="Paciente" />
+      <End Role="Expediente" EntitySet="Expediente" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Odontograma_Expediente" Association="SMUSURA0_FrancoModel.FK_Odontograma_Expediente">
+      <End Role="Expediente" EntitySet="Expediente" />
+      <End Role="Odontograma" EntitySet="Odontograma" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Periodontograma_Expediente" Association="SMUSURA0_FrancoModel.FK_Periodontograma_Expediente">
+      <End Role="Expediente" EntitySet="Expediente" />
+      <End Role="Periodontograma" EntitySet="Periodontograma" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Placagrama_Expediente" Association="SMUSURA0_FrancoModel.FK_Placagrama_Expediente">
+      <End Role="Expediente" EntitySet="Expediente" />
+      <End Role="Placagrama" EntitySet="Placagrama" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TratamientoRealizado_Expediente" Association="SMUSURA0_FrancoModel.FK_TratamientoRealizado_Expediente">
+      <End Role="Expediente" EntitySet="Expediente" />
+      <End Role="TratamientoRealizado" EntitySet="TratamientoRealizado" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OdontogramaDetalle_Odontograma" Association="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Odontograma">
+      <End Role="Odontograma" EntitySet="Odontograma" />
+      <End Role="OdontogramaDetalle" EntitySet="OdontogramaDetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OdontogramaDetalle_Simbolo" Association="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Simbolo">
+      <End Role="Simbolo" EntitySet="Simbolo" />
+      <End Role="OdontogramaDetalle" EntitySet="OdontogramaDetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PeriodontogramaDetalle_Periodontograma" Association="SMUSURA0_FrancoModel.FK_PeriodontogramaDetalle_Periodontograma">
+      <End Role="Periodontograma" EntitySet="Periodontograma" />
+      <End Role="PeriodontogramaDetalle" EntitySet="PeriodontogramaDetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlacagramaDetalle_Placagrama" Association="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Placagrama">
+      <End Role="Placagrama" EntitySet="Placagrama" />
+      <End Role="PlacagramaDetalle" EntitySet="PlacagramaDetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PlacagramaDetalle_Simbolo" Association="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Simbolo">
+      <End Role="Simbolo" EntitySet="Simbolo" />
+      <End Role="PlacagramaDetalle" EntitySet="PlacagramaDetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Tratamiento_ValorCatalogo" Association="SMUSURA0_FrancoModel.FK_Tratamiento_ValorCatalogo">
+      <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
+      <End Role="Tratamiento" EntitySet="Tratamiento" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TratamientoRealizado_Tratamiento" Association="SMUSURA0_FrancoModel.FK_TratamientoRealizado_Tratamiento">
+      <End Role="Tratamiento" EntitySet="Tratamiento" />
+      <End Role="TratamientoRealizado" EntitySet="TratamientoRealizado" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TratamientoRealizado_ValorCatalogo" Association="SMUSURA0_FrancoModel.FK_TratamientoRealizado_ValorCatalogo">
+      <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
+      <End Role="TratamientoRealizado" EntitySet="TratamientoRealizado" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="AntecedenteDental">
+    <Key>
+      <PropertyRef Name="nAntecedenteDentalID" />
+    </Key>
+    <Property Name="nAntecedenteDentalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaUltimaVisitaDentista" Type="DateTime" Precision="0" />
+    <Property Name="sMotivoVisita" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="sExperienciaAsistencial" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="nTratamientoQuirurgico" Type="Byte" Nullable="false" />
+    <Property Name="nTratamientoRestauracion" Type="Byte" Nullable="false" />
+    <Property Name="nTratamientoPeridoncia" Type="Byte" Nullable="false" />
+    <Property Name="nTratamientoEndodoncia" Type="Byte" Nullable="false" />
+    <Property Name="nTratamientoOrtodoncia" Type="Byte" Nullable="false" />
+    <Property Name="nTratamientoProtesis" Type="Byte" Nullable="false" />
+    <Property Name="nColocadoAnestesia" Type="Byte" Nullable="false" />
+    <Property Name="nReaccionAlergicaAnestesia" Type="Byte" Nullable="false" />
+    <Property Name="sReaccionAlergicaAnestesia" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="sDescripcionTejidosBlandos" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="sHistoriaEnfermedadActual" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_AntecedenteDental_Expediente" FromRole="AntecedenteDental" ToRole="Expediente" />
+  </EntityType>
+  <EntityType Name="AntecedenteFamiliar">
+    <Key>
+      <PropertyRef Name="nAntecedenteFamiliarID" />
+    </Key>
+    <Property Name="nAntecedenteFamiliarID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="nParentescoID" Type="Int32" Nullable="false" />
+    <Property Name="sAntecedente" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_AntecedenteFamiliar_Expediente" FromRole="AntecedenteFamiliar" ToRole="Expediente" />
+  </EntityType>
   <EntityType Name="Catalogo">
     <Key>
       <PropertyRef Name="nCatalogoID" />
     </Key>
     <Property Name="nCatalogoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="nCodigo" Type="Int32" Nullable="false" />
-    <Property Name="sDescripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="nActivo" Type="Int32" Nullable="false" />
     <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
-    <Property Name="sUsuarioCreacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="dFechaModificaicon" Type="DateTime" Precision="0" />
     <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="ValorCatalogo" Relationship="Self.FK_ValorCatalogo_Catalogo" FromRole="Catalogo" ToRole="ValorCatalogo" />
+    <NavigationProperty Name="ValorCatalogo" Relationship="SMUSURA0_FrancoModel.FK_ValorCatalogo_Catalogo" FromRole="Catalogo" ToRole="ValorCatalogo" />
+  </EntityType>
+  <EntityType Name="Cita">
+    <Key>
+      <PropertyRef Name="nCitaID" />
+    </Key>
+    <Property Name="nCitaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="sMotivoCitaID" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaHoraCita" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_Cita_Expediente" FromRole="Cita" ToRole="Expediente" />
   </EntityType>
   <EntityType Name="Diente">
     <Key>
@@ -20,25 +178,225 @@
     </Key>
     <Property Name="nDienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="nTipoDiente" Type="Int32" Nullable="false" />
-    <Property Name="sNombreDiente" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sNombreDiente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
     <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
-    <Property Name="sUsuarioCreacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
     <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="ValorCatalogo" Relationship="Self.FK_Diente_ValorCatalogo" FromRole="Diente" ToRole="ValorCatalogo" />
+    <NavigationProperty Name="OdontogramaDetalle" Relationship="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Diente" FromRole="Diente" ToRole="OdontogramaDetalle" />
+    <NavigationProperty Name="PlacagramaDetalle" Relationship="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Diente" FromRole="Diente" ToRole="PlacagramaDetalle" />
+  </EntityType>
+  <EntityType Name="ExamenComplementario">
+    <Key>
+      <PropertyRef Name="nExamenComplementarioID" />
+    </Key>
+    <Property Name="nExamenComplementarioID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="nEstudiosRadiologicos" Type="Byte" Nullable="false" />
+    <Property Name="sDescripcionER" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="nEstudiosLaboratorio" Type="Byte" Nullable="false" />
+    <Property Name="sDescripcionEL" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
     <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_ExamenComplementario_Expediente" FromRole="ExamenComplementario" ToRole="Expediente" />
+  </EntityType>
+  <EntityType Name="Expediente">
+    <Key>
+      <PropertyRef Name="nExpedienteID" />
+    </Key>
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nPacienteID" Type="Int32" Nullable="false" />
+    <Property Name="nCodigoExpediente" Type="Int32" Nullable="false" />
+    <Property Name="dFechaExpediente" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sACPPESA" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+    <Property Name="nGrupoSanguineoID" Type="Int32" Nullable="false" />
+    <Property Name="nAAAMA" Type="Byte" Nullable="false" />
+    <Property Name="sAAAMA" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="AntecedenteDental" Relationship="SMUSURA0_FrancoModel.FK_AntecedenteDental_Expediente" FromRole="Expediente" ToRole="AntecedenteDental" />
+    <NavigationProperty Name="AntecedenteFamiliar" Relationship="SMUSURA0_FrancoModel.FK_AntecedenteFamiliar_Expediente" FromRole="Expediente" ToRole="AntecedenteFamiliar" />
+    <NavigationProperty Name="Cita" Relationship="SMUSURA0_FrancoModel.FK_Cita_Expediente" FromRole="Expediente" ToRole="Cita" />
+    <NavigationProperty Name="ExamenComplementario" Relationship="SMUSURA0_FrancoModel.FK_ExamenComplementario_Expediente" FromRole="Expediente" ToRole="ExamenComplementario" />
+    <NavigationProperty Name="Paciente" Relationship="SMUSURA0_FrancoModel.FK_Expediente_Paciente" FromRole="Expediente" ToRole="Paciente" />
+    <NavigationProperty Name="Odontograma" Relationship="SMUSURA0_FrancoModel.FK_Odontograma_Expediente" FromRole="Expediente" ToRole="Odontograma" />
+    <NavigationProperty Name="Periodontograma" Relationship="SMUSURA0_FrancoModel.FK_Periodontograma_Expediente" FromRole="Expediente" ToRole="Periodontograma" />
+    <NavigationProperty Name="Placagrama" Relationship="SMUSURA0_FrancoModel.FK_Placagrama_Expediente" FromRole="Expediente" ToRole="Placagrama" />
+    <NavigationProperty Name="TratamientoRealizado" Relationship="SMUSURA0_FrancoModel.FK_TratamientoRealizado_Expediente" FromRole="Expediente" ToRole="TratamientoRealizado" />
+  </EntityType>
+  <EntityType Name="Odontograma">
+    <Key>
+      <PropertyRef Name="nOdontogramaID" />
+    </Key>
+    <Property Name="nOdontogramaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaOdontograma" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sObservaciones" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_Odontograma_Expediente" FromRole="Odontograma" ToRole="Expediente" />
+    <NavigationProperty Name="OdontogramaDetalle" Relationship="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Odontograma" FromRole="Odontograma" ToRole="OdontogramaDetalle" />
+  </EntityType>
+  <EntityType Name="OdontogramaDetalle">
+    <Key>
+      <PropertyRef Name="nOdontogramaDetalleID" />
+    </Key>
+    <Property Name="nOdontogramaDetalleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nOdontogramaID" Type="Int32" Nullable="false" />
+    <Property Name="nSimboloID" Type="Int32" Nullable="false" />
+    <Property Name="nDienteID" Type="Int32" Nullable="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Diente" Relationship="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Diente" FromRole="OdontogramaDetalle" ToRole="Diente" />
+    <NavigationProperty Name="Odontograma" Relationship="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Odontograma" FromRole="OdontogramaDetalle" ToRole="Odontograma" />
+    <NavigationProperty Name="Simbolo" Relationship="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Simbolo" FromRole="OdontogramaDetalle" ToRole="Simbolo" />
+  </EntityType>
+  <EntityType Name="Paciente">
+    <Key>
+      <PropertyRef Name="nPacienteID" />
+    </Key>
+    <Property Name="nPacienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nCodigo" Type="Int32" Nullable="false" />
+    <Property Name="sNombre" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="sApellido1" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="sApellido2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="nGeneroID" Type="Int32" Nullable="false" />
+    <Property Name="sLugarNacimiento" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaNacimiento" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sDireccion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="sCedula" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="sTelefono" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="sEmergenciaNombre" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="sEmergenciaParentesco" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="sEmergenciaTelefono" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_Expediente_Paciente" FromRole="Paciente" ToRole="Expediente" />
+  </EntityType>
+  <EntityType Name="Periodontograma">
+    <Key>
+      <PropertyRef Name="nPeriodontogramaID" />
+    </Key>
+    <Property Name="nPeriodontogramaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaPeriodontograma" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_Periodontograma_Expediente" FromRole="Periodontograma" ToRole="Expediente" />
+    <NavigationProperty Name="PeriodontogramaDetalle" Relationship="SMUSURA0_FrancoModel.FK_PeriodontogramaDetalle_Periodontograma" FromRole="Periodontograma" ToRole="PeriodontogramaDetalle" />
+  </EntityType>
+  <EntityType Name="PeriodontogramaDetalle">
+    <Key>
+      <PropertyRef Name="nPeriodontogramaDetalleID" />
+    </Key>
+    <Property Name="nPeriodontogramaDetalleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nPeriodontogramaID" Type="Int32" Nullable="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Periodontograma" Relationship="SMUSURA0_FrancoModel.FK_PeriodontogramaDetalle_Periodontograma" FromRole="PeriodontogramaDetalle" ToRole="Periodontograma" />
+  </EntityType>
+  <EntityType Name="Placagrama">
+    <Key>
+      <PropertyRef Name="nPlacagramaID" />
+    </Key>
+    <Property Name="nPlacagramaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaPlacagrama" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_Placagrama_Expediente" FromRole="Placagrama" ToRole="Expediente" />
+    <NavigationProperty Name="PlacagramaDetalle" Relationship="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Placagrama" FromRole="Placagrama" ToRole="PlacagramaDetalle" />
+  </EntityType>
+  <EntityType Name="PlacagramaDetalle">
+    <Key>
+      <PropertyRef Name="nPlacagramaDetalleID" />
+    </Key>
+    <Property Name="nPlacagramaDetalleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nPlacagramaID" Type="Int32" Nullable="false" />
+    <Property Name="nDienteID" Type="Int32" Nullable="false" />
+    <Property Name="nSimboloID" Type="Int32" Nullable="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Diente" Relationship="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Diente" FromRole="PlacagramaDetalle" ToRole="Diente" />
+    <NavigationProperty Name="Placagrama" Relationship="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Placagrama" FromRole="PlacagramaDetalle" ToRole="Placagrama" />
+    <NavigationProperty Name="Simbolo" Relationship="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Simbolo" FromRole="PlacagramaDetalle" ToRole="Simbolo" />
   </EntityType>
   <EntityType Name="Simbolo">
     <Key>
       <PropertyRef Name="nSimboloID" />
     </Key>
     <Property Name="nSimboloID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="sDescripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
     <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
-    <Property Name="sUsuarioCreacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
     <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="OdontogramaDetalle" Relationship="SMUSURA0_FrancoModel.FK_OdontogramaDetalle_Simbolo" FromRole="Simbolo" ToRole="OdontogramaDetalle" />
+    <NavigationProperty Name="PlacagramaDetalle" Relationship="SMUSURA0_FrancoModel.FK_PlacagramaDetalle_Simbolo" FromRole="Simbolo" ToRole="PlacagramaDetalle" />
+  </EntityType>
+  <EntityType Name="Tratamiento">
+    <Key>
+      <PropertyRef Name="nTratamientoID" />
+    </Key>
+    <Property Name="nTratamientoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="nCosto" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="nMonedaCostoID" Type="Int32" Nullable="false" />
     <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreaciion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ValorCatalogo" Relationship="SMUSURA0_FrancoModel.FK_Tratamiento_ValorCatalogo" FromRole="Tratamiento" ToRole="ValorCatalogo" />
+    <NavigationProperty Name="TratamientoRealizado" Relationship="SMUSURA0_FrancoModel.FK_TratamientoRealizado_Tratamiento" FromRole="Tratamiento" ToRole="TratamientoRealizado" />
+  </EntityType>
+  <EntityType Name="TratamientoRealizado">
+    <Key>
+      <PropertyRef Name="nTratamientoRealizadoID" />
+    </Key>
+    <Property Name="nTratamientoRealizadoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="nTratamientoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaTratamiento" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="nAbono" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="nMonedaAbonoID" Type="Int32" Nullable="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Expediente" Relationship="SMUSURA0_FrancoModel.FK_TratamientoRealizado_Expediente" FromRole="TratamientoRealizado" ToRole="Expediente" />
+    <NavigationProperty Name="Tratamiento" Relationship="SMUSURA0_FrancoModel.FK_TratamientoRealizado_Tratamiento" FromRole="TratamientoRealizado" ToRole="Tratamiento" />
+    <NavigationProperty Name="ValorCatalogo" Relationship="SMUSURA0_FrancoModel.FK_TratamientoRealizado_ValorCatalogo" FromRole="TratamientoRealizado" ToRole="ValorCatalogo" />
   </EntityType>
   <EntityType Name="ValorCatalogo">
     <Key>
@@ -47,18 +405,57 @@
     <Property Name="nValorCatalogoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="nCatalogoID" Type="Int32" Nullable="false" />
     <Property Name="nCodigo" Type="Int32" Nullable="false" />
-    <Property Name="sDescripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="nActivo" Type="Int32" Nullable="false" />
     <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
-    <Property Name="sUsuarioCreacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
     <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="Catalogo" Relationship="Self.FK_ValorCatalogo_Catalogo" FromRole="ValorCatalogo" ToRole="Catalogo" />
-    <NavigationProperty Name="Diente" Relationship="Self.FK_Diente_ValorCatalogo" FromRole="ValorCatalogo" ToRole="Diente" />
+    <NavigationProperty Name="Catalogo" Relationship="SMUSURA0_FrancoModel.FK_ValorCatalogo_Catalogo" FromRole="ValorCatalogo" ToRole="Catalogo" />
+    <NavigationProperty Name="Tratamiento" Relationship="SMUSURA0_FrancoModel.FK_Tratamiento_ValorCatalogo" FromRole="ValorCatalogo" ToRole="Tratamiento" />
+    <NavigationProperty Name="TratamientoRealizado" Relationship="SMUSURA0_FrancoModel.FK_TratamientoRealizado_ValorCatalogo" FromRole="ValorCatalogo" ToRole="TratamientoRealizado" />
   </EntityType>
+  <EntityType Name="vwOdontogramaDetalle">
+    <Key>
+      <PropertyRef Name="nOdontogramaDetalleID" />
+      <PropertyRef Name="nDienteID" />
+      <PropertyRef Name="nSimboloID" />
+      <PropertyRef Name="sNombreDiente" />
+      <PropertyRef Name="sDescripcion" />
+    </Key>
+    <Property Name="nOdontogramaDetalleID" Type="Int32" Nullable="false" />
+    <Property Name="nDienteID" Type="Int32" Nullable="false" />
+    <Property Name="nSimboloID" Type="Int32" Nullable="false" />
+    <Property Name="sNombreDiente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <Association Name="FK_AntecedenteDental_Expediente">
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.AntecedenteDental" Role="AntecedenteDental" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Expediente">
+        <PropertyRef Name="nExpedienteID" />
+      </Principal>
+      <Dependent Role="AntecedenteDental">
+        <PropertyRef Name="nExpedienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AntecedenteFamiliar_Expediente">
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.AntecedenteFamiliar" Role="AntecedenteFamiliar" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Expediente">
+        <PropertyRef Name="nExpedienteID" />
+      </Principal>
+      <Dependent Role="AntecedenteFamiliar">
+        <PropertyRef Name="nExpedienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_ValorCatalogo_Catalogo">
-    <End Role="Catalogo" Type="Self.Catalogo" Multiplicity="1" />
-    <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="*" />
+    <End Type="SMUSURA0_FrancoModel.Catalogo" Role="Catalogo" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.ValorCatalogo" Role="ValorCatalogo" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Catalogo">
         <PropertyRef Name="nCatalogoID" />
@@ -68,59 +465,208 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_Diente_ValorCatalogo">
-    <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="1" />
-    <End Role="Diente" Type="Self.Diente" Multiplicity="*" />
+  <Association Name="FK_Cita_Expediente">
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.Cita" Role="Cita" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Expediente">
+        <PropertyRef Name="nExpedienteID" />
+      </Principal>
+      <Dependent Role="Cita">
+        <PropertyRef Name="nExpedienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OdontogramaDetalle_Diente">
+    <End Type="SMUSURA0_FrancoModel.Diente" Role="Diente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.OdontogramaDetalle" Role="OdontogramaDetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Diente">
+        <PropertyRef Name="nDienteID" />
+      </Principal>
+      <Dependent Role="OdontogramaDetalle">
+        <PropertyRef Name="nDienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlacagramaDetalle_Diente">
+    <End Type="SMUSURA0_FrancoModel.Diente" Role="Diente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.PlacagramaDetalle" Role="PlacagramaDetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Diente">
+        <PropertyRef Name="nDienteID" />
+      </Principal>
+      <Dependent Role="PlacagramaDetalle">
+        <PropertyRef Name="nDienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ExamenComplementario_Expediente">
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.ExamenComplementario" Role="ExamenComplementario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Expediente">
+        <PropertyRef Name="nExpedienteID" />
+      </Principal>
+      <Dependent Role="ExamenComplementario">
+        <PropertyRef Name="nExpedienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Expediente_Paciente">
+    <End Type="SMUSURA0_FrancoModel.Paciente" Role="Paciente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Paciente">
+        <PropertyRef Name="nPacienteID" />
+      </Principal>
+      <Dependent Role="Expediente">
+        <PropertyRef Name="nPacienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Odontograma_Expediente">
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.Odontograma" Role="Odontograma" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Expediente">
+        <PropertyRef Name="nExpedienteID" />
+      </Principal>
+      <Dependent Role="Odontograma">
+        <PropertyRef Name="nExpedienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Periodontograma_Expediente">
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.Periodontograma" Role="Periodontograma" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Expediente">
+        <PropertyRef Name="nExpedienteID" />
+      </Principal>
+      <Dependent Role="Periodontograma">
+        <PropertyRef Name="nExpedienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Placagrama_Expediente">
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.Placagrama" Role="Placagrama" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Expediente">
+        <PropertyRef Name="nExpedienteID" />
+      </Principal>
+      <Dependent Role="Placagrama">
+        <PropertyRef Name="nExpedienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TratamientoRealizado_Expediente">
+    <End Type="SMUSURA0_FrancoModel.Expediente" Role="Expediente" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.TratamientoRealizado" Role="TratamientoRealizado" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Expediente">
+        <PropertyRef Name="nExpedienteID" />
+      </Principal>
+      <Dependent Role="TratamientoRealizado">
+        <PropertyRef Name="nExpedienteID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OdontogramaDetalle_Odontograma">
+    <End Type="SMUSURA0_FrancoModel.Odontograma" Role="Odontograma" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.OdontogramaDetalle" Role="OdontogramaDetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Odontograma">
+        <PropertyRef Name="nOdontogramaID" />
+      </Principal>
+      <Dependent Role="OdontogramaDetalle">
+        <PropertyRef Name="nOdontogramaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OdontogramaDetalle_Simbolo">
+    <End Type="SMUSURA0_FrancoModel.Simbolo" Role="Simbolo" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.OdontogramaDetalle" Role="OdontogramaDetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Simbolo">
+        <PropertyRef Name="nSimboloID" />
+      </Principal>
+      <Dependent Role="OdontogramaDetalle">
+        <PropertyRef Name="nSimboloID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PeriodontogramaDetalle_Periodontograma">
+    <End Type="SMUSURA0_FrancoModel.Periodontograma" Role="Periodontograma" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.PeriodontogramaDetalle" Role="PeriodontogramaDetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Periodontograma">
+        <PropertyRef Name="nPeriodontogramaID" />
+      </Principal>
+      <Dependent Role="PeriodontogramaDetalle">
+        <PropertyRef Name="nPeriodontogramaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlacagramaDetalle_Placagrama">
+    <End Type="SMUSURA0_FrancoModel.Placagrama" Role="Placagrama" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.PlacagramaDetalle" Role="PlacagramaDetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Placagrama">
+        <PropertyRef Name="nPlacagramaID" />
+      </Principal>
+      <Dependent Role="PlacagramaDetalle">
+        <PropertyRef Name="nPlacagramaID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PlacagramaDetalle_Simbolo">
+    <End Type="SMUSURA0_FrancoModel.Simbolo" Role="Simbolo" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.PlacagramaDetalle" Role="PlacagramaDetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Simbolo">
+        <PropertyRef Name="nSimboloID" />
+      </Principal>
+      <Dependent Role="PlacagramaDetalle">
+        <PropertyRef Name="nSimboloID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Tratamiento_ValorCatalogo">
+    <End Type="SMUSURA0_FrancoModel.ValorCatalogo" Role="ValorCatalogo" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.Tratamiento" Role="Tratamiento" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="ValorCatalogo">
         <PropertyRef Name="nValorCatalogoID" />
       </Principal>
-      <Dependent Role="Diente">
-        <PropertyRef Name="nTipoDiente" />
+      <Dependent Role="Tratamiento">
+        <PropertyRef Name="nMonedaCostoID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityContainer Name="SIGECO_Entities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="Catalogo" EntityType="Self.Catalogo" />
-    <EntitySet Name="Diente" EntityType="Self.Diente" />
-    <EntitySet Name="Simbolo" EntityType="Self.Simbolo" />
-    <EntitySet Name="ValorCatalogo" EntityType="Self.ValorCatalogo" />
-    <AssociationSet Name="FK_ValorCatalogo_Catalogo" Association="Self.FK_ValorCatalogo_Catalogo">
-      <End Role="Catalogo" EntitySet="Catalogo" />
-      <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Diente_ValorCatalogo" Association="Self.FK_Diente_ValorCatalogo">
-      <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
-      <End Role="Diente" EntitySet="Diente" />
-    </AssociationSet>
-    <EntitySet Name="SimboloDiente" EntityType="SMUSURA0_FrancoModel.SimboloDiente" />
-    <EntitySet Name="vwSimboloDiente" EntityType="SMUSURA0_FrancoModel.vwSimboloDiente" />
-  </EntityContainer>
-  <EntityType Name="SimboloDiente">
-    <Key>
-      <PropertyRef Name="nSimboloDienteID" />
-    </Key>
-    <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" />
-    <Property Name="nOdontogramaID" Type="Int32" Nullable="false" />
-    <Property Name="nSimboloID" Type="Int32" Nullable="false" />
-    <Property Name="nDienteID" Type="Int32" Nullable="false" />
-    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
-    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
-    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-  </EntityType>
-  <EntityType Name="vwSimboloDiente">
-    <Key>
-      <PropertyRef Name="nSimboloDienteID" />
-      <PropertyRef Name="nDienteID" />
-      <PropertyRef Name="nSimboloID" />
-      <PropertyRef Name="sNombreDiente" />
-      <PropertyRef Name="sDescripcion" />
-    </Key>
-    <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" />
-    <Property Name="nDienteID" Type="Int32" Nullable="false" />
-    <Property Name="nSimboloID" Type="Int32" Nullable="false" />
-    <Property Name="sNombreDiente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-  </EntityType>
+  <Association Name="FK_TratamientoRealizado_Tratamiento">
+    <End Type="SMUSURA0_FrancoModel.Tratamiento" Role="Tratamiento" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.TratamientoRealizado" Role="TratamientoRealizado" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tratamiento">
+        <PropertyRef Name="nTratamientoID" />
+      </Principal>
+      <Dependent Role="TratamientoRealizado">
+        <PropertyRef Name="nTratamientoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TratamientoRealizado_ValorCatalogo">
+    <End Type="SMUSURA0_FrancoModel.ValorCatalogo" Role="ValorCatalogo" Multiplicity="1" />
+    <End Type="SMUSURA0_FrancoModel.TratamientoRealizado" Role="TratamientoRealizado" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ValorCatalogo">
+        <PropertyRef Name="nValorCatalogoID" />
+      </Principal>
+      <Dependent Role="TratamientoRealizado">
+        <PropertyRef Name="nMonedaAbonoID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

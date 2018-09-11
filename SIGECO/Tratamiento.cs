@@ -12,27 +12,26 @@ namespace SIGECO
     using System;
     using System.Collections.Generic;
     
-    public partial class Diente
+    public partial class Tratamiento
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Diente()
+        public Tratamiento()
         {
-            this.OdontogramaDetalle = new HashSet<OdontogramaDetalle>();
-            this.PlacagramaDetalle = new HashSet<PlacagramaDetalle>();
+            this.TratamientoRealizado = new HashSet<TratamientoRealizado>();
         }
     
-        public int nDienteID { get; set; }
-        public int nTipoDiente { get; set; }
-        public string sNombreDiente { get; set; }
+        public int nTratamientoID { get; set; }
+        public string sDescripcion { get; set; }
+        public decimal nCosto { get; set; }
+        public int nMonedaCostoID { get; set; }
         public int nEstadoID { get; set; }
-        public System.DateTime dFechaCreacion { get; set; }
+        public System.DateTime dFechaCreaciion { get; set; }
         public string sUsuarioCreacion { get; set; }
         public Nullable<System.DateTime> dFechaModificacion { get; set; }
         public string sUsuarioModificacion { get; set; }
     
+        public virtual ValorCatalogo ValorCatalogo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OdontogramaDetalle> OdontogramaDetalle { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PlacagramaDetalle> PlacagramaDetalle { get; set; }
+        public virtual ICollection<TratamientoRealizado> TratamientoRealizado { get; set; }
     }
 }
