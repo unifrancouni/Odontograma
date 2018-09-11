@@ -20,6 +20,7 @@
     <Property Name="nDienteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="nTipoDiente" Type="int" Nullable="false" />
     <Property Name="sNombreDiente" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nEstadoID" Type="int" Nullable="false" />
     <Property Name="dFechaCreacion" Type="date" Nullable="false" />
     <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="dFechaModificacion" Type="date" />
@@ -31,6 +32,7 @@
     </Key>
     <Property Name="nSimboloID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="nEstadoID" Type="int" Nullable="false" />
     <Property Name="dFechaCreacion" Type="date" Nullable="false" />
     <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="dFechaModificacion" Type="date" />
@@ -40,11 +42,10 @@
     <Key>
       <PropertyRef Name="nSimboloDienteID" />
     </Key>
-    <Property Name="nSimboloDienteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nExpedienteID" Type="int" Nullable="false" />
+    <Property Name="nSimboloDienteID" Type="int" Nullable="false" />
+    <Property Name="nOdontogramaID" Type="int" Nullable="false" />
     <Property Name="nSimboloID" Type="int" Nullable="false" />
     <Property Name="nDienteID" Type="int" Nullable="false" />
-    <Property Name="nEstado" Type="int" Nullable="false" />
     <Property Name="dFechaCreacion" Type="date" Nullable="false" />
     <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="dFechaModificacion" Type="date" />
@@ -68,68 +69,18 @@
 advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
   <EntityType Name="vwSimboloDiente">
     <Key>
-      <PropertyRef Name="nExpedienteID" />
+      <PropertyRef Name="nSimboloDienteID" />
       <PropertyRef Name="nDienteID" />
       <PropertyRef Name="nSimboloID" />
-      <PropertyRef Name="nSimboloDienteID" />
       <PropertyRef Name="sNombreDiente" />
       <PropertyRef Name="sDescripcion" />
     </Key>
-    <Property Name="nExpedienteID" Type="int" Nullable="false" />
+    <Property Name="nSimboloDienteID" Type="int" Nullable="false" />
     <Property Name="nDienteID" Type="int" Nullable="false" />
     <Property Name="nSimboloID" Type="int" Nullable="false" />
-    <Property Name="nSimboloDienteID" Type="int" Nullable="false" />
     <Property Name="sNombreDiente" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
   </EntityType>
-  <Association Name="FK_Diente_ValorCatalogo">
-    <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="1" />
-    <End Role="Diente" Type="Self.Diente" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="ValorCatalogo">
-        <PropertyRef Name="nValorCatalogoID" />
-      </Principal>
-      <Dependent Role="Diente">
-        <PropertyRef Name="nTipoDiente" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_SimboloDiente_Diente">
-    <End Role="Diente" Type="Self.Diente" Multiplicity="1" />
-    <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Diente">
-        <PropertyRef Name="nDienteID" />
-      </Principal>
-      <Dependent Role="SimboloDiente">
-        <PropertyRef Name="nDienteID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_SimboloDiente_Simbolo">
-    <End Role="Simbolo" Type="Self.Simbolo" Multiplicity="1" />
-    <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Simbolo">
-        <PropertyRef Name="nSimboloID" />
-      </Principal>
-      <Dependent Role="SimboloDiente">
-        <PropertyRef Name="nSimboloID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_SimboloDiente_ValorCatalogo">
-    <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="1" />
-    <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="ValorCatalogo">
-        <PropertyRef Name="nValorCatalogoID" />
-      </Principal>
-      <Dependent Role="SimboloDiente">
-        <PropertyRef Name="nEstado" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK_ValorCatalogo_Catalogo">
     <End Role="Catalogo" Type="Self.Catalogo" Multiplicity="1" />
     <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="*" />
@@ -150,30 +101,13 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
     <EntitySet Name="ValorCatalogo" EntityType="Self.ValorCatalogo" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="vwSimboloDiente" EntityType="Self.vwSimboloDiente" store:Type="Views" store:Schema="dbo">
       <DefiningQuery>SELECT 
-    [vwSimboloDiente].[nExpedienteID] AS [nExpedienteID], 
+    [vwSimboloDiente].[nSimboloDienteID] AS [nSimboloDienteID], 
     [vwSimboloDiente].[nDienteID] AS [nDienteID], 
     [vwSimboloDiente].[nSimboloID] AS [nSimboloID], 
-    [vwSimboloDiente].[nSimboloDienteID] AS [nSimboloDienteID], 
     [vwSimboloDiente].[sNombreDiente] AS [sNombreDiente], 
     [vwSimboloDiente].[sDescripcion] AS [sDescripcion]
     FROM [dbo].[vwSimboloDiente] AS [vwSimboloDiente]</DefiningQuery>
     </EntitySet>
-    <AssociationSet Name="FK_Diente_ValorCatalogo" Association="Self.FK_Diente_ValorCatalogo">
-      <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
-      <End Role="Diente" EntitySet="Diente" />
-    </AssociationSet>
-    <AssociationSet Name="FK_SimboloDiente_Diente" Association="Self.FK_SimboloDiente_Diente">
-      <End Role="Diente" EntitySet="Diente" />
-      <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-    </AssociationSet>
-    <AssociationSet Name="FK_SimboloDiente_Simbolo" Association="Self.FK_SimboloDiente_Simbolo">
-      <End Role="Simbolo" EntitySet="Simbolo" />
-      <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-    </AssociationSet>
-    <AssociationSet Name="FK_SimboloDiente_ValorCatalogo" Association="Self.FK_SimboloDiente_ValorCatalogo">
-      <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
-      <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-    </AssociationSet>
     <AssociationSet Name="FK_ValorCatalogo_Catalogo" Association="Self.FK_ValorCatalogo_Catalogo">
       <End Role="Catalogo" EntitySet="Catalogo" />
       <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />

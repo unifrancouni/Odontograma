@@ -14,10 +14,9 @@ namespace SIGECO
     
     public partial class vwSimboloDiente
     {
-        public int nExpedienteID { get; set; }
+        public int nSimboloDienteID { get; set; }
         public int nDienteID { get; set; }
         public int nSimboloID { get; set; }
-        public int nSimboloDienteID { get; set; }
         public string sNombreDiente { get; set; }
         public string sDescripcion { get; set; }
     }

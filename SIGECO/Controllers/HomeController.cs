@@ -19,7 +19,6 @@ namespace SIGECO.Controllers
         {
             var db = new SIGECO_Entities();
             var consulta = db.vwSimboloDiente
-                .Where(c => c.nExpedienteID == id)
                 .Select(c => new { c.sNombreDiente, c.sDescripcion }).ToList();
             return Json(consulta, JsonRequestBehavior.AllowGet);
         }

@@ -18,7 +18,6 @@ namespace SIGECO
         public ValorCatalogo()
         {
             this.Diente = new HashSet<Diente>();
-            this.SimboloDiente = new HashSet<SimboloDiente>();
         }
     
         public int nValorCatalogoID { get; set; }
@@ -34,7 +33,5 @@ namespace SIGECO
         public virtual Catalogo Catalogo { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Diente> Diente { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SimboloDiente> SimboloDiente { get; set; }
     }
 }

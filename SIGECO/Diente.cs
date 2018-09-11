@@ -14,12 +14,6 @@ namespace SIGECO
     
     public partial class Diente
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Diente()
-        {
-            this.SimboloDiente = new HashSet<SimboloDiente>();
-        }
-    
         public int nDienteID { get; set; }
         public int nTipoDiente { get; set; }
         public string sNombreDiente { get; set; }
@@ -27,9 +21,8 @@ namespace SIGECO
         public string sUsuarioCreacion { get; set; }
         public Nullable<System.DateTime> dFechaModificacion { get; set; }
         public string sUsuarioModificacion { get; set; }
+        public int nEstadoID { get; set; }
     
         public virtual ValorCatalogo ValorCatalogo { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SimboloDiente> SimboloDiente { get; set; }
     }
 }

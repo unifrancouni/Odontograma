@@ -18,6 +18,7 @@
     <EntitySetMapping Name="Diente">
       <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Diente">
         <MappingFragment StoreEntitySet="Diente">
+          <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
           <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
           <ScalarProperty Name="nTipoDiente" ColumnName="nTipoDiente" />
           <ScalarProperty Name="sNombreDiente" ColumnName="sNombreDiente" />
@@ -31,23 +32,9 @@
     <EntitySetMapping Name="Simbolo">
       <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Simbolo">
         <MappingFragment StoreEntitySet="Simbolo">
+          <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
           <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
           <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
-          <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
-          <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
-          <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
-          <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="SimboloDiente">
-      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.SimboloDiente">
-        <MappingFragment StoreEntitySet="SimboloDiente">
-          <ScalarProperty Name="nExpedienteID" ColumnName="nExpedienteID" />
-          <ScalarProperty Name="nSimboloDienteID" ColumnName="nSimboloDienteID" />
-          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
-          <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
-          <ScalarProperty Name="nEstado" ColumnName="nEstado" />
           <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
           <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
           <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
@@ -70,15 +57,28 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="SimboloDiente">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.SimboloDiente">
+        <MappingFragment StoreEntitySet="SimboloDiente">
+          <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+          <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+          <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+          <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+          <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
+          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+          <ScalarProperty Name="nOdontogramaID" ColumnName="nOdontogramaID" />
+          <ScalarProperty Name="nSimboloDienteID" ColumnName="nSimboloDienteID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="vwSimboloDiente">
       <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwSimboloDiente">
         <MappingFragment StoreEntitySet="vwSimboloDiente">
           <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
           <ScalarProperty Name="sNombreDiente" ColumnName="sNombreDiente" />
-          <ScalarProperty Name="nSimboloDienteID" ColumnName="nSimboloDienteID" />
           <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
           <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
-          <ScalarProperty Name="nExpedienteID" ColumnName="nExpedienteID" />
+          <ScalarProperty Name="nSimboloDienteID" ColumnName="nSimboloDienteID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

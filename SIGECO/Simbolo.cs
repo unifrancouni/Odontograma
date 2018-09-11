@@ -14,20 +14,12 @@ namespace SIGECO
     
     public partial class Simbolo
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Simbolo()
-        {
-            this.SimboloDiente = new HashSet<SimboloDiente>();
-        }
-    
         public int nSimboloID { get; set; }
         public string sDescripcion { get; set; }
         public System.DateTime dFechaCreacion { get; set; }
         public string sUsuarioCreacion { get; set; }
         public Nullable<System.DateTime> dFechaModificacion { get; set; }
         public string sUsuarioModificacion { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SimboloDiente> SimboloDiente { get; set; }
+        public int nEstadoID { get; set; }
     }
 }

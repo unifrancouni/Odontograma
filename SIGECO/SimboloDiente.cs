@@ -15,17 +15,12 @@ namespace SIGECO
     public partial class SimboloDiente
     {
         public int nSimboloDienteID { get; set; }
+        public int nOdontogramaID { get; set; }
         public int nSimboloID { get; set; }
         public int nDienteID { get; set; }
-        public int nEstado { get; set; }
         public System.DateTime dFechaCreacion { get; set; }
         public string sUsuarioCreacion { get; set; }
         public Nullable<System.DateTime> dFechaModificacion { get; set; }
         public string sUsuarioModificacion { get; set; }
-        public int nExpedienteID { get; set; }
-    
-        public virtual Diente Diente { get; set; }
-        public virtual Simbolo Simbolo { get; set; }
-        public virtual ValorCatalogo ValorCatalogo { get; set; }
     }
 }

@@ -28,8 +28,8 @@ namespace SIGECO
         public virtual DbSet<Catalogo> Catalogo { get; set; }
         public virtual DbSet<Diente> Diente { get; set; }
         public virtual DbSet<Simbolo> Simbolo { get; set; }
-        public virtual DbSet<SimboloDiente> SimboloDiente { get; set; }
         public virtual DbSet<ValorCatalogo> ValorCatalogo { get; set; }
+        public virtual DbSet<SimboloDiente> SimboloDiente { get; set; }
         public virtual DbSet<vwSimboloDiente> vwSimboloDiente { get; set; }
     }
 }

@@ -26,7 +26,7 @@
     <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
     <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="ValorCatalogo" Relationship="Self.FK_Diente_ValorCatalogo" FromRole="Diente" ToRole="ValorCatalogo" />
-    <NavigationProperty Name="SimboloDiente" Relationship="Self.FK_SimboloDiente_Diente" FromRole="Diente" ToRole="SimboloDiente" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
   </EntityType>
   <EntityType Name="Simbolo">
     <Key>
@@ -38,24 +38,7 @@
     <Property Name="sUsuarioCreacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
     <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="SimboloDiente" Relationship="Self.FK_SimboloDiente_Simbolo" FromRole="Simbolo" ToRole="SimboloDiente" />
-  </EntityType>
-  <EntityType Name="SimboloDiente">
-    <Key>
-      <PropertyRef Name="nSimboloDienteID" />
-    </Key>
-    <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="nSimboloID" Type="Int32" Nullable="false" />
-    <Property Name="nDienteID" Type="Int32" Nullable="false" />
-    <Property Name="nEstado" Type="Int32" Nullable="false" />
-    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
-    <Property Name="sUsuarioCreacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
-    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="Diente" Relationship="Self.FK_SimboloDiente_Diente" FromRole="SimboloDiente" ToRole="Diente" />
-    <NavigationProperty Name="Simbolo" Relationship="Self.FK_SimboloDiente_Simbolo" FromRole="SimboloDiente" ToRole="Simbolo" />
-    <NavigationProperty Name="ValorCatalogo" Relationship="Self.FK_SimboloDiente_ValorCatalogo" FromRole="SimboloDiente" ToRole="ValorCatalogo" />
-    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
   </EntityType>
   <EntityType Name="ValorCatalogo">
     <Key>
@@ -72,7 +55,6 @@
     <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Catalogo" Relationship="Self.FK_ValorCatalogo_Catalogo" FromRole="ValorCatalogo" ToRole="Catalogo" />
     <NavigationProperty Name="Diente" Relationship="Self.FK_Diente_ValorCatalogo" FromRole="ValorCatalogo" ToRole="Diente" />
-    <NavigationProperty Name="SimboloDiente" Relationship="Self.FK_SimboloDiente_ValorCatalogo" FromRole="ValorCatalogo" ToRole="SimboloDiente" />
   </EntityType>
   <Association Name="FK_ValorCatalogo_Catalogo">
     <End Role="Catalogo" Type="Self.Catalogo" Multiplicity="1" />
@@ -98,47 +80,10 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_SimboloDiente_Diente">
-    <End Role="Diente" Type="Self.Diente" Multiplicity="1" />
-    <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Diente">
-        <PropertyRef Name="nDienteID" />
-      </Principal>
-      <Dependent Role="SimboloDiente">
-        <PropertyRef Name="nDienteID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_SimboloDiente_Simbolo">
-    <End Role="Simbolo" Type="Self.Simbolo" Multiplicity="1" />
-    <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Simbolo">
-        <PropertyRef Name="nSimboloID" />
-      </Principal>
-      <Dependent Role="SimboloDiente">
-        <PropertyRef Name="nSimboloID" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_SimboloDiente_ValorCatalogo">
-    <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="1" />
-    <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="ValorCatalogo">
-        <PropertyRef Name="nValorCatalogoID" />
-      </Principal>
-      <Dependent Role="SimboloDiente">
-        <PropertyRef Name="nEstado" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityContainer Name="SIGECO_Entities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Catalogo" EntityType="Self.Catalogo" />
     <EntitySet Name="Diente" EntityType="Self.Diente" />
     <EntitySet Name="Simbolo" EntityType="Self.Simbolo" />
-    <EntitySet Name="SimboloDiente" EntityType="Self.SimboloDiente" />
     <EntitySet Name="ValorCatalogo" EntityType="Self.ValorCatalogo" />
     <AssociationSet Name="FK_ValorCatalogo_Catalogo" Association="Self.FK_ValorCatalogo_Catalogo">
       <End Role="Catalogo" EntitySet="Catalogo" />
@@ -148,33 +93,33 @@
       <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
       <End Role="Diente" EntitySet="Diente" />
     </AssociationSet>
-    <AssociationSet Name="FK_SimboloDiente_Diente" Association="Self.FK_SimboloDiente_Diente">
-      <End Role="Diente" EntitySet="Diente" />
-      <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-    </AssociationSet>
-    <AssociationSet Name="FK_SimboloDiente_Simbolo" Association="Self.FK_SimboloDiente_Simbolo">
-      <End Role="Simbolo" EntitySet="Simbolo" />
-      <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-    </AssociationSet>
-    <AssociationSet Name="FK_SimboloDiente_ValorCatalogo" Association="Self.FK_SimboloDiente_ValorCatalogo">
-      <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
-      <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-    </AssociationSet>
+    <EntitySet Name="SimboloDiente" EntityType="SMUSURA0_FrancoModel.SimboloDiente" />
     <EntitySet Name="vwSimboloDiente" EntityType="SMUSURA0_FrancoModel.vwSimboloDiente" />
   </EntityContainer>
+  <EntityType Name="SimboloDiente">
+    <Key>
+      <PropertyRef Name="nSimboloDienteID" />
+    </Key>
+    <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" />
+    <Property Name="nOdontogramaID" Type="Int32" Nullable="false" />
+    <Property Name="nSimboloID" Type="Int32" Nullable="false" />
+    <Property Name="nDienteID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
   <EntityType Name="vwSimboloDiente">
     <Key>
-      <PropertyRef Name="nExpedienteID" />
+      <PropertyRef Name="nSimboloDienteID" />
       <PropertyRef Name="nDienteID" />
       <PropertyRef Name="nSimboloID" />
-      <PropertyRef Name="nSimboloDienteID" />
       <PropertyRef Name="sNombreDiente" />
       <PropertyRef Name="sDescripcion" />
     </Key>
-    <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+    <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" />
     <Property Name="nDienteID" Type="Int32" Nullable="false" />
     <Property Name="nSimboloID" Type="Int32" Nullable="false" />
-    <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" />
     <Property Name="sNombreDiente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>

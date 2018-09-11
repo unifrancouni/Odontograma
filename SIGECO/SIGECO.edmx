@@ -25,6 +25,7 @@
           <Property Name="nDienteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nTipoDiente" Type="int" Nullable="false" />
           <Property Name="sNombreDiente" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="nEstadoID" Type="int" Nullable="false" />
           <Property Name="dFechaCreacion" Type="date" Nullable="false" />
           <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="dFechaModificacion" Type="date" />
@@ -36,6 +37,7 @@
           </Key>
           <Property Name="nSimboloID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="nEstadoID" Type="int" Nullable="false" />
           <Property Name="dFechaCreacion" Type="date" Nullable="false" />
           <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="dFechaModificacion" Type="date" />
@@ -45,11 +47,10 @@
           <Key>
             <PropertyRef Name="nSimboloDienteID" />
           </Key>
-          <Property Name="nSimboloDienteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="nExpedienteID" Type="int" Nullable="false" />
+          <Property Name="nSimboloDienteID" Type="int" Nullable="false" />
+          <Property Name="nOdontogramaID" Type="int" Nullable="false" />
           <Property Name="nSimboloID" Type="int" Nullable="false" />
           <Property Name="nDienteID" Type="int" Nullable="false" />
-          <Property Name="nEstado" Type="int" Nullable="false" />
           <Property Name="dFechaCreacion" Type="date" Nullable="false" />
           <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="dFechaModificacion" Type="date" />
@@ -73,68 +74,18 @@
 advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
         <EntityType Name="vwSimboloDiente">
           <Key>
-            <PropertyRef Name="nExpedienteID" />
+            <PropertyRef Name="nSimboloDienteID" />
             <PropertyRef Name="nDienteID" />
             <PropertyRef Name="nSimboloID" />
-            <PropertyRef Name="nSimboloDienteID" />
             <PropertyRef Name="sNombreDiente" />
             <PropertyRef Name="sDescripcion" />
           </Key>
-          <Property Name="nExpedienteID" Type="int" Nullable="false" />
+          <Property Name="nSimboloDienteID" Type="int" Nullable="false" />
           <Property Name="nDienteID" Type="int" Nullable="false" />
           <Property Name="nSimboloID" Type="int" Nullable="false" />
-          <Property Name="nSimboloDienteID" Type="int" Nullable="false" />
           <Property Name="sNombreDiente" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        <Association Name="FK_Diente_ValorCatalogo">
-          <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="1" />
-          <End Role="Diente" Type="Self.Diente" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ValorCatalogo">
-              <PropertyRef Name="nValorCatalogoID" />
-            </Principal>
-            <Dependent Role="Diente">
-              <PropertyRef Name="nTipoDiente" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SimboloDiente_Diente">
-          <End Role="Diente" Type="Self.Diente" Multiplicity="1" />
-          <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Diente">
-              <PropertyRef Name="nDienteID" />
-            </Principal>
-            <Dependent Role="SimboloDiente">
-              <PropertyRef Name="nDienteID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SimboloDiente_Simbolo">
-          <End Role="Simbolo" Type="Self.Simbolo" Multiplicity="1" />
-          <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Simbolo">
-              <PropertyRef Name="nSimboloID" />
-            </Principal>
-            <Dependent Role="SimboloDiente">
-              <PropertyRef Name="nSimboloID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SimboloDiente_ValorCatalogo">
-          <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="1" />
-          <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ValorCatalogo">
-              <PropertyRef Name="nValorCatalogoID" />
-            </Principal>
-            <Dependent Role="SimboloDiente">
-              <PropertyRef Name="nEstado" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ValorCatalogo_Catalogo">
           <End Role="Catalogo" Type="Self.Catalogo" Multiplicity="1" />
           <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="*" />
@@ -155,30 +106,13 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
           <EntitySet Name="ValorCatalogo" EntityType="Self.ValorCatalogo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vwSimboloDiente" EntityType="Self.vwSimboloDiente" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [vwSimboloDiente].[nExpedienteID] AS [nExpedienteID], 
+    [vwSimboloDiente].[nSimboloDienteID] AS [nSimboloDienteID], 
     [vwSimboloDiente].[nDienteID] AS [nDienteID], 
     [vwSimboloDiente].[nSimboloID] AS [nSimboloID], 
-    [vwSimboloDiente].[nSimboloDienteID] AS [nSimboloDienteID], 
     [vwSimboloDiente].[sNombreDiente] AS [sNombreDiente], 
     [vwSimboloDiente].[sDescripcion] AS [sDescripcion]
     FROM [dbo].[vwSimboloDiente] AS [vwSimboloDiente]</DefiningQuery>
           </EntitySet>
-          <AssociationSet Name="FK_Diente_ValorCatalogo" Association="Self.FK_Diente_ValorCatalogo">
-            <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
-            <End Role="Diente" EntitySet="Diente" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SimboloDiente_Diente" Association="Self.FK_SimboloDiente_Diente">
-            <End Role="Diente" EntitySet="Diente" />
-            <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SimboloDiente_Simbolo" Association="Self.FK_SimboloDiente_Simbolo">
-            <End Role="Simbolo" EntitySet="Simbolo" />
-            <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SimboloDiente_ValorCatalogo" Association="Self.FK_SimboloDiente_ValorCatalogo">
-            <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
-            <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-          </AssociationSet>
           <AssociationSet Name="FK_ValorCatalogo_Catalogo" Association="Self.FK_ValorCatalogo_Catalogo">
             <End Role="Catalogo" EntitySet="Catalogo" />
             <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
@@ -214,7 +148,7 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
           <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
           <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ValorCatalogo" Relationship="Self.FK_Diente_ValorCatalogo" FromRole="Diente" ToRole="ValorCatalogo" />
-          <NavigationProperty Name="SimboloDiente" Relationship="Self.FK_SimboloDiente_Diente" FromRole="Diente" ToRole="SimboloDiente" />
+          <Property Name="nEstadoID" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Simbolo">
           <Key>
@@ -226,24 +160,7 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
           <Property Name="sUsuarioCreacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
           <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="SimboloDiente" Relationship="Self.FK_SimboloDiente_Simbolo" FromRole="Simbolo" ToRole="SimboloDiente" />
-        </EntityType>
-        <EntityType Name="SimboloDiente">
-          <Key>
-            <PropertyRef Name="nSimboloDienteID" />
-          </Key>
-          <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="nSimboloID" Type="Int32" Nullable="false" />
-          <Property Name="nDienteID" Type="Int32" Nullable="false" />
-          <Property Name="nEstado" Type="Int32" Nullable="false" />
-          <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="sUsuarioCreacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
-          <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Diente" Relationship="Self.FK_SimboloDiente_Diente" FromRole="SimboloDiente" ToRole="Diente" />
-          <NavigationProperty Name="Simbolo" Relationship="Self.FK_SimboloDiente_Simbolo" FromRole="SimboloDiente" ToRole="Simbolo" />
-          <NavigationProperty Name="ValorCatalogo" Relationship="Self.FK_SimboloDiente_ValorCatalogo" FromRole="SimboloDiente" ToRole="ValorCatalogo" />
-          <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+          <Property Name="nEstadoID" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="ValorCatalogo">
           <Key>
@@ -260,7 +177,6 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
           <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Catalogo" Relationship="Self.FK_ValorCatalogo_Catalogo" FromRole="ValorCatalogo" ToRole="Catalogo" />
           <NavigationProperty Name="Diente" Relationship="Self.FK_Diente_ValorCatalogo" FromRole="ValorCatalogo" ToRole="Diente" />
-          <NavigationProperty Name="SimboloDiente" Relationship="Self.FK_SimboloDiente_ValorCatalogo" FromRole="ValorCatalogo" ToRole="SimboloDiente" />
         </EntityType>
         <Association Name="FK_ValorCatalogo_Catalogo">
           <End Role="Catalogo" Type="Self.Catalogo" Multiplicity="1" />
@@ -286,47 +202,10 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SimboloDiente_Diente">
-          <End Role="Diente" Type="Self.Diente" Multiplicity="1" />
-          <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Diente">
-              <PropertyRef Name="nDienteID" />
-            </Principal>
-            <Dependent Role="SimboloDiente">
-              <PropertyRef Name="nDienteID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SimboloDiente_Simbolo">
-          <End Role="Simbolo" Type="Self.Simbolo" Multiplicity="1" />
-          <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Simbolo">
-              <PropertyRef Name="nSimboloID" />
-            </Principal>
-            <Dependent Role="SimboloDiente">
-              <PropertyRef Name="nSimboloID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SimboloDiente_ValorCatalogo">
-          <End Role="ValorCatalogo" Type="Self.ValorCatalogo" Multiplicity="1" />
-          <End Role="SimboloDiente" Type="Self.SimboloDiente" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ValorCatalogo">
-              <PropertyRef Name="nValorCatalogoID" />
-            </Principal>
-            <Dependent Role="SimboloDiente">
-              <PropertyRef Name="nEstado" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="SIGECO_Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Catalogo" EntityType="Self.Catalogo" />
           <EntitySet Name="Diente" EntityType="Self.Diente" />
           <EntitySet Name="Simbolo" EntityType="Self.Simbolo" />
-          <EntitySet Name="SimboloDiente" EntityType="Self.SimboloDiente" />
           <EntitySet Name="ValorCatalogo" EntityType="Self.ValorCatalogo" />
           <AssociationSet Name="FK_ValorCatalogo_Catalogo" Association="Self.FK_ValorCatalogo_Catalogo">
             <End Role="Catalogo" EntitySet="Catalogo" />
@@ -336,33 +215,33 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
             <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
             <End Role="Diente" EntitySet="Diente" />
           </AssociationSet>
-          <AssociationSet Name="FK_SimboloDiente_Diente" Association="Self.FK_SimboloDiente_Diente">
-            <End Role="Diente" EntitySet="Diente" />
-            <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SimboloDiente_Simbolo" Association="Self.FK_SimboloDiente_Simbolo">
-            <End Role="Simbolo" EntitySet="Simbolo" />
-            <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SimboloDiente_ValorCatalogo" Association="Self.FK_SimboloDiente_ValorCatalogo">
-            <End Role="ValorCatalogo" EntitySet="ValorCatalogo" />
-            <End Role="SimboloDiente" EntitySet="SimboloDiente" />
-          </AssociationSet>
+          <EntitySet Name="SimboloDiente" EntityType="SMUSURA0_FrancoModel.SimboloDiente" />
           <EntitySet Name="vwSimboloDiente" EntityType="SMUSURA0_FrancoModel.vwSimboloDiente" />
-        </EntityContainer>
+          </EntityContainer>
+        <EntityType Name="SimboloDiente">
+          <Key>
+            <PropertyRef Name="nSimboloDienteID" />
+          </Key>
+          <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" />
+          <Property Name="nOdontogramaID" Type="Int32" Nullable="false" />
+          <Property Name="nSimboloID" Type="Int32" Nullable="false" />
+          <Property Name="nDienteID" Type="Int32" Nullable="false" />
+          <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+          <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="vwSimboloDiente">
           <Key>
-            <PropertyRef Name="nExpedienteID" />
+            <PropertyRef Name="nSimboloDienteID" />
             <PropertyRef Name="nDienteID" />
             <PropertyRef Name="nSimboloID" />
-            <PropertyRef Name="nSimboloDienteID" />
             <PropertyRef Name="sNombreDiente" />
             <PropertyRef Name="sDescripcion" />
           </Key>
-          <Property Name="nExpedienteID" Type="Int32" Nullable="false" />
+          <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" />
           <Property Name="nDienteID" Type="Int32" Nullable="false" />
           <Property Name="nSimboloID" Type="Int32" Nullable="false" />
-          <Property Name="nSimboloDienteID" Type="Int32" Nullable="false" />
           <Property Name="sNombreDiente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
@@ -389,6 +268,7 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
           <EntitySetMapping Name="Diente">
             <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Diente">
               <MappingFragment StoreEntitySet="Diente">
+                <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
                 <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
                 <ScalarProperty Name="nTipoDiente" ColumnName="nTipoDiente" />
                 <ScalarProperty Name="sNombreDiente" ColumnName="sNombreDiente" />
@@ -402,23 +282,9 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
           <EntitySetMapping Name="Simbolo">
             <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Simbolo">
               <MappingFragment StoreEntitySet="Simbolo">
+                <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
                 <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
                 <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
-                <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
-                <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
-                <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
-                <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="SimboloDiente">
-            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.SimboloDiente">
-              <MappingFragment StoreEntitySet="SimboloDiente">
-                <ScalarProperty Name="nExpedienteID" ColumnName="nExpedienteID" />
-                <ScalarProperty Name="nSimboloDienteID" ColumnName="nSimboloDienteID" />
-                <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
-                <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
-                <ScalarProperty Name="nEstado" ColumnName="nEstado" />
                 <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
                 <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
                 <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
@@ -441,15 +307,28 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwSimboloDiente' no tien
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="SimboloDiente">
+            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.SimboloDiente">
+              <MappingFragment StoreEntitySet="SimboloDiente">
+                <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+                <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+                <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+                <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+                <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
+                <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+                <ScalarProperty Name="nOdontogramaID" ColumnName="nOdontogramaID" />
+                <ScalarProperty Name="nSimboloDienteID" ColumnName="nSimboloDienteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="vwSimboloDiente">
             <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwSimboloDiente">
               <MappingFragment StoreEntitySet="vwSimboloDiente">
                 <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
                 <ScalarProperty Name="sNombreDiente" ColumnName="sNombreDiente" />
-                <ScalarProperty Name="nSimboloDienteID" ColumnName="nSimboloDienteID" />
                 <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
                 <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
-                <ScalarProperty Name="nExpedienteID" ColumnName="nExpedienteID" />
+                <ScalarProperty Name="nSimboloDienteID" ColumnName="nSimboloDienteID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
