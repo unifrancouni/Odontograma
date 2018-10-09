@@ -12,10 +12,12 @@ var images = [
     { key: 'caries_abajo', value: '../Content/img/caries_abajo.png', width: T, height: T, },
     { key: 'item', value: '../Content/img/diente.png', width: T, height: T, },
     { key: 'panel', value: '../Content/img/panel.png', width: T, height: T, },
+    { key: 'save_button', value: '../Content/img/save_button.png', width: T, height: T, },
     { key: 'background', value: '../Content/img/background.png', width: T, height: T, },
 ];
 
 var init_config = {
+    "dientes": [],
     "sim_defaults": [],
     "simbolos": []
 };
@@ -58,12 +60,18 @@ function preload() {
 function create() {
 
     game.add.image(0, 0, 'background');
+    var save_button = game.add.sprite(0 * T, 0 * T, 'save_button');
     var arrow_derecha = game.add.sprite(14 * T, 7 * T, 'arrow_right');
     var arrow_izquierda = game.add.sprite(5 * T, 7 * T, 'arrow_left');
+    save_button.inputEnabled = true;
     arrow_derecha.inputEnabled = true;
     arrow_izquierda.inputEnabled = true;
+    save_button.input.useHandCursor = true;
     arrow_derecha.input.useHandCursor = true;
     arrow_izquierda.input.useHandCursor = true;
+
+    // evento click de boton Save
+    save_button.events.onInputUp.add(save_up, this);
 
     //Agregando los dientes
     for (var i = 1; i <= 16; i++) {
@@ -126,6 +134,32 @@ function create() {
 
 }
 
+function save_up() {
+    //console.log(init_config.simbolos);
+    //Armar JSON leyendo las posiciones de cada diente, y si tiene enfermedades (simbolos) puestos encima, agregarlo al array
+
+    console.log(init_config.simbolos);
+    var simbolos = [];
+
+    /*init_config.dientes.forEach(o => {
+        game.world.forEach(function (item) {
+
+            if (item.x == o.x && item.y == o.y && item.data.tipo==="S") {
+                simbolos.push({ sNombreDiente: 0, sDescripcion: 0 });
+            }
+
+        });
+    });
+
+    console.log(simbolos);
+
+    /*game.world.forEach(function (item) {
+
+        console.log(item);
+
+    });*/
+}
+
 function render() {
 
     /*game.debug.text('X: '+game.input.mousePointer.x, 100, 560);
@@ -153,6 +187,8 @@ function DuplicateAndDrag(item) {
     //tmpItem.anchor.setTo(0.5);
     tmpItem.input.startDrag(game.input.activePointer);
     tmpItem.events.onDragStop.add(ValidationDrop, this);
+    tmpItem.data = { tipo: "S", sidentifier: uniqueID(), nOdontogramaDetalleID: 0, sNombreDiente: null, sDescripcion: item.key };
+    init_config.simbolos.push(tmpItem.data);
 }
 
 function ValidationDrop(item) {
@@ -167,14 +203,38 @@ function ValidationDrop(item) {
         .always(function() {
             alert( "complete" );
         });*/
-    item.data = { validating: 1 };
+
+    //validating: 1 -- que no se busque a si mismo
+    //tipo: S -- simbolo
+    item.data.validating = 1;
     var encontrado = 0;
     game.world.forEach(function (it) {
         if (it.x == item.x && it.y == item.y && it.data.validating != 1) {
             encontrado = 1;
+            item.data.validating = 0;
+
+            if (it.data.Nombre != undefined)
+            item.data.sNombreDiente = it.data.Nombre;
+
+            //Encontrar si existe, el nOdontogramaDetalleID, modificar los valores
+            init_config.simbolos.forEach(o => {
+                if (o.nOdontogramaDetalleID == item.data.nOdontogramaDetalleID && o.sidentifier===item.data.sidentifier) {
+                    if (item.data.sNombreDiente != undefined) {
+                        o.sNombreDiente = item.data.sNombreDiente;
+                        console.log(o.sNombreDiente);
+                    }
+                }
+            });
+
         }
     });
     if (encontrado == 0) {
+        //Eliminar del init_config la primer ocurrencia del nOdontogramaDetalleID, sNombreDiente, sDescripcion del item
+        init_config.simbolos.forEach(o => {
+            if (o.sidentifier===item.data.sidentifier && o.nOdontogramaDetalleID === item.data.nOdontogramaDetalleID && o.sNombreDiente === item.data.sNombreDiente && o.sDescripcion === item.data.sDescripcion) {
+                init_config.simbolos.splice(init_config.simbolos.indexOf(o), 1); //Eliminar el elemento current
+            }
+        });
         item.destroy();
     }
     else {
@@ -247,10 +307,14 @@ function addDiente(i, y) {
     dentText.fontSize = 14;
     //item.scale.setTo(T, T);
     item.data = {
+        tipo: "D",
         Nombre: obtenerNombre(i, y),
         x: item.x,
         y: item.y
     };
+
+    init_config.dientes.push(item.data);
+
     dentText.text = item.data.Nombre;
     item.inputEnabled = true;
     //item.input.useHandCursor = true;
@@ -266,9 +330,19 @@ function addDiente(i, y) {
             tmpItem.input.enableDrag();
             tmpItem.input.enableSnap(T, T, false, true);
             tmpItem.events.onDragStop.add(ValidationDrop, this);
+            tmpItem.data = o;
+            tmpItem.data.sidentifier = uniqueID();
         }
     });
 }
+
+
+function uniqueID() {
+    // Math.random should be unique because of its seeding algorithm.
+    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+    // after the decimal.
+    return '_' + Math.random().toString(36).substr(2, 9);
+};
 
 /*function fixLocation(item) {
 

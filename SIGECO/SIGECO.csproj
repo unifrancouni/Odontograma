@@ -34,6 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <IncludeIisSettings>false</IncludeIisSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -164,62 +165,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AntecedenteDental.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AntecedenteFamiliar.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Catalogo.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Cita.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Diente.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ExamenComplementario.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Expediente.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Odontograma.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="OdontogramaDetalle.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Paciente.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Periodontograma.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PeriodontogramaDetalle.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Placagrama.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PlacagramaDetalle.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SIGECO.Context.cs">
       <AutoGen>True</AutoGen>
@@ -236,19 +195,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SIGECO.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Simbolo.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
     <Compile Include="Startup.cs" />
-    <Compile Include="Tratamiento.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TratamientoRealizado.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ValorCatalogo.cs">
-      <DependentUpon>SIGECO.tt</DependentUpon>
-    </Compile>
     <Compile Include="vwOdontogramaDetalle.cs">
       <DependentUpon>SIGECO.tt</DependentUpon>
     </Compile>
@@ -270,6 +217,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\SIGECO.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -364,16 +312,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>58409</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:58409/</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>

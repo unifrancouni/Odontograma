@@ -25,24 +25,6 @@ namespace SIGECO
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<AntecedenteDental> AntecedenteDental { get; set; }
-        public virtual DbSet<AntecedenteFamiliar> AntecedenteFamiliar { get; set; }
-        public virtual DbSet<Catalogo> Catalogo { get; set; }
-        public virtual DbSet<Cita> Cita { get; set; }
-        public virtual DbSet<Diente> Diente { get; set; }
-        public virtual DbSet<ExamenComplementario> ExamenComplementario { get; set; }
-        public virtual DbSet<Expediente> Expediente { get; set; }
-        public virtual DbSet<Odontograma> Odontograma { get; set; }
-        public virtual DbSet<OdontogramaDetalle> OdontogramaDetalle { get; set; }
-        public virtual DbSet<Paciente> Paciente { get; set; }
-        public virtual DbSet<Periodontograma> Periodontograma { get; set; }
-        public virtual DbSet<PeriodontogramaDetalle> PeriodontogramaDetalle { get; set; }
-        public virtual DbSet<Placagrama> Placagrama { get; set; }
-        public virtual DbSet<PlacagramaDetalle> PlacagramaDetalle { get; set; }
-        public virtual DbSet<Simbolo> Simbolo { get; set; }
-        public virtual DbSet<Tratamiento> Tratamiento { get; set; }
-        public virtual DbSet<TratamientoRealizado> TratamientoRealizado { get; set; }
-        public virtual DbSet<ValorCatalogo> ValorCatalogo { get; set; }
         public virtual DbSet<vwOdontogramaDetalle> vwOdontogramaDetalle { get; set; }
     }
 }

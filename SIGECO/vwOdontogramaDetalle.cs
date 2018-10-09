@@ -15,6 +15,7 @@ namespace SIGECO
     public partial class vwOdontogramaDetalle
     {
         public int nOdontogramaDetalleID { get; set; }
+        public string tipo { get; set; }
         public int nDienteID { get; set; }
         public int nSimboloID { get; set; }
         public string sNombreDiente { get; set; }
