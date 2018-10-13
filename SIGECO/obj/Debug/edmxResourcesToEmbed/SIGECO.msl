@@ -1,6 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="SMUSURA0_FrancoModelStoreContainer" CdmEntityContainer="SIGECO_Entities">
+    <EntitySetMapping Name="OdontogramaDetalle">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.OdontogramaDetalle">
+        <MappingFragment StoreEntitySet="OdontogramaDetalle">
+          <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+          <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+          <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+          <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+          <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
+          <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
+          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+          <ScalarProperty Name="nOdontogramaID" ColumnName="nOdontogramaID" />
+          <ScalarProperty Name="nOdontogramaDetalleID" ColumnName="nOdontogramaDetalleID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Simbolo">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Simbolo">
+        <MappingFragment StoreEntitySet="Simbolo">
+          <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+          <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+          <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+          <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+          <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
+          <ScalarProperty Name="sPathImage" ColumnName="sPathImage" />
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="vwOdontogramaDetalle">
       <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwOdontogramaDetalle">
         <MappingFragment StoreEntitySet="vwOdontogramaDetalle">
@@ -13,5 +42,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="spGetSimbolos" FunctionName="SMUSURA0_FrancoModel.Store.spGetSimbolos">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="SMUSURA0_FrancoModel.spGetSimbolos_Result">
+          <ScalarProperty Name="tipo" ColumnName="tipo" />
+          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="sPathImage" ColumnName="sPathImage" />
+          <ScalarProperty Name="nPagina" ColumnName="nPagina" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
   </EntityContainerMapping>
 </Mapping>

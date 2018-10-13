@@ -179,6 +179,9 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="OdontogramaDetalle.cs">
+      <DependentUpon>SIGECO.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SIGECO.Context.cs">
       <AutoGen>True</AutoGen>
@@ -194,6 +197,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SIGECO.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Simbolo.cs">
+      <DependentUpon>SIGECO.tt</DependentUpon>
+    </Compile>
+    <Compile Include="spGetSimbolos_Result.cs">
+      <DependentUpon>SIGECO.tt</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="vwOdontogramaDetalle.cs">

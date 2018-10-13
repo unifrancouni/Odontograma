@@ -1,8 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="SMUSURA0_FrancoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
   <EntityContainer Name="SIGECO_Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="OdontogramaDetalle" EntityType="SMUSURA0_FrancoModel.OdontogramaDetalle" />
+    <EntitySet Name="Simbolo" EntityType="SMUSURA0_FrancoModel.Simbolo" />
     <EntitySet Name="vwOdontogramaDetalle" EntityType="SMUSURA0_FrancoModel.vwOdontogramaDetalle" />
+    <FunctionImport Name="spGetSimbolos" ReturnType="Collection(SMUSURA0_FrancoModel.spGetSimbolos_Result)" />
   </EntityContainer>
+  <EntityType Name="OdontogramaDetalle">
+    <Key>
+      <PropertyRef Name="nOdontogramaDetalleID" />
+    </Key>
+    <Property Name="nOdontogramaDetalleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nOdontogramaID" Type="Int32" Nullable="false" />
+    <Property Name="nSimboloID" Type="Int32" Nullable="false" />
+    <Property Name="nDienteID" Type="Int32" Nullable="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Simbolo">
+    <Key>
+      <PropertyRef Name="nSimboloID" />
+    </Key>
+    <Property Name="nSimboloID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="sPathImage" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+    <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
   <EntityType Name="vwOdontogramaDetalle">
     <Key>
       <PropertyRef Name="nOdontogramaDetalleID" />
@@ -19,4 +49,11 @@
     <Property Name="sNombreDiente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
+  <ComplexType Name="spGetSimbolos_Result">
+    <Property Type="String" Name="tipo" Nullable="false" MaxLength="1" />
+    <Property Type="Int32" Name="nSimboloID" Nullable="false" />
+    <Property Type="String" Name="sDescripcion" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="sPathImage" Nullable="false" MaxLength="150" />
+    <Property Type="Int32" Name="nPagina" Nullable="true" />
+  </ComplexType>
 </Schema>

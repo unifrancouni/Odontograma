@@ -1,7 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="SMUSURA0_FrancoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="OdontogramaDetalle">
+    <Key>
+      <PropertyRef Name="nOdontogramaDetalleID" />
+    </Key>
+    <Property Name="nOdontogramaDetalleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nOdontogramaID" Type="int" Nullable="false" />
+    <Property Name="nSimboloID" Type="int" Nullable="false" />
+    <Property Name="nDienteID" Type="int" Nullable="false" />
+    <Property Name="nEstadoID" Type="int" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="date" Nullable="false" />
+    <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="dFechaModificacion" Type="date" />
+    <Property Name="sUsuarioModificacion" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Simbolo">
+    <Key>
+      <PropertyRef Name="nSimboloID" />
+    </Key>
+    <Property Name="nSimboloID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="sPathImage" Type="varchar" MaxLength="150" Nullable="false" />
+    <Property Name="nEstadoID" Type="int" Nullable="false" />
+    <Property Name="dFechaCreacion" Type="date" Nullable="false" />
+    <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="dFechaModificacion" Type="date" />
+    <Property Name="sUsuarioModificacion" Type="varchar" MaxLength="50" />
+  </EntityType>
   <!--Errores durante la generación:
-advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwOdontogramaDetalle' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
   <EntityType Name="vwOdontogramaDetalle">
     <Key>
       <PropertyRef Name="nOdontogramaDetalleID" />
@@ -18,7 +45,10 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwOdontogramaDetalle' no
     <Property Name="sNombreDiente" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
   </EntityType>
+  <Function Name="spGetSimbolos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="SMUSURA0_FrancoModelStoreContainer">
+    <EntitySet Name="OdontogramaDetalle" EntityType="Self.OdontogramaDetalle" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Simbolo" EntityType="Self.Simbolo" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="vwOdontogramaDetalle" EntityType="Self.vwOdontogramaDetalle" store:Type="Views" store:Schema="dbo">
       <DefiningQuery>SELECT 
     [vwOdontogramaDetalle].[nOdontogramaDetalleID] AS [nOdontogramaDetalleID], 

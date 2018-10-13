@@ -12,6 +12,8 @@ namespace SIGECO
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class SIGECO_Entities : DbContext
     {
@@ -25,6 +27,13 @@ namespace SIGECO
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<OdontogramaDetalle> OdontogramaDetalle { get; set; }
+        public virtual DbSet<Simbolo> Simbolo { get; set; }
         public virtual DbSet<vwOdontogramaDetalle> vwOdontogramaDetalle { get; set; }
+    
+        public virtual ObjectResult<spGetSimbolos_Result> spGetSimbolos()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spGetSimbolos_Result>("spGetSimbolos");
+        }
     }
 }

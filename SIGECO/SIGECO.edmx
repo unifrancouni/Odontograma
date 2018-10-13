@@ -5,8 +5,35 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="SMUSURA0_FrancoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="OdontogramaDetalle">
+          <Key>
+            <PropertyRef Name="nOdontogramaDetalleID" />
+          </Key>
+          <Property Name="nOdontogramaDetalleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nOdontogramaID" Type="int" Nullable="false" />
+          <Property Name="nSimboloID" Type="int" Nullable="false" />
+          <Property Name="nDienteID" Type="int" Nullable="false" />
+          <Property Name="nEstadoID" Type="int" Nullable="false" />
+          <Property Name="dFechaCreacion" Type="date" Nullable="false" />
+          <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="dFechaModificacion" Type="date" />
+          <Property Name="sUsuarioModificacion" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Simbolo">
+          <Key>
+            <PropertyRef Name="nSimboloID" />
+          </Key>
+          <Property Name="nSimboloID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="sPathImage" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="nEstadoID" Type="int" Nullable="false" />
+          <Property Name="dFechaCreacion" Type="date" Nullable="false" />
+          <Property Name="sUsuarioCreacion" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="dFechaModificacion" Type="date" />
+          <Property Name="sUsuarioModificacion" Type="varchar" MaxLength="50" />
+        </EntityType>
         <!--Errores durante la generación:
-advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwOdontogramaDetalle' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
         <EntityType Name="vwOdontogramaDetalle">
           <Key>
             <PropertyRef Name="nOdontogramaDetalleID" />
@@ -23,7 +50,10 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwOdontogramaDetalle' no
           <Property Name="sNombreDiente" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <Function Name="spGetSimbolos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="SMUSURA0_FrancoModelStoreContainer">
+          <EntitySet Name="OdontogramaDetalle" EntityType="Self.OdontogramaDetalle" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Simbolo" EntityType="Self.Simbolo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="vwOdontogramaDetalle" EntityType="Self.vwOdontogramaDetalle" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwOdontogramaDetalle].[nOdontogramaDetalleID] AS [nOdontogramaDetalleID], 
@@ -40,8 +70,38 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwOdontogramaDetalle' no
     <edmx:ConceptualModels>
       <Schema Namespace="SMUSURA0_FrancoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="SIGECO_Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="OdontogramaDetalle" EntityType="SMUSURA0_FrancoModel.OdontogramaDetalle" />
+          <EntitySet Name="Simbolo" EntityType="SMUSURA0_FrancoModel.Simbolo" />
           <EntitySet Name="vwOdontogramaDetalle" EntityType="SMUSURA0_FrancoModel.vwOdontogramaDetalle" />
+          <FunctionImport Name="spGetSimbolos" ReturnType="Collection(SMUSURA0_FrancoModel.spGetSimbolos_Result)" />
         </EntityContainer>
+        <EntityType Name="OdontogramaDetalle">
+          <Key>
+            <PropertyRef Name="nOdontogramaDetalleID" />
+          </Key>
+          <Property Name="nOdontogramaDetalleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nOdontogramaID" Type="Int32" Nullable="false" />
+          <Property Name="nSimboloID" Type="Int32" Nullable="false" />
+          <Property Name="nDienteID" Type="Int32" Nullable="false" />
+          <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+          <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+          <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Simbolo">
+          <Key>
+            <PropertyRef Name="nSimboloID" />
+          </Key>
+          <Property Name="nSimboloID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sPathImage" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="nEstadoID" Type="Int32" Nullable="false" />
+          <Property Name="dFechaCreacion" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="sUsuarioCreacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="dFechaModificacion" Type="DateTime" Precision="0" />
+          <Property Name="sUsuarioModificacion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="vwOdontogramaDetalle">
           <Key>
             <PropertyRef Name="nOdontogramaDetalleID" />
@@ -58,12 +118,48 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwOdontogramaDetalle' no
           <Property Name="sNombreDiente" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="sDescripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <ComplexType Name="spGetSimbolos_Result">
+          <Property Type="String" Name="tipo" Nullable="false" MaxLength="1" />
+          <Property Type="Int32" Name="nSimboloID" Nullable="false" />
+          <Property Type="String" Name="sDescripcion" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="sPathImage" Nullable="false" MaxLength="150" />
+          <Property Type="Int32" Name="nPagina" Nullable="true" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="SMUSURA0_FrancoModelStoreContainer" CdmEntityContainer="SIGECO_Entities">
+          <EntitySetMapping Name="OdontogramaDetalle">
+            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.OdontogramaDetalle">
+              <MappingFragment StoreEntitySet="OdontogramaDetalle">
+                <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+                <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+                <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+                <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+                <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
+                <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
+                <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+                <ScalarProperty Name="nOdontogramaID" ColumnName="nOdontogramaID" />
+                <ScalarProperty Name="nOdontogramaDetalleID" ColumnName="nOdontogramaDetalleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Simbolo">
+            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Simbolo">
+              <MappingFragment StoreEntitySet="Simbolo">
+                <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+                <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+                <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+                <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+                <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
+                <ScalarProperty Name="sPathImage" ColumnName="sPathImage" />
+                <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+                <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="vwOdontogramaDetalle">
             <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwOdontogramaDetalle">
               <MappingFragment StoreEntitySet="vwOdontogramaDetalle">
@@ -76,6 +172,17 @@ advertencia 6002: La tabla o vista 'SMUSURA0_Franco.dbo.vwOdontogramaDetalle' no
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spGetSimbolos" FunctionName="SMUSURA0_FrancoModel.Store.spGetSimbolos">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SMUSURA0_FrancoModel.spGetSimbolos_Result">
+                <ScalarProperty Name="tipo" ColumnName="tipo" />
+                <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+                <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+                <ScalarProperty Name="sPathImage" ColumnName="sPathImage" />
+                <ScalarProperty Name="nPagina" ColumnName="nPagina" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

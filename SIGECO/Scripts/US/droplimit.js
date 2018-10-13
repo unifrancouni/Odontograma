@@ -5,11 +5,11 @@ var lineV; var lineH; var rectangle;
 var images = [
     { key: 'arrow_right', value: '../Content/img/arrow_right.png', width: T, height: T, },
     { key: 'arrow_left', value: '../Content/img/arrow_left.png', width: T, height: T, },
-    { key: 'caries_central', value: '../Content/img/caries_central.png', width: T, height: T, },
+    /*{ key: 'caries_central', value: '../Content/img/caries_central.png', width: T, height: T, },
     { key: 'caries_derecha', value: '../Content/img/caries_derecha.png', width: T, height: T, },
     { key: 'caries_izquierda', value: '../Content/img/caries_izquierda.png', width: T, height: T, },
     { key: 'caries_arriba', value: '../Content/img/caries_arriba.png', width: T, height: T, },
-    { key: 'caries_abajo', value: '../Content/img/caries_abajo.png', width: T, height: T, },
+    { key: 'caries_abajo', value: '../Content/img/caries_abajo.png', width: T, height: T, },*/
     { key: 'item', value: '../Content/img/diente.png', width: T, height: T, },
     { key: 'panel', value: '../Content/img/panel.png', width: T, height: T, },
     { key: 'save_button', value: '../Content/img/save_button.png', width: T, height: T, },
@@ -27,17 +27,11 @@ var game = new Phaser.Game(21 * T, 10 * T, Phaser.CANVAS, 'odontograma', { prelo
 
 function preload() {
 
-    //this.load.crossOrigin = 'Anonymous';
-
-    images.forEach(o => {
-        game.load.image(o.key, o.value, o.width, o.height);
-    });
-
     var id = 1;
 
     $.ajax({
         async: false,
-        url: 'http://localhost:58409/Home/Simbolos',
+        url: 'http://localhost:58409/Home/OdontogramaDetalle',
         method: 'post',
         data: JSON.stringify({ id: id }),
         dataType: 'json',
@@ -52,15 +46,45 @@ function preload() {
         }
     });
 
+    $.ajax({
+        async: false,
+        url: 'http://localhost:58409/Home/Simbolos',
+        method: 'post',
+        //data: JSON.stringify({ id: id }),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function (data) {
+            if (data.length != 0) {
+                init_config.sim_defaults = data;
+            }
+        },
+        error: function (ex) {
+            alert(ex.responseText);
+        }
+    });
+
+    init_config.sim_defaults.forEach(o => {
+        images.push({ key: o.sDescripcion, value: o.sPathImage, width: T, height: T, });
+    });
+
+    //this.load.crossOrigin = 'Anonymous';
+    images.forEach(o => {
+        game.load.image(o.key, o.value, o.width, o.height);
+    });
+
     //  Load the Google WebFont Loader script
     game.load.script('webfont', '/Scripts/US/webfont.js');
 
 }
 
+var grupo_dientes;
+var grupo_simbolos;
+var grupo_tools;
+
 function create() {
 
     game.add.image(0, 0, 'background');
-    var save_button = game.add.sprite(0 * T, 0 * T, 'save_button');
+    var save_button = game.add.sprite(0.5 * T, 0.4 * T, 'save_button');
     var arrow_derecha = game.add.sprite(14 * T, 7 * T, 'arrow_right');
     var arrow_izquierda = game.add.sprite(5 * T, 7 * T, 'arrow_left');
     save_button.inputEnabled = true;
@@ -72,6 +96,20 @@ function create() {
 
     // evento click de boton Save
     save_button.events.onInputUp.add(save_up, this);
+    arrow_derecha.events.onInputUp.add(fn_arrowDerecha, this);
+    arrow_izquierda.events.onInputUp.add(fn_arrowIzquierda, this);
+
+    //Líneas divisorias
+    lineV = new Phaser.Line(T * (xEmp + 8), T * yEmp, T * (xEmp + 8), T * (yEmp + 4));
+    lineH = new Phaser.Line(T * xEmp, T * (yEmp + 2), T * (xEmp + 16), T * (yEmp + 2));
+
+    //Panel de opciones
+    game.add.sprite(T * (xEmp + 4), T * (yEmp + 5), 'panel');
+    
+    //Crear grupos de sprites para recorrerlos a futuro
+    grupo_dientes = game.add.group();
+    grupo_simbolos = game.add.group();;
+    grupo_tools = game.add.group();
 
     //Agregando los dientes
     for (var i = 1; i <= 16; i++) {
@@ -83,81 +121,86 @@ function create() {
         addDiente(i, 4);
     }
 
-    lineV = new Phaser.Line(T * (xEmp + 8), T * yEmp, T * (xEmp + 8), T * (yEmp + 4));
-    lineH = new Phaser.Line(T * xEmp, T * (yEmp + 2), T * (xEmp + 16), T * (yEmp + 2));
+    llenarPanel(0);
 
-    //Agregando las opciones
+}
 
-    //Caries
+
+
+function fn_arrowDerecha() { llenarPanel(+1); }
+function fn_arrowIzquierda() { llenarPanel(-1); }
+
+
+var public_pagina = 1;
+
+function llenarPanel(increment) {
+
+    public_pagina += increment;
+
     //debugger
+    //Borrar elementos actuales del panel
+    for (i = 0; 3 > i; i++) {
+        grupo_tools.forEach(function (it) {
+            it.destroy();
+        });
+    }
 
-    game.add.sprite(T * (xEmp + 4), T * (yEmp + 5), 'panel');
+    //debugger
+    //Agregar los simbolos disponibles al panel
+    i = 4;
+    j = 5;
 
-    /*init_config.sim_defaults.forEach(o => {
+    init_config.sim_defaults.forEach(o => {
 
-    });*/
+        //nPagina=1
+        //debugger
 
-    item = game.add.sprite(T * (xEmp + 4), T * (yEmp + 5), 'caries_central');
-    item.inputEnabled = true;
-    item.input.useHandCursor = true;
-    item.input.enableSnap(T, T, false, true);
-    item.events.onInputDown.add(DuplicateAndDrag, this);
-    //item.events.onInputOver.add(Nombre, this);
-
-    item = game.add.sprite(T * (xEmp + 4), T * (yEmp + 6), 'caries_derecha');
-    item.inputEnabled = true;
-    item.input.useHandCursor = true;
-    item.input.enableSnap(T, T, false, true);
-    item.events.onInputDown.add(DuplicateAndDrag, this);
-    //item.events.onInputOver.add(Nombre, this);
-
-    item = game.add.sprite(T * (xEmp + 4), T * (yEmp + 7), 'caries_izquierda');
-    item.inputEnabled = true;
-    item.input.useHandCursor = true;
-    item.input.enableSnap(T, T, false, true);
-    item.events.onInputDown.add(DuplicateAndDrag, this);
-    //item.events.onInputOver.add(Nombre, this);
-
-    item = game.add.sprite(T * (xEmp + 5), T * (yEmp + 5), 'caries_arriba');
-    item.inputEnabled = true;
-    item.input.useHandCursor = true;
-    item.input.enableSnap(T, T, false, true);
-    item.events.onInputDown.add(DuplicateAndDrag, this);
-    //item.events.onInputOver.add(Nombre, this);
-
-    item = game.add.sprite(T * (xEmp + 5), T * (yEmp + 6), 'caries_abajo');
-    item.inputEnabled = true;
-    item.input.useHandCursor = true;
-    item.input.enableSnap(T, T, false, true);
-    item.events.onInputDown.add(DuplicateAndDrag, this);
-    //item.events.onInputOver.add(Nombre, this);
-
+        if (o.nPagina == public_pagina) {
+            item = grupo_tools.create(T * (xEmp + i), T * (yEmp + j), o.sDescripcion);
+            item.inputEnabled = true;
+            item.input.useHandCursor = true;
+            item.input.enableSnap(T, T, false, true);
+            item.events.onInputDown.add(DuplicateAndDrag, this);
+            item.data = o;
+        }
+        
+        j++;
+        if (j == 8) {
+            j = 5;
+            i++;
+        }
+        if (i == 12) {
+            i = 4;
+            j = 5
+        }
+    });
 }
 
 function save_up() {
     //console.log(init_config.simbolos);
     //Armar JSON leyendo las posiciones de cada diente, y si tiene enfermedades (simbolos) puestos encima, agregarlo al array
 
-    console.log(init_config.simbolos);
-    var simbolos = [];
+    console.log(JSON.stringify(init_config.simbolos));
 
-    /*init_config.dientes.forEach(o => {
-        game.world.forEach(function (item) {
-
-            if (item.x == o.x && item.y == o.y && item.data.tipo==="S") {
-                simbolos.push({ sNombreDiente: 0, sDescripcion: 0 });
-            }
-
-        });
+    //debugger
+    $.ajax({
+        async: false,
+        url: 'http://localhost:58409/Home/SaveOdontogramaDetalle',
+        method: 'post',
+        data: JSON.stringify({ json: JSON.stringify(init_config.simbolos) }),
+        dataType: 'json',
+        contentType: 'application/json',
+        success: function (data) {
+            /*if (data.length != 0) {
+                init_config.simbolos = data;
+            }*/
+            alert('Success '+data);
+        },
+        error: function (ex) {
+            alert(ex.responseText);
+        }
     });
-
-    console.log(simbolos);
-
-    /*game.world.forEach(function (item) {
-
-        console.log(item);
-
-    });*/
+    
 }
 
 function render() {
@@ -180,7 +223,7 @@ function update() {
 
 function DuplicateAndDrag(item) {
     //debugger
-    var tmpItem = game.add.sprite(game.input.mousePointer.x, game.input.mousePointer.y, item.generateTexture());
+    var tmpItem = grupo_simbolos.create(game.input.mousePointer.x, game.input.mousePointer.y, item.generateTexture());
     tmpItem.inputEnabled = true;
     tmpItem.input.enableDrag();
     tmpItem.input.enableSnap(T, T, false, true);
@@ -192,23 +235,11 @@ function DuplicateAndDrag(item) {
 }
 
 function ValidationDrop(item) {
-    //debugger
-    /*$.ajax( "http://wbsrv.usuracero.gob.ni/test/Home/AllCitas" )
-        .done(function() {
-            alert( "success" );
-        })
-        .fail(function() {
-            alert( "error" );
-        })
-        .always(function() {
-            alert( "complete" );
-        });*/
-
     //validating: 1 -- que no se busque a si mismo
     //tipo: S -- simbolo
     item.data.validating = 1;
     var encontrado = 0;
-    game.world.forEach(function (it) {
+    grupo_dientes.forEach(function (it) {
         if (it.x == item.x && it.y == item.y && it.data.validating != 1) {
             encontrado = 1;
             item.data.validating = 0;
@@ -299,7 +330,7 @@ function obtenerNumero(i) {
 
 function addDiente(i, y) {
     var x = 0;
-    item = game.add.sprite(T * (xEmp - 1) + T * i, T * (y + yEmp - 1), 'item');
+    item = grupo_dientes.create(T * (xEmp - 1) + T * i, T * (y + yEmp - 1), 'item');
     dentText = game.add.text(T * (xEmp - 1) + T * i + 33, T * (y + yEmp - 1) + T - 2, '');
 
     dentText.anchor.setTo(0.5);
@@ -325,7 +356,7 @@ function addDiente(i, y) {
     //item.events.onInputOver.add(Nombre, this);
     init_config.simbolos.forEach(o => {
         if (item.data.Nombre === o.sNombreDiente) {
-            var tmpItem = game.add.sprite(T * (xEmp - 1) + T * i, T * (y + yEmp - 1), o.sDescripcion);
+            var tmpItem = grupo_simbolos.create(T * (xEmp - 1) + T * i, T * (y + yEmp - 1), o.sDescripcion);
             tmpItem.inputEnabled = true;
             tmpItem.input.enableDrag();
             tmpItem.input.enableSnap(T, T, false, true);
