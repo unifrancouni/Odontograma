@@ -132,14 +132,25 @@ function fn_arrowIzquierda() { llenarPanel(-1); }
 
 
 var public_pagina = 1;
+var encontrado = 0;
 
 function llenarPanel(increment) {
+
+    //Si en la pagina : public_pagina + increment, no hay nada, entonces no hacer nada
+    encontrado = 0;
+    init_config.sim_defaults.forEach(o => {
+        if (o.nPagina == (public_pagina + increment)) {
+            encontrado = 1;
+        }
+    });
+    if (!encontrado)
+        return;
 
     public_pagina += increment;
 
     //debugger
     //Borrar elementos actuales del panel
-    for (i = 0; 3 > i; i++) {
+    for (i = 0; 3 > i; i++) { //Ciclo porque pasaba de que si se hace solo una vez, no se borran todos (bug de phaser)
         grupo_tools.forEach(function (it) {
             it.destroy();
         });
