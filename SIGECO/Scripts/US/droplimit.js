@@ -280,7 +280,74 @@ function ValidationDrop(item) {
         item.destroy();
     }
     else {
-        item.bringToTop();
+        //Diente encontrado, entonces validar compatibilidad con demas simbolos
+        var diente = item.data.sNombreDiente;
+        var incompatibilidad_encontrada = 0;
+        init_config.simbolos.forEach(o => {
+            
+            if (o != undefined) {
+
+                init_config.simbolos.forEach(q => {
+                    if (q != undefined) {
+                        debugger
+                        $.ajax({
+                            async: false,
+                            url: 'http://localhost:58409/Home/ValidarCompatibilidadDientes',
+                            method: 'post',
+                            data: JSON.stringify({ diente1: o.sNombreDiente, diente2: q.sNombreDiente }),
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            success: function (data) {
+                                debugger
+                                if (data === 1) {
+                                    incompatibilidad_encontrada = 1;
+                                    alert('Incompatibilidad de dientes encontrada')
+                                }
+                            },
+                            error: function (ex) {
+                                alert(ex.responseText);
+                            }
+                        });
+                    }
+                });
+
+                if (o.sNombreDiente === diente && o.sidentifier!=item.data.sidentifier) {
+                    debugger
+                    $.ajax({
+                        async: false,
+                        url: 'http://localhost:58409/Home/ValidarCompatibilidadSimbolos',
+                        method: 'post',
+                        data: JSON.stringify({ simbolo1: o.sDescripcion, simbolo2: item.data.sDescripcion }),
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (data) {
+                            debugger
+                            if (data === 1) {
+                                incompatibilidad_encontrada = 1;
+                                alert('Incompatibilidad de simbolos encontrada')
+                            }
+                        },
+                        error: function (ex) {
+                            alert(ex.responseText);
+                        }
+                    });
+                }
+            }
+
+            
+
+        });
+        if (incompatibilidad_encontrada){
+            //Eliminar del init_config la primer ocurrencia del nOdontogramaDetalleID, sNombreDiente, sDescripcion del item
+            init_config.simbolos.forEach(o => {
+                if (o.sidentifier===item.data.sidentifier && o.nOdontogramaDetalleID === item.data.nOdontogramaDetalleID && o.sNombreDiente === item.data.sNombreDiente && o.sDescripcion === item.data.sDescripcion) {
+                    init_config.simbolos.splice(init_config.simbolos.indexOf(o), 1); //Eliminar el elemento current
+                }
+            });
+            item.destroy();
+        }
+        else
+            item.bringToTop();
     }
 }
 

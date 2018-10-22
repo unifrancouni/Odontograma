@@ -33,6 +33,32 @@ namespace SIGECO.Controllers
             return Json(consulta, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult ValidarCompatibilidadSimbolos(string simbolo1, string simbolo2)
+        {
+            var db = new SIGECO_Entities();
+            var consulta = db.vwSimbolosIncompatibles
+                .Where(c => (c.Simbolo1.Equals(simbolo1) && c.Simbolo2.Equals(simbolo2)) 
+                || 
+                (c.Simbolo1.Equals(simbolo2) && c.Simbolo2.Equals(simbolo1))  )
+                .Select(c => c).ToList();
+            int resultado = (consulta.Count!=0)?1:0;
+            return Json(resultado, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ValidarCompatibilidadDientes(string diente1, string diente2)
+        {
+            var db = new SIGECO_Entities();
+            var consulta = db.vwDientesIncompatibles
+                .Where(c => (c.Diente1.Equals(diente1) && c.Diente2.Equals(diente2))
+                ||
+                (c.Diente1.Equals(diente2) && c.Diente2.Equals(diente1)))
+                .Select(c => c).ToList();
+            int resultado = (consulta.Count != 0) ? 1 : 0;
+            return Json(resultado, JsonRequestBehavior.AllowGet);
+        }
+
         public class Odontograma
         {
             public int odi;

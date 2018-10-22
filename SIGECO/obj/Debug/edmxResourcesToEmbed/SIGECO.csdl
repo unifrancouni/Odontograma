@@ -5,6 +5,8 @@
     <EntitySet Name="Simbolo" EntityType="SMUSURA0_FrancoModel.Simbolo" />
     <EntitySet Name="vwOdontogramaDetalle" EntityType="SMUSURA0_FrancoModel.vwOdontogramaDetalle" />
     <FunctionImport Name="spGetSimbolos" ReturnType="Collection(SMUSURA0_FrancoModel.spGetSimbolos_Result)" />
+    <EntitySet Name="vwSimbolosIncompatibles" EntityType="SMUSURA0_FrancoModel.vwSimbolosIncompatibles" />
+    <EntitySet Name="vwDientesIncompatibles" EntityType="SMUSURA0_FrancoModel.vwDientesIncompatibles" />
   </EntityContainer>
   <EntityType Name="OdontogramaDetalle">
     <Key>
@@ -56,4 +58,20 @@
     <Property Type="String" Name="sPathImage" Nullable="false" MaxLength="150" />
     <Property Type="Int32" Name="nPagina" Nullable="true" />
   </ComplexType>
+  <EntityType Name="vwSimbolosIncompatibles">
+    <Key>
+      <PropertyRef Name="Simbolo1" />
+      <PropertyRef Name="Simbolo2" />
+    </Key>
+    <Property Name="Simbolo1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Simbolo2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="vwDientesIncompatibles">
+    <Key>
+      <PropertyRef Name="Diente1" />
+      <PropertyRef Name="Diente2" />
+    </Key>
+    <Property Name="Diente1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Diente2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
 </Schema>

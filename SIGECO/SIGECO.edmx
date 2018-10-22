@@ -33,6 +33,16 @@
           <Property Name="sUsuarioModificacion" Type="varchar" MaxLength="50" />
         </EntityType>
         <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SIGECO.dbo.vwDientesIncompatibles' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="vwDientesIncompatibles">
+          <Key>
+            <PropertyRef Name="Diente1" />
+            <PropertyRef Name="Diente2" />
+          </Key>
+          <Property Name="Diente1" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Diente2" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errores durante la generación:
 advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
         <EntityType Name="vwOdontogramaDetalle">
           <Key>
@@ -50,10 +60,26 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene de
           <Property Name="sNombreDiente" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="vwSimbolosIncompatibles">
+          <Key>
+            <PropertyRef Name="Simbolo1" />
+            <PropertyRef Name="Simbolo2" />
+          </Key>
+          <Property Name="Simbolo1" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Simbolo2" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <Function Name="spGetSimbolos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="SMUSURA0_FrancoModelStoreContainer">
           <EntitySet Name="OdontogramaDetalle" EntityType="Self.OdontogramaDetalle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Simbolo" EntityType="Self.Simbolo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vwDientesIncompatibles" EntityType="Self.vwDientesIncompatibles" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwDientesIncompatibles].[Diente1] AS [Diente1], 
+    [vwDientesIncompatibles].[Diente2] AS [Diente2]
+    FROM [dbo].[vwDientesIncompatibles] AS [vwDientesIncompatibles]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="vwOdontogramaDetalle" EntityType="Self.vwOdontogramaDetalle" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwOdontogramaDetalle].[nOdontogramaDetalleID] AS [nOdontogramaDetalleID], 
@@ -63,6 +89,12 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene de
     [vwOdontogramaDetalle].[sNombreDiente] AS [sNombreDiente], 
     [vwOdontogramaDetalle].[sDescripcion] AS [sDescripcion]
     FROM [dbo].[vwOdontogramaDetalle] AS [vwOdontogramaDetalle]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vwSimbolosIncompatibles" EntityType="Self.vwSimbolosIncompatibles" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwSimbolosIncompatibles].[Simbolo1] AS [Simbolo1], 
+    [vwSimbolosIncompatibles].[Simbolo2] AS [Simbolo2]
+    FROM [dbo].[vwSimbolosIncompatibles] AS [vwSimbolosIncompatibles]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -74,6 +106,8 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene de
           <EntitySet Name="Simbolo" EntityType="SMUSURA0_FrancoModel.Simbolo" />
           <EntitySet Name="vwOdontogramaDetalle" EntityType="SMUSURA0_FrancoModel.vwOdontogramaDetalle" />
           <FunctionImport Name="spGetSimbolos" ReturnType="Collection(SMUSURA0_FrancoModel.spGetSimbolos_Result)" />
+          <EntitySet Name="vwSimbolosIncompatibles" EntityType="SMUSURA0_FrancoModel.vwSimbolosIncompatibles" />
+          <EntitySet Name="vwDientesIncompatibles" EntityType="SMUSURA0_FrancoModel.vwDientesIncompatibles" />
         </EntityContainer>
         <EntityType Name="OdontogramaDetalle">
           <Key>
@@ -125,6 +159,22 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene de
           <Property Type="String" Name="sPathImage" Nullable="false" MaxLength="150" />
           <Property Type="Int32" Name="nPagina" Nullable="true" />
         </ComplexType>
+        <EntityType Name="vwSimbolosIncompatibles">
+          <Key>
+            <PropertyRef Name="Simbolo1" />
+            <PropertyRef Name="Simbolo2" />
+          </Key>
+          <Property Name="Simbolo1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Simbolo2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="vwDientesIncompatibles">
+          <Key>
+            <PropertyRef Name="Diente1" />
+            <PropertyRef Name="Diente2" />
+          </Key>
+          <Property Name="Diente1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Diente2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -183,6 +233,22 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene de
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="vwSimbolosIncompatibles">
+            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwSimbolosIncompatibles">
+              <MappingFragment StoreEntitySet="vwSimbolosIncompatibles">
+                <ScalarProperty Name="Simbolo2" ColumnName="Simbolo2" />
+                <ScalarProperty Name="Simbolo1" ColumnName="Simbolo1" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwDientesIncompatibles">
+            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwDientesIncompatibles">
+              <MappingFragment StoreEntitySet="vwDientesIncompatibles">
+                <ScalarProperty Name="Diente2" ColumnName="Diente2" />
+                <ScalarProperty Name="Diente1" ColumnName="Diente1" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

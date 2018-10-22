@@ -28,6 +28,16 @@
     <Property Name="sUsuarioModificacion" Type="varchar" MaxLength="50" />
   </EntityType>
   <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SIGECO.dbo.vwDientesIncompatibles' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+  <EntityType Name="vwDientesIncompatibles">
+    <Key>
+      <PropertyRef Name="Diente1" />
+      <PropertyRef Name="Diente2" />
+    </Key>
+    <Property Name="Diente1" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Diente2" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <!--Errores durante la generación:
 advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
   <EntityType Name="vwOdontogramaDetalle">
     <Key>
@@ -45,10 +55,26 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene de
     <Property Name="sNombreDiente" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="sDescripcion" Type="varchar" MaxLength="50" Nullable="false" />
   </EntityType>
+  <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+  <EntityType Name="vwSimbolosIncompatibles">
+    <Key>
+      <PropertyRef Name="Simbolo1" />
+      <PropertyRef Name="Simbolo2" />
+    </Key>
+    <Property Name="Simbolo1" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="Simbolo2" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
   <Function Name="spGetSimbolos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="SMUSURA0_FrancoModelStoreContainer">
     <EntitySet Name="OdontogramaDetalle" EntityType="Self.OdontogramaDetalle" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Simbolo" EntityType="Self.Simbolo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="vwDientesIncompatibles" EntityType="Self.vwDientesIncompatibles" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwDientesIncompatibles].[Diente1] AS [Diente1], 
+    [vwDientesIncompatibles].[Diente2] AS [Diente2]
+    FROM [dbo].[vwDientesIncompatibles] AS [vwDientesIncompatibles]</DefiningQuery>
+    </EntitySet>
     <EntitySet Name="vwOdontogramaDetalle" EntityType="Self.vwOdontogramaDetalle" store:Type="Views" store:Schema="dbo">
       <DefiningQuery>SELECT 
     [vwOdontogramaDetalle].[nOdontogramaDetalleID] AS [nOdontogramaDetalleID], 
@@ -58,6 +84,12 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwOdontogramaDetalle' no tiene de
     [vwOdontogramaDetalle].[sNombreDiente] AS [sNombreDiente], 
     [vwOdontogramaDetalle].[sDescripcion] AS [sDescripcion]
     FROM [dbo].[vwOdontogramaDetalle] AS [vwOdontogramaDetalle]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="vwSimbolosIncompatibles" EntityType="Self.vwSimbolosIncompatibles" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwSimbolosIncompatibles].[Simbolo1] AS [Simbolo1], 
+    [vwSimbolosIncompatibles].[Simbolo2] AS [Simbolo2]
+    FROM [dbo].[vwSimbolosIncompatibles] AS [vwSimbolosIncompatibles]</DefiningQuery>
     </EntitySet>
   </EntityContainer>
 </Schema>

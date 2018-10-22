@@ -53,5 +53,21 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <EntitySetMapping Name="vwSimbolosIncompatibles">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwSimbolosIncompatibles">
+        <MappingFragment StoreEntitySet="vwSimbolosIncompatibles">
+          <ScalarProperty Name="Simbolo2" ColumnName="Simbolo2" />
+          <ScalarProperty Name="Simbolo1" ColumnName="Simbolo1" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="vwDientesIncompatibles">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwDientesIncompatibles">
+        <MappingFragment StoreEntitySet="vwDientesIncompatibles">
+          <ScalarProperty Name="Diente2" ColumnName="Diente2" />
+          <ScalarProperty Name="Diente1" ColumnName="Diente1" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

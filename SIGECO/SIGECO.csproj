@@ -205,7 +205,13 @@
       <DependentUpon>SIGECO.tt</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="vwDientesIncompatibles.cs">
+      <DependentUpon>SIGECO.tt</DependentUpon>
+    </Compile>
     <Compile Include="vwOdontogramaDetalle.cs">
+      <DependentUpon>SIGECO.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwSimbolosIncompatibles.cs">
       <DependentUpon>SIGECO.tt</DependentUpon>
     </Compile>
   </ItemGroup>
