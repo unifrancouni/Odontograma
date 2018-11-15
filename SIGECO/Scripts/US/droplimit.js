@@ -1,5 +1,5 @@
 
-var xEmp = 2; var yEmp = 1; var T = 80;
+var xEmp = 2; var yEmp = 1; var T = 50;
 var lineV; var lineH; var rectangle;
 
 var images = [
@@ -13,6 +13,8 @@ var images = [
     { key: 'item', value: '../Content/img/diente.png', width: T, height: T, },
     { key: 'panel', value: '../Content/img/panel.png', width: T, height: T, },
     { key: 'save_button', value: '../Content/img/save_button.png', width: T, height: T, },
+    { key: 'toggle_d', value: '../Content/img/toggle_d.png', width: T, height: T, },
+    { key: 'toggle_ed', value: '../Content/img/toggle_ed.png', width: T, height: T, },
     { key: 'background', value: '../Content/img/background.png', width: T, height: T, },
 ];
 
@@ -80,6 +82,8 @@ function preload() {
 var grupo_dientes;
 var grupo_simbolos;
 var grupo_tools;
+var switcher_bool;
+var switcher;
 
 function create() {
 
@@ -100,8 +104,17 @@ function create() {
     arrow_izquierda.events.onInputUp.add(fn_arrowIzquierda, this);
 
     //Líneas divisorias
-    lineV = new Phaser.Line(T * (xEmp + 8), T * yEmp, T * (xEmp + 8), T * (yEmp + 4));
-    lineH = new Phaser.Line(T * xEmp, T * (yEmp + 2), T * (xEmp + 16), T * (yEmp + 2));
+    lineV = new Phaser.Line(T * (xEmp + 8), T * yEmp, T * (xEmp + 8), T * (yEmp + 4) + 3);
+    lineH = new Phaser.Line(T * xEmp, T * (yEmp + 2) + 3, T * (xEmp + 16), T * (yEmp + 2) + 3);
+
+
+    //Switcher toggle of panel
+    switcher = game.add.sprite(T * (xEmp + 3), T * (yEmp + 5), 'toggle_d');
+    switcher.inputEnabled = true;
+    switcher.input.useHandCursor = true;
+    switcher.events.onInputUp.add(fn_switcher, this);
+    switcher.data.state = true;
+
 
     //Panel de opciones
     game.add.sprite(T * (xEmp + 4), T * (yEmp + 5), 'panel');
@@ -129,13 +142,23 @@ function create() {
 
 function fn_arrowDerecha() { llenarPanel(+1); }
 function fn_arrowIzquierda() { llenarPanel(-1); }
-
+function fn_switcher() {
+    //debugger
+    if (switcher.data.state == true) {
+        switcher.loadTexture('toggle_ed', 0);
+    }
+    else {
+        switcher.loadTexture('toggle_d', 0);
+    }
+    switcher.data.state = !switcher.data.state;
+    llenarPanel(0);
+}
 
 var public_pagina = 1;
 var encontrado = 0;
 
 function llenarPanel(increment) {
-
+    //debugger
     //Si en la pagina : public_pagina + increment, no hay nada, entonces no hacer nada
     encontrado = 0;
     init_config.sim_defaults.forEach(o => {
@@ -150,7 +173,7 @@ function llenarPanel(increment) {
 
     //debugger
     //Borrar elementos actuales del panel
-    for (i = 0; 3 > i; i++) { //Ciclo porque pasaba de que si se hace solo una vez, no se borran todos (bug de phaser)
+    for (i = 0; 4 > i; i++) { //Ciclo porque pasaba de que si se hace solo una vez, no se borran todos (bug de phaser)
         grupo_tools.forEach(function (it) {
             it.destroy();
         });
@@ -161,30 +184,32 @@ function llenarPanel(increment) {
     i = 4;
     j = 5;
 
-    init_config.sim_defaults.forEach(o => {
+    if (switcher.data.state == true) {
+        init_config.sim_defaults.forEach(o => {
+            if (o.nPagina == public_pagina) {
+                item = grupo_tools.create(T * (xEmp + i), T * (yEmp + j), o.sDescripcion);
+                item.inputEnabled = true;
+                item.input.useHandCursor = true;
+                item.input.enableSnap(T, T, false, true);
+                item.events.onInputDown.add(DuplicateAndDrag, this);
+                item.data = o;
+            }
+            j++;
+            if (j == 8) {
+                j = 5;
+                i++;
+            }
+            if (i == 12) {
+                i = 4;
+                j = 5
+            }
+        });
+    }
+    else {
 
-        //nPagina=1
-        //debugger
+    }
 
-        if (o.nPagina == public_pagina) {
-            item = grupo_tools.create(T * (xEmp + i), T * (yEmp + j), o.sDescripcion);
-            item.inputEnabled = true;
-            item.input.useHandCursor = true;
-            item.input.enableSnap(T, T, false, true);
-            item.events.onInputDown.add(DuplicateAndDrag, this);
-            item.data = o;
-        }
-        
-        j++;
-        if (j == 8) {
-            j = 5;
-            i++;
-        }
-        if (i == 12) {
-            i = 4;
-            j = 5
-        }
-    });
+    
 }
 
 function save_up() {
@@ -289,7 +314,7 @@ function ValidationDrop(item) {
 
                 init_config.simbolos.forEach(q => {
                     if (q != undefined) {
-                        debugger
+                        //debugger
                         $.ajax({
                             async: false,
                             url: 'http://localhost:58409/Home/ValidarCompatibilidadDientes',
@@ -298,7 +323,7 @@ function ValidationDrop(item) {
                             dataType: 'json',
                             contentType: 'application/json',
                             success: function (data) {
-                                debugger
+                                //debugger
                                 if (data === 1) {
                                     incompatibilidad_encontrada = 1;
                                     alert('Incompatibilidad de dientes encontrada')
@@ -312,7 +337,7 @@ function ValidationDrop(item) {
                 });
 
                 if (o.sNombreDiente === diente && o.sidentifier!=item.data.sidentifier) {
-                    debugger
+                    //debugger
                     $.ajax({
                         async: false,
                         url: 'http://localhost:58409/Home/ValidarCompatibilidadSimbolos',
@@ -321,7 +346,7 @@ function ValidationDrop(item) {
                         dataType: 'json',
                         contentType: 'application/json',
                         success: function (data) {
-                            debugger
+                            //debugger
                             if (data === 1) {
                                 incompatibilidad_encontrada = 1;
                                 alert('Incompatibilidad de simbolos encontrada')
@@ -409,11 +434,11 @@ function obtenerNumero(i) {
 function addDiente(i, y) {
     var x = 0;
     item = grupo_dientes.create(T * (xEmp - 1) + T * i, T * (y + yEmp - 1), 'item');
-    dentText = game.add.text(T * (xEmp - 1) + T * i + 33, T * (y + yEmp - 1) + T - 2, '');
+    dentText = game.add.text(T * (xEmp - 1) + T * i + 25, T * (y + yEmp - 1) + T + 1, '');
 
     dentText.anchor.setTo(0.5);
     dentText.font = 'Arial';
-    dentText.fontSize = 14;
+    dentText.fontSize = 10;
     //item.scale.setTo(T, T);
     item.data = {
         tipo: "D",

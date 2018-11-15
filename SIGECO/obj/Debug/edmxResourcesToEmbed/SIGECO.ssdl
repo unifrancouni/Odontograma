@@ -65,6 +65,19 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene
     <Property Name="Simbolo1" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="Simbolo2" Type="varchar" MaxLength="50" Nullable="false" />
   </EntityType>
+  <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SIGECO.dbo.vwUsuario' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+  <EntityType Name="vwUsuario">
+    <Key>
+      <PropertyRef Name="nUsuarioId" />
+      <PropertyRef Name="sEmail" />
+      <PropertyRef Name="nSesionIniciada" />
+    </Key>
+    <Property Name="nUsuarioId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="sEmail" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="sToken" Type="varchar" MaxLength="5000" />
+    <Property Name="nSesionIniciada" Type="int" Nullable="false" />
+  </EntityType>
   <Function Name="spGetSimbolos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="SMUSURA0_FrancoModelStoreContainer">
     <EntitySet Name="OdontogramaDetalle" EntityType="Self.OdontogramaDetalle" Schema="dbo" store:Type="Tables" />
@@ -90,6 +103,14 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene
     [vwSimbolosIncompatibles].[Simbolo1] AS [Simbolo1], 
     [vwSimbolosIncompatibles].[Simbolo2] AS [Simbolo2]
     FROM [dbo].[vwSimbolosIncompatibles] AS [vwSimbolosIncompatibles]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="vwUsuario" EntityType="Self.vwUsuario" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwUsuario].[nUsuarioId] AS [nUsuarioId], 
+    [vwUsuario].[sEmail] AS [sEmail], 
+    [vwUsuario].[sToken] AS [sToken], 
+    [vwUsuario].[nSesionIniciada] AS [nSesionIniciada]
+    FROM [dbo].[vwUsuario] AS [vwUsuario]</DefiningQuery>
     </EntitySet>
   </EntityContainer>
 </Schema>

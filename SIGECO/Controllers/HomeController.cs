@@ -12,7 +12,26 @@ namespace SIGECO.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            //return View();
+            var db = new SIGECO_Entities();
+
+            string usuario = "";
+
+            if (Session["Usuario"] != null)
+                usuario = Session["Usuario"].ToString();
+
+            string consulta = db.vwUsuario.Where(c => c.sEmail.Equals(usuario))
+                .Select(c => c.sToken).FirstOrDefault();
+
+            if (consulta == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            else
+            {
+                return View();
+            }
+
         }
 
         [HttpPost]

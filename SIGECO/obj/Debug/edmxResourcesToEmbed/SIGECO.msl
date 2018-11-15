@@ -69,5 +69,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="vwUsuario">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwUsuario">
+        <MappingFragment StoreEntitySet="vwUsuario">
+          <ScalarProperty Name="nSesionIniciada" ColumnName="nSesionIniciada" />
+          <ScalarProperty Name="sToken" ColumnName="sToken" />
+          <ScalarProperty Name="sEmail" ColumnName="sEmail" />
+          <ScalarProperty Name="nUsuarioId" ColumnName="nUsuarioId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

@@ -70,6 +70,19 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene
           <Property Name="Simbolo1" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Simbolo2" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SIGECO.dbo.vwUsuario' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="vwUsuario">
+          <Key>
+            <PropertyRef Name="nUsuarioId" />
+            <PropertyRef Name="sEmail" />
+            <PropertyRef Name="nSesionIniciada" />
+          </Key>
+          <Property Name="nUsuarioId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sEmail" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="sToken" Type="varchar" MaxLength="5000" />
+          <Property Name="nSesionIniciada" Type="int" Nullable="false" />
+        </EntityType>
         <Function Name="spGetSimbolos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="SMUSURA0_FrancoModelStoreContainer">
           <EntitySet Name="OdontogramaDetalle" EntityType="Self.OdontogramaDetalle" Schema="dbo" store:Type="Tables" />
@@ -96,6 +109,14 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene
     [vwSimbolosIncompatibles].[Simbolo2] AS [Simbolo2]
     FROM [dbo].[vwSimbolosIncompatibles] AS [vwSimbolosIncompatibles]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="vwUsuario" EntityType="Self.vwUsuario" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwUsuario].[nUsuarioId] AS [nUsuarioId], 
+    [vwUsuario].[sEmail] AS [sEmail], 
+    [vwUsuario].[sToken] AS [sToken], 
+    [vwUsuario].[nSesionIniciada] AS [nSesionIniciada]
+    FROM [dbo].[vwUsuario] AS [vwUsuario]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -108,6 +129,7 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene
           <FunctionImport Name="spGetSimbolos" ReturnType="Collection(SMUSURA0_FrancoModel.spGetSimbolos_Result)" />
           <EntitySet Name="vwSimbolosIncompatibles" EntityType="SMUSURA0_FrancoModel.vwSimbolosIncompatibles" />
           <EntitySet Name="vwDientesIncompatibles" EntityType="SMUSURA0_FrancoModel.vwDientesIncompatibles" />
+          <EntitySet Name="vwUsuario" EntityType="SMUSURA0_FrancoModel.vwUsuario" />
         </EntityContainer>
         <EntityType Name="OdontogramaDetalle">
           <Key>
@@ -174,6 +196,17 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene
           </Key>
           <Property Name="Diente1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Diente2" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="vwUsuario">
+          <Key>
+            <PropertyRef Name="nUsuarioId" />
+            <PropertyRef Name="sEmail" />
+            <PropertyRef Name="nSesionIniciada" />
+          </Key>
+          <Property Name="nUsuarioId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sEmail" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sToken" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
+          <Property Name="nSesionIniciada" Type="Int32" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -246,6 +279,16 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwSimbolosIncompatibles' no tiene
               <MappingFragment StoreEntitySet="vwDientesIncompatibles">
                 <ScalarProperty Name="Diente2" ColumnName="Diente2" />
                 <ScalarProperty Name="Diente1" ColumnName="Diente1" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwUsuario">
+            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwUsuario">
+              <MappingFragment StoreEntitySet="vwUsuario">
+                <ScalarProperty Name="nSesionIniciada" ColumnName="nSesionIniciada" />
+                <ScalarProperty Name="sToken" ColumnName="sToken" />
+                <ScalarProperty Name="sEmail" ColumnName="sEmail" />
+                <ScalarProperty Name="nUsuarioId" ColumnName="nUsuarioId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

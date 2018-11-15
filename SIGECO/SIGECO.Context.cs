@@ -32,6 +32,7 @@ namespace SIGECO
         public virtual DbSet<vwOdontogramaDetalle> vwOdontogramaDetalle { get; set; }
         public virtual DbSet<vwSimbolosIncompatibles> vwSimbolosIncompatibles { get; set; }
         public virtual DbSet<vwDientesIncompatibles> vwDientesIncompatibles { get; set; }
+        public virtual DbSet<vwUsuario> vwUsuario { get; set; }
     
         public virtual ObjectResult<spGetSimbolos_Result> spGetSimbolos()
         {
