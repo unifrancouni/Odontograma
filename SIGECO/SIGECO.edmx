@@ -32,6 +32,46 @@
           <Property Name="dFechaModificacion" Type="date" />
           <Property Name="sUsuarioModificacion" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="nMenuItemID" />
+          </Key>
+          <Property Name="nMenuItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="nMenuItemPadreID" Type="int" />
+          <Property Name="nNivel" Type="int" Nullable="false" />
+          <Property Name="sIconClass" Type="varchar" MaxLength="50" />
+          <Property Name="sDescripcion" Type="varchar" MaxLength="100" />
+          <Property Name="sAction" Type="varchar" MaxLength="100" />
+          <Property Name="sController" Type="varchar" MaxLength="100" />
+          <Property Name="sLink" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="TableColumns">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TABLE_SCHEMA" Type="varchar" MaxLength="10" />
+          <Property Name="TABLE_NAME" Type="varchar" MaxLength="100" />
+          <Property Name="COLUMN_NAME" Type="varchar" MaxLength="100" />
+          <Property Name="CAPTION" Type="varchar" MaxLength="100" />
+          <Property Name="ORDINAL_POSITION" Type="int" />
+          <Property Name="COLUMN_DEFAULT" Type="varchar" MaxLength="100" />
+          <Property Name="HTML_TYPE" Type="varchar" MaxLength="50" />
+          <Property Name="HTML_PATTERN" Type="varchar" MaxLength="200" />
+          <Property Name="DATA_TYPE" Type="varchar" MaxLength="50" />
+          <Property Name="MAX_LENGTH" Type="int" />
+          <Property Name="NULLABLE" Type="bit" />
+          <Property Name="NUMERIC_PRECISION" Type="int" />
+          <Property Name="NUMERIC_SCALE" Type="int" />
+          <Property Name="IS_FK" Type="bit" />
+          <Property Name="TABLE_FK" Type="varchar" MaxLength="100" />
+          <Property Name="COLUMN_FK" Type="varchar" MaxLength="100" />
+          <Property Name="HTML_ADD_SHOW" Type="bit" />
+          <Property Name="HTML_EDIT_SHOW" Type="bit" />
+          <Property Name="HTML_LIST_SHOW" Type="bit" />
+          <Property Name="HTML_ADD_LOCK" Type="bit" />
+          <Property Name="HTML_EDIT_LOCK" Type="bit" />
+        </EntityType>
         <!--Errores durante la generación:
 advertencia 6002: La tabla o vista 'SIGECO.dbo.vwDientesIncompatibles' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
         <EntityType Name="vwDientesIncompatibles">
@@ -84,9 +124,15 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwUsuario' no tiene definida ning
           <Property Name="nSesionIniciada" Type="int" Nullable="false" />
         </EntityType>
         <Function Name="spGetSimbolos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="spListarCatalogoPorCampoFK" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="sti">
+          <Parameter Name="sSelectName" Type="varchar" Mode="In" />
+          <Parameter Name="sFormName" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="SMUSURA0_FrancoModelStoreContainer">
           <EntitySet Name="OdontogramaDetalle" EntityType="Self.OdontogramaDetalle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Simbolo" EntityType="Self.Simbolo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Menu" EntityType="Self.Menu" Schema="sti" store:Type="Tables" />
+          <EntitySet Name="TableColumns" EntityType="Self.TableColumns" Schema="sti" store:Type="Tables" />
           <EntitySet Name="vwDientesIncompatibles" EntityType="Self.vwDientesIncompatibles" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwDientesIncompatibles].[Diente1] AS [Diente1], 
@@ -130,6 +176,12 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwUsuario' no tiene definida ning
           <EntitySet Name="vwSimbolosIncompatibles" EntityType="SMUSURA0_FrancoModel.vwSimbolosIncompatibles" />
           <EntitySet Name="vwDientesIncompatibles" EntityType="SMUSURA0_FrancoModel.vwDientesIncompatibles" />
           <EntitySet Name="vwUsuario" EntityType="SMUSURA0_FrancoModel.vwUsuario" />
+          <EntitySet Name="Menu" EntityType="SMUSURA0_FrancoModel.Menu" />
+          <FunctionImport Name="spListarCatalogoPorCampoFK" ReturnType="Collection(SMUSURA0_FrancoModel.spListarCatalogoPorCampoFK_Result)">
+            <Parameter Name="sSelectName" Mode="In" Type="String" />
+            <Parameter Name="sFormName" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="TableColumns" EntityType="SMUSURA0_FrancoModel.TableColumns" />
         </EntityContainer>
         <EntityType Name="OdontogramaDetalle">
           <Key>
@@ -207,6 +259,57 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwUsuario' no tiene definida ning
           <Property Name="sEmail" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="sToken" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
           <Property Name="nSesionIniciada" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="nMenuItemID" />
+          </Key>
+          <Property Name="nMenuItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="nMenuItemPadreID" Type="Int32" />
+          <Property Name="nNivel" Type="Int32" Nullable="false" />
+          <Property Name="sIconClass" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sDescripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="sAction" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="sController" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="sLink" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <ComplexType Name="spListarCatalogoPorCampoFK_Result">
+          <Property Type="Int32" Name="nValorCatalogoID" Nullable="false" />
+          <Property Type="Int32" Name="nCatalogoID" Nullable="false" />
+          <Property Type="Int32" Name="nCodigo" Nullable="false" />
+          <Property Type="String" Name="sDescripcion" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="nActivo" Nullable="false" />
+          <Property Type="DateTime" Name="dFechaCreacion" Nullable="false" />
+          <Property Type="String" Name="sUsuarioCreacion" Nullable="false" MaxLength="50" />
+          <Property Type="DateTime" Name="dFechaModificacion" Nullable="true" />
+          <Property Type="String" Name="sUsuarioModificacion" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="TableColumns">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TABLE_SCHEMA" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TABLE_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="COLUMN_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CAPTION" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ORDINAL_POSITION" Type="Int32" />
+          <Property Name="COLUMN_DEFAULT" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HTML_TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HTML_PATTERN" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="DATA_TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MAX_LENGTH" Type="Int32" />
+          <Property Name="NULLABLE" Type="Boolean" />
+          <Property Name="NUMERIC_PRECISION" Type="Int32" />
+          <Property Name="NUMERIC_SCALE" Type="Int32" />
+          <Property Name="IS_FK" Type="Boolean" />
+          <Property Name="TABLE_FK" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="COLUMN_FK" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HTML_ADD_SHOW" Type="Boolean" />
+          <Property Name="HTML_EDIT_SHOW" Type="Boolean" />
+          <Property Name="HTML_LIST_SHOW" Type="Boolean" />
+          <Property Name="HTML_ADD_LOCK" Type="Boolean" />
+          <Property Name="HTML_EDIT_LOCK" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -289,6 +392,63 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwUsuario' no tiene definida ning
                 <ScalarProperty Name="sToken" ColumnName="sToken" />
                 <ScalarProperty Name="sEmail" ColumnName="sEmail" />
                 <ScalarProperty Name="nUsuarioId" ColumnName="nUsuarioId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Menu">
+            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Menu">
+              <MappingFragment StoreEntitySet="Menu">
+                <ScalarProperty Name="sLink" ColumnName="sLink" />
+                <ScalarProperty Name="sController" ColumnName="sController" />
+                <ScalarProperty Name="sAction" ColumnName="sAction" />
+                <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+                <ScalarProperty Name="sIconClass" ColumnName="sIconClass" />
+                <ScalarProperty Name="nNivel" ColumnName="nNivel" />
+                <ScalarProperty Name="nMenuItemPadreID" ColumnName="nMenuItemPadreID" />
+                <ScalarProperty Name="nMenuItemID" ColumnName="nMenuItemID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="spListarCatalogoPorCampoFK" FunctionName="SMUSURA0_FrancoModel.Store.spListarCatalogoPorCampoFK">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SMUSURA0_FrancoModel.spListarCatalogoPorCampoFK_Result">
+                <ScalarProperty Name="nValorCatalogoID" ColumnName="nValorCatalogoID" />
+                <ScalarProperty Name="nCatalogoID" ColumnName="nCatalogoID" />
+                <ScalarProperty Name="nCodigo" ColumnName="nCodigo" />
+                <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+                <ScalarProperty Name="nActivo" ColumnName="nActivo" />
+                <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+                <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+                <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+                <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="TableColumns">
+            <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.TableColumns">
+              <MappingFragment StoreEntitySet="TableColumns">
+                <ScalarProperty Name="HTML_EDIT_LOCK" ColumnName="HTML_EDIT_LOCK" />
+                <ScalarProperty Name="HTML_ADD_LOCK" ColumnName="HTML_ADD_LOCK" />
+                <ScalarProperty Name="HTML_LIST_SHOW" ColumnName="HTML_LIST_SHOW" />
+                <ScalarProperty Name="HTML_EDIT_SHOW" ColumnName="HTML_EDIT_SHOW" />
+                <ScalarProperty Name="HTML_ADD_SHOW" ColumnName="HTML_ADD_SHOW" />
+                <ScalarProperty Name="COLUMN_FK" ColumnName="COLUMN_FK" />
+                <ScalarProperty Name="TABLE_FK" ColumnName="TABLE_FK" />
+                <ScalarProperty Name="IS_FK" ColumnName="IS_FK" />
+                <ScalarProperty Name="NUMERIC_SCALE" ColumnName="NUMERIC_SCALE" />
+                <ScalarProperty Name="NUMERIC_PRECISION" ColumnName="NUMERIC_PRECISION" />
+                <ScalarProperty Name="NULLABLE" ColumnName="NULLABLE" />
+                <ScalarProperty Name="MAX_LENGTH" ColumnName="MAX_LENGTH" />
+                <ScalarProperty Name="DATA_TYPE" ColumnName="DATA_TYPE" />
+                <ScalarProperty Name="HTML_PATTERN" ColumnName="HTML_PATTERN" />
+                <ScalarProperty Name="HTML_TYPE" ColumnName="HTML_TYPE" />
+                <ScalarProperty Name="COLUMN_DEFAULT" ColumnName="COLUMN_DEFAULT" />
+                <ScalarProperty Name="ORDINAL_POSITION" ColumnName="ORDINAL_POSITION" />
+                <ScalarProperty Name="CAPTION" ColumnName="CAPTION" />
+                <ScalarProperty Name="COLUMN_NAME" ColumnName="COLUMN_NAME" />
+                <ScalarProperty Name="TABLE_NAME" ColumnName="TABLE_NAME" />
+                <ScalarProperty Name="TABLE_SCHEMA" ColumnName="TABLE_SCHEMA" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

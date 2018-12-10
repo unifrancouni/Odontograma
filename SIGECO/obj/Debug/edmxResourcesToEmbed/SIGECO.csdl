@@ -8,6 +8,12 @@
     <EntitySet Name="vwSimbolosIncompatibles" EntityType="SMUSURA0_FrancoModel.vwSimbolosIncompatibles" />
     <EntitySet Name="vwDientesIncompatibles" EntityType="SMUSURA0_FrancoModel.vwDientesIncompatibles" />
     <EntitySet Name="vwUsuario" EntityType="SMUSURA0_FrancoModel.vwUsuario" />
+    <EntitySet Name="Menu" EntityType="SMUSURA0_FrancoModel.Menu" />
+    <FunctionImport Name="spListarCatalogoPorCampoFK" ReturnType="Collection(SMUSURA0_FrancoModel.spListarCatalogoPorCampoFK_Result)">
+      <Parameter Name="sSelectName" Mode="In" Type="String" />
+      <Parameter Name="sFormName" Mode="In" Type="String" />
+    </FunctionImport>
+    <EntitySet Name="TableColumns" EntityType="SMUSURA0_FrancoModel.TableColumns" />
   </EntityContainer>
   <EntityType Name="OdontogramaDetalle">
     <Key>
@@ -85,5 +91,56 @@
     <Property Name="sEmail" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="sToken" Type="String" MaxLength="5000" FixedLength="false" Unicode="false" />
     <Property Name="nSesionIniciada" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Menu">
+    <Key>
+      <PropertyRef Name="nMenuItemID" />
+    </Key>
+    <Property Name="nMenuItemID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nMenuItemPadreID" Type="Int32" />
+    <Property Name="nNivel" Type="Int32" Nullable="false" />
+    <Property Name="sIconClass" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="sDescripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="sAction" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="sController" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="sLink" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <ComplexType Name="spListarCatalogoPorCampoFK_Result">
+    <Property Type="Int32" Name="nValorCatalogoID" Nullable="false" />
+    <Property Type="Int32" Name="nCatalogoID" Nullable="false" />
+    <Property Type="Int32" Name="nCodigo" Nullable="false" />
+    <Property Type="String" Name="sDescripcion" Nullable="false" MaxLength="50" />
+    <Property Type="Int32" Name="nActivo" Nullable="false" />
+    <Property Type="DateTime" Name="dFechaCreacion" Nullable="false" />
+    <Property Type="String" Name="sUsuarioCreacion" Nullable="false" MaxLength="50" />
+    <Property Type="DateTime" Name="dFechaModificacion" Nullable="true" />
+    <Property Type="String" Name="sUsuarioModificacion" Nullable="true" MaxLength="50" />
+  </ComplexType>
+  <EntityType Name="TableColumns">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TABLE_SCHEMA" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="TABLE_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="COLUMN_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="CAPTION" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="ORDINAL_POSITION" Type="Int32" />
+    <Property Name="COLUMN_DEFAULT" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="HTML_TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="HTML_PATTERN" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="DATA_TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="MAX_LENGTH" Type="Int32" />
+    <Property Name="NULLABLE" Type="Boolean" />
+    <Property Name="NUMERIC_PRECISION" Type="Int32" />
+    <Property Name="NUMERIC_SCALE" Type="Int32" />
+    <Property Name="IS_FK" Type="Boolean" />
+    <Property Name="TABLE_FK" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="COLUMN_FK" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="HTML_ADD_SHOW" Type="Boolean" />
+    <Property Name="HTML_EDIT_SHOW" Type="Boolean" />
+    <Property Name="HTML_LIST_SHOW" Type="Boolean" />
+    <Property Name="HTML_ADD_LOCK" Type="Boolean" />
+    <Property Name="HTML_EDIT_LOCK" Type="Boolean" />
   </EntityType>
 </Schema>

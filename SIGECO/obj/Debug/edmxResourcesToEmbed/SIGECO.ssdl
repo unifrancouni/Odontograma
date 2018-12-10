@@ -27,6 +27,46 @@
     <Property Name="dFechaModificacion" Type="date" />
     <Property Name="sUsuarioModificacion" Type="varchar" MaxLength="50" />
   </EntityType>
+  <EntityType Name="Menu">
+    <Key>
+      <PropertyRef Name="nMenuItemID" />
+    </Key>
+    <Property Name="nMenuItemID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nMenuItemPadreID" Type="int" />
+    <Property Name="nNivel" Type="int" Nullable="false" />
+    <Property Name="sIconClass" Type="varchar" MaxLength="50" />
+    <Property Name="sDescripcion" Type="varchar" MaxLength="100" />
+    <Property Name="sAction" Type="varchar" MaxLength="100" />
+    <Property Name="sController" Type="varchar" MaxLength="100" />
+    <Property Name="sLink" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="TableColumns">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TABLE_SCHEMA" Type="varchar" MaxLength="10" />
+    <Property Name="TABLE_NAME" Type="varchar" MaxLength="100" />
+    <Property Name="COLUMN_NAME" Type="varchar" MaxLength="100" />
+    <Property Name="CAPTION" Type="varchar" MaxLength="100" />
+    <Property Name="ORDINAL_POSITION" Type="int" />
+    <Property Name="COLUMN_DEFAULT" Type="varchar" MaxLength="100" />
+    <Property Name="HTML_TYPE" Type="varchar" MaxLength="50" />
+    <Property Name="HTML_PATTERN" Type="varchar" MaxLength="200" />
+    <Property Name="DATA_TYPE" Type="varchar" MaxLength="50" />
+    <Property Name="MAX_LENGTH" Type="int" />
+    <Property Name="NULLABLE" Type="bit" />
+    <Property Name="NUMERIC_PRECISION" Type="int" />
+    <Property Name="NUMERIC_SCALE" Type="int" />
+    <Property Name="IS_FK" Type="bit" />
+    <Property Name="TABLE_FK" Type="varchar" MaxLength="100" />
+    <Property Name="COLUMN_FK" Type="varchar" MaxLength="100" />
+    <Property Name="HTML_ADD_SHOW" Type="bit" />
+    <Property Name="HTML_EDIT_SHOW" Type="bit" />
+    <Property Name="HTML_LIST_SHOW" Type="bit" />
+    <Property Name="HTML_ADD_LOCK" Type="bit" />
+    <Property Name="HTML_EDIT_LOCK" Type="bit" />
+  </EntityType>
   <!--Errores durante la generación:
 advertencia 6002: La tabla o vista 'SIGECO.dbo.vwDientesIncompatibles' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
   <EntityType Name="vwDientesIncompatibles">
@@ -79,9 +119,15 @@ advertencia 6002: La tabla o vista 'SIGECO.dbo.vwUsuario' no tiene definida ning
     <Property Name="nSesionIniciada" Type="int" Nullable="false" />
   </EntityType>
   <Function Name="spGetSimbolos" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="spListarCatalogoPorCampoFK" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="sti">
+    <Parameter Name="sSelectName" Type="varchar" Mode="In" />
+    <Parameter Name="sFormName" Type="varchar" Mode="In" />
+  </Function>
   <EntityContainer Name="SMUSURA0_FrancoModelStoreContainer">
     <EntitySet Name="OdontogramaDetalle" EntityType="Self.OdontogramaDetalle" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Simbolo" EntityType="Self.Simbolo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Menu" EntityType="Self.Menu" Schema="sti" store:Type="Tables" />
+    <EntitySet Name="TableColumns" EntityType="Self.TableColumns" Schema="sti" store:Type="Tables" />
     <EntitySet Name="vwDientesIncompatibles" EntityType="Self.vwDientesIncompatibles" store:Type="Views" store:Schema="dbo">
       <DefiningQuery>SELECT 
     [vwDientesIncompatibles].[Diente1] AS [Diente1], 

@@ -202,6 +202,6 @@ C:\Users\User\Documents\SIGECO\SIGECO\bin\Microsoft.Owin.Security.OAuth.xml
 C:\Users\User\Documents\SIGECO\SIGECO\bin\Microsoft.Owin.Security.Google.xml
 C:\Users\User\Documents\SIGECO\SIGECO\bin\Microsoft.Owin.Security.Twitter.xml
 C:\Users\User\Documents\SIGECO\SIGECO\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
+C:\Users\User\Documents\SIGECO\SIGECO\obj\Debug\SIGECO.csprojResolveAssemblyReference.cache
 C:\Users\User\Documents\SIGECO\SIGECO\obj\Debug\SIGECO.dll
 C:\Users\User\Documents\SIGECO\SIGECO\obj\Debug\SIGECO.pdb
-C:\Users\User\Documents\SIGECO\SIGECO\obj\Debug\SIGECO.csprojResolveAssemblyReference.cache

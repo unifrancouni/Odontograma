@@ -79,5 +79,62 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Menu">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Menu">
+        <MappingFragment StoreEntitySet="Menu">
+          <ScalarProperty Name="sLink" ColumnName="sLink" />
+          <ScalarProperty Name="sController" ColumnName="sController" />
+          <ScalarProperty Name="sAction" ColumnName="sAction" />
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="sIconClass" ColumnName="sIconClass" />
+          <ScalarProperty Name="nNivel" ColumnName="nNivel" />
+          <ScalarProperty Name="nMenuItemPadreID" ColumnName="nMenuItemPadreID" />
+          <ScalarProperty Name="nMenuItemID" ColumnName="nMenuItemID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="spListarCatalogoPorCampoFK" FunctionName="SMUSURA0_FrancoModel.Store.spListarCatalogoPorCampoFK">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="SMUSURA0_FrancoModel.spListarCatalogoPorCampoFK_Result">
+          <ScalarProperty Name="nValorCatalogoID" ColumnName="nValorCatalogoID" />
+          <ScalarProperty Name="nCatalogoID" ColumnName="nCatalogoID" />
+          <ScalarProperty Name="nCodigo" ColumnName="nCodigo" />
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="nActivo" ColumnName="nActivo" />
+          <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+          <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+          <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+          <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="TableColumns">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.TableColumns">
+        <MappingFragment StoreEntitySet="TableColumns">
+          <ScalarProperty Name="HTML_EDIT_LOCK" ColumnName="HTML_EDIT_LOCK" />
+          <ScalarProperty Name="HTML_ADD_LOCK" ColumnName="HTML_ADD_LOCK" />
+          <ScalarProperty Name="HTML_LIST_SHOW" ColumnName="HTML_LIST_SHOW" />
+          <ScalarProperty Name="HTML_EDIT_SHOW" ColumnName="HTML_EDIT_SHOW" />
+          <ScalarProperty Name="HTML_ADD_SHOW" ColumnName="HTML_ADD_SHOW" />
+          <ScalarProperty Name="COLUMN_FK" ColumnName="COLUMN_FK" />
+          <ScalarProperty Name="TABLE_FK" ColumnName="TABLE_FK" />
+          <ScalarProperty Name="IS_FK" ColumnName="IS_FK" />
+          <ScalarProperty Name="NUMERIC_SCALE" ColumnName="NUMERIC_SCALE" />
+          <ScalarProperty Name="NUMERIC_PRECISION" ColumnName="NUMERIC_PRECISION" />
+          <ScalarProperty Name="NULLABLE" ColumnName="NULLABLE" />
+          <ScalarProperty Name="MAX_LENGTH" ColumnName="MAX_LENGTH" />
+          <ScalarProperty Name="DATA_TYPE" ColumnName="DATA_TYPE" />
+          <ScalarProperty Name="HTML_PATTERN" ColumnName="HTML_PATTERN" />
+          <ScalarProperty Name="HTML_TYPE" ColumnName="HTML_TYPE" />
+          <ScalarProperty Name="COLUMN_DEFAULT" ColumnName="COLUMN_DEFAULT" />
+          <ScalarProperty Name="ORDINAL_POSITION" ColumnName="ORDINAL_POSITION" />
+          <ScalarProperty Name="CAPTION" ColumnName="CAPTION" />
+          <ScalarProperty Name="COLUMN_NAME" ColumnName="COLUMN_NAME" />
+          <ScalarProperty Name="TABLE_NAME" ColumnName="TABLE_NAME" />
+          <ScalarProperty Name="TABLE_SCHEMA" ColumnName="TABLE_SCHEMA" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

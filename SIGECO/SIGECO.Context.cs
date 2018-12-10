@@ -33,10 +33,25 @@ namespace SIGECO
         public virtual DbSet<vwSimbolosIncompatibles> vwSimbolosIncompatibles { get; set; }
         public virtual DbSet<vwDientesIncompatibles> vwDientesIncompatibles { get; set; }
         public virtual DbSet<vwUsuario> vwUsuario { get; set; }
+        public virtual DbSet<Menu> Menu { get; set; }
+        public virtual DbSet<TableColumns> TableColumns { get; set; }
     
         public virtual ObjectResult<spGetSimbolos_Result> spGetSimbolos()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spGetSimbolos_Result>("spGetSimbolos");
+        }
+    
+        public virtual ObjectResult<spListarCatalogoPorCampoFK_Result> spListarCatalogoPorCampoFK(string sSelectName, string sFormName)
+        {
+            var sSelectNameParameter = sSelectName != null ?
+                new ObjectParameter("sSelectName", sSelectName) :
+                new ObjectParameter("sSelectName", typeof(string));
+    
+            var sFormNameParameter = sFormName != null ?
+                new ObjectParameter("sFormName", sFormName) :
+                new ObjectParameter("sFormName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spListarCatalogoPorCampoFK_Result>("spListarCatalogoPorCampoFK", sSelectNameParameter, sFormNameParameter);
         }
     }
 }
