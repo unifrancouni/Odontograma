@@ -1,0 +1,169 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Cita_Delete.Page_Render();
+
+	// Check action result
+	if (Cita_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fCitadelete = currentForm = new ew.Form("fCitadelete", "delete");
+
+// Form_CustomValidate event
+fCitadelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fCitadelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fCitadelete.lists["x_nExpedienteID"] = @Html.Raw(Cita_Delete.nExpedienteID.Lookup.ToClientList());
+fCitadelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Cita_Delete.nExpedienteID.LookupOptions()));
+fCitadelete.lists["x_nEstadoID"] = @Html.Raw(Cita_Delete.nEstadoID.Lookup.ToClientList());
+fCitadelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Cita_Delete.ShowPageHeader()
+@Cita_Delete.ShowMessages()
+<form name="fCitadelete" id="fCitadelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Cita_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in Cita_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (Cita.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<th class="@Html.Raw(Cita.nExpedienteID.HeaderCellClass)"><span id="elh_Cita_nExpedienteID" class="Cita_nExpedienteID">@Html.Raw(Cita.nExpedienteID.Caption)</span></th>
+} @* nExpedienteID.Visible (end) *@
+@if (Cita.sMotivoCita.Visible) { // sMotivoCita (begin)
+		<th class="@Html.Raw(Cita.sMotivoCita.HeaderCellClass)"><span id="elh_Cita_sMotivoCita" class="Cita_sMotivoCita">@Html.Raw(Cita.sMotivoCita.Caption)</span></th>
+} @* sMotivoCita.Visible (end) *@
+@if (Cita.dFechaHoraCita.Visible) { // dFechaHoraCita (begin)
+		<th class="@Html.Raw(Cita.dFechaHoraCita.HeaderCellClass)"><span id="elh_Cita_dFechaHoraCita" class="Cita_dFechaHoraCita">@Html.Raw(Cita.dFechaHoraCita.Caption)</span></th>
+} @* dFechaHoraCita.Visible (end) *@
+@if (Cita.dHora.Visible) { // dHora (begin)
+		<th class="@Html.Raw(Cita.dHora.HeaderCellClass)"><span id="elh_Cita_dHora" class="Cita_dHora">@Html.Raw(Cita.dHora.Caption)</span></th>
+} @* dHora.Visible (end) *@
+@if (Cita.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(Cita.nEstadoID.HeaderCellClass)"><span id="elh_Cita_nEstadoID" class="Cita_nEstadoID">@Html.Raw(Cita.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ Cita_Delete.RecordCount = 0; }
+@while (Cita_Delete.Recordset != null && await Cita_Delete.Recordset.ReadAsync()) { // DN
+	Cita_Delete.RecordCount++;
+	Cita_Delete.RowCnt++;
+
+	// Set row properties
+	Cita_Delete.ResetAttributes();
+	Cita_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await Cita_Delete.LoadRowValues(Cita_Delete.Recordset);
+
+	// Render row
+	await Cita_Delete.RenderRow();
+	<tr @Html.Raw(Cita_Delete.RowAttributes)>
+@if (Cita.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<td @Html.Raw(Cita.nExpedienteID.CellAttributes)>
+<span id="el@(Cita_Delete.RowCnt)_Cita_nExpedienteID" class="Cita_nExpedienteID">
+<span @Html.Raw(Cita.nExpedienteID.ViewAttributes)>
+@Html.Raw(Cita.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+} @* nExpedienteID.Visible (end) *@
+@if (Cita.sMotivoCita.Visible) { // sMotivoCita (begin)
+		<td @Html.Raw(Cita.sMotivoCita.CellAttributes)>
+<span id="el@(Cita_Delete.RowCnt)_Cita_sMotivoCita" class="Cita_sMotivoCita">
+<span @Html.Raw(Cita.sMotivoCita.ViewAttributes)>
+@Html.Raw(Cita.sMotivoCita.GetViewValue())</span>
+</span>
+</td>
+} @* sMotivoCita.Visible (end) *@
+@if (Cita.dFechaHoraCita.Visible) { // dFechaHoraCita (begin)
+		<td @Html.Raw(Cita.dFechaHoraCita.CellAttributes)>
+<span id="el@(Cita_Delete.RowCnt)_Cita_dFechaHoraCita" class="Cita_dFechaHoraCita">
+<span @Html.Raw(Cita.dFechaHoraCita.ViewAttributes)>
+@Html.Raw(Cita.dFechaHoraCita.GetViewValue())</span>
+</span>
+</td>
+} @* dFechaHoraCita.Visible (end) *@
+@if (Cita.dHora.Visible) { // dHora (begin)
+		<td @Html.Raw(Cita.dHora.CellAttributes)>
+<span id="el@(Cita_Delete.RowCnt)_Cita_dHora" class="Cita_dHora">
+<span @Html.Raw(Cita.dHora.ViewAttributes)>
+@Html.Raw(Cita.dHora.GetViewValue())</span>
+</span>
+</td>
+} @* dHora.Visible (end) *@
+@if (Cita.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(Cita.nEstadoID.CellAttributes)>
+<span id="el@(Cita_Delete.RowCnt)_Cita_nEstadoID" class="Cita_nEstadoID">
+<span @Html.Raw(Cita.nEstadoID.ViewAttributes)>
+@Html.Raw(Cita.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ Cita_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Cita_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@Cita_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

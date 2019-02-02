@@ -1,0 +1,183 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Expediente_View.Page_Render();
+
+	// Check action result
+	if (Expediente_View.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Expediente.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "view";
+var fExpedienteview = currentForm = new ew.Form("fExpedienteview", "view");
+
+// Form_CustomValidate event
+fExpedienteview.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExpedienteview.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExpedienteview.lists["x_nPacienteID"] = @Html.Raw(Expediente_View.nPacienteID.Lookup.ToClientList());
+fExpedienteview.lists["x_nPacienteID"].options = @Html.Raw(ConvertToJson(Expediente_View.nPacienteID.LookupOptions()));
+fExpedienteview.lists["x_nGrupoSanguineoID"] = @Html.Raw(Expediente_View.nGrupoSanguineoID.Lookup.ToClientList());
+fExpedienteview.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_View.nGrupoSanguineoID.LookupOptions()));
+fExpedienteview.lists["x_nAAAMA"] = @Html.Raw(Expediente_View.nAAAMA.Lookup.ToClientList());
+fExpedienteview.lists["x_nAAAMA"].options = @Html.Raw(ConvertToJson(Expediente_View.nAAAMA.Options(false))); // DN
+fExpedienteview.lists["x_nEstadoID"] = @Html.Raw(Expediente_View.nEstadoID.Lookup.ToClientList());
+fExpedienteview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_View.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!Expediente.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+	@Expediente_View.ExportOptions.RenderBody()
+	@Expediente_View.OtherOptions.RenderBody()
+	<div class="clearfix"></div>
+</div>
+}
+@Expediente_View.ShowPageHeader()
+@Expediente_View.ShowMessages()
+<form name="fExpedienteview" id="fExpedienteview" class="form-inline ew-form ew-view-form" method="post">
+@if (Expediente_View.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(Expediente_View.IsModal)">
+<table class="table table-striped table-sm ew-view-table">
+@if (Expediente.nPacienteID.Visible) { @* Expediente.nPacienteID.Visible (begin) *@
+	<tr id="r_nPacienteID">
+		<td class="@Expediente_View.TableLeftColumnClass"><span id="elh_Expediente_nPacienteID">@Html.Raw(Expediente.nPacienteID.Caption)</span></td>
+		<td data-name="nPacienteID" @Html.Raw(Expediente.nPacienteID.CellAttributes)>
+<span id="el_Expediente_nPacienteID">
+<span @Html.Raw(Expediente.nPacienteID.ViewAttributes)>
+@Html.Raw(Expediente.nPacienteID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Expediente.nPacienteID.Visible (end) *@
+@if (Expediente.nCodigoExpediente.Visible) { @* Expediente.nCodigoExpediente.Visible (begin) *@
+	<tr id="r_nCodigoExpediente">
+		<td class="@Expediente_View.TableLeftColumnClass"><span id="elh_Expediente_nCodigoExpediente">@Html.Raw(Expediente.nCodigoExpediente.Caption)</span></td>
+		<td data-name="nCodigoExpediente" @Html.Raw(Expediente.nCodigoExpediente.CellAttributes)>
+<span id="el_Expediente_nCodigoExpediente">
+<span @Html.Raw(Expediente.nCodigoExpediente.ViewAttributes)>
+@Html.Raw(Expediente.nCodigoExpediente.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Expediente.nCodigoExpediente.Visible (end) *@
+@if (Expediente.dFechaExpediente.Visible) { @* Expediente.dFechaExpediente.Visible (begin) *@
+	<tr id="r_dFechaExpediente">
+		<td class="@Expediente_View.TableLeftColumnClass"><span id="elh_Expediente_dFechaExpediente">@Html.Raw(Expediente.dFechaExpediente.Caption)</span></td>
+		<td data-name="dFechaExpediente" @Html.Raw(Expediente.dFechaExpediente.CellAttributes)>
+<span id="el_Expediente_dFechaExpediente">
+<span @Html.Raw(Expediente.dFechaExpediente.ViewAttributes)>
+@Html.Raw(Expediente.dFechaExpediente.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Expediente.dFechaExpediente.Visible (end) *@
+@if (Expediente.sACPPESA.Visible) { @* Expediente.sACPPESA.Visible (begin) *@
+	<tr id="r_sACPPESA">
+		<td class="@Expediente_View.TableLeftColumnClass"><span id="elh_Expediente_sACPPESA">@Html.Raw(Expediente.sACPPESA.Caption)</span></td>
+		<td data-name="sACPPESA" @Html.Raw(Expediente.sACPPESA.CellAttributes)>
+<span id="el_Expediente_sACPPESA">
+<span @Html.Raw(Expediente.sACPPESA.ViewAttributes)>
+@Html.Raw(Expediente.sACPPESA.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Expediente.sACPPESA.Visible (end) *@
+@if (Expediente.nGrupoSanguineoID.Visible) { @* Expediente.nGrupoSanguineoID.Visible (begin) *@
+	<tr id="r_nGrupoSanguineoID">
+		<td class="@Expediente_View.TableLeftColumnClass"><span id="elh_Expediente_nGrupoSanguineoID">@Html.Raw(Expediente.nGrupoSanguineoID.Caption)</span></td>
+		<td data-name="nGrupoSanguineoID" @Html.Raw(Expediente.nGrupoSanguineoID.CellAttributes)>
+<span id="el_Expediente_nGrupoSanguineoID">
+<span @Html.Raw(Expediente.nGrupoSanguineoID.ViewAttributes)>
+@Html.Raw(Expediente.nGrupoSanguineoID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Expediente.nGrupoSanguineoID.Visible (end) *@
+@if (Expediente.nAAAMA.Visible) { @* Expediente.nAAAMA.Visible (begin) *@
+	<tr id="r_nAAAMA">
+		<td class="@Expediente_View.TableLeftColumnClass"><span id="elh_Expediente_nAAAMA">@Html.Raw(Expediente.nAAAMA.Caption)</span></td>
+		<td data-name="nAAAMA" @Html.Raw(Expediente.nAAAMA.CellAttributes)>
+<span id="el_Expediente_nAAAMA">
+<span @Html.Raw(Expediente.nAAAMA.ViewAttributes)>
+@Html.Raw(Expediente.nAAAMA.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Expediente.nAAAMA.Visible (end) *@
+@if (Expediente.sAAAMA.Visible) { @* Expediente.sAAAMA.Visible (begin) *@
+	<tr id="r_sAAAMA">
+		<td class="@Expediente_View.TableLeftColumnClass"><span id="elh_Expediente_sAAAMA">@Html.Raw(Expediente.sAAAMA.Caption)</span></td>
+		<td data-name="sAAAMA" @Html.Raw(Expediente.sAAAMA.CellAttributes)>
+<span id="el_Expediente_sAAAMA">
+<span @Html.Raw(Expediente.sAAAMA.ViewAttributes)>
+@Html.Raw(Expediente.sAAAMA.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Expediente.sAAAMA.Visible (end) *@
+@if (Expediente.nEstadoID.Visible) { @* Expediente.nEstadoID.Visible (begin) *@
+	<tr id="r_nEstadoID">
+		<td class="@Expediente_View.TableLeftColumnClass"><span id="elh_Expediente_nEstadoID">@Html.Raw(Expediente.nEstadoID.Caption)</span></td>
+		<td data-name="nEstadoID" @Html.Raw(Expediente.nEstadoID.CellAttributes)>
+<span id="el_Expediente_nEstadoID">
+<span @Html.Raw(Expediente.nEstadoID.ViewAttributes)>
+@Html.Raw(Expediente.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Expediente.nEstadoID.Visible (end) *@
+</table>
+@{ Expediente_View.CloseRecordset(); }
+</form>
+@Expediente_View.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!Expediente.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

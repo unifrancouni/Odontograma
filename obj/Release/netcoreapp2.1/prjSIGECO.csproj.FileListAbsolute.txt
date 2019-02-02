@@ -1,0 +1,11 @@
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\bin\Release\netcoreapp2.1\AspNetMaker2019.deps.json
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\bin\Release\netcoreapp2.1\AspNetMaker2019.runtimeconfig.json
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\bin\Release\netcoreapp2.1\AspNetMaker2019.runtimeconfig.dev.json
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\bin\Release\netcoreapp2.1\AspNetMaker2019.dll
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\bin\Release\netcoreapp2.1\AspNetMaker2019.pdb
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Release\netcoreapp2.1\prjSIGECO.csprojAssemblyReference.cache
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Release\netcoreapp2.1\prjSIGECO.csproj.CoreCompileInputs.cache
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Release\netcoreapp2.1\prjSIGECO.AssemblyInfoInputs.cache
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Release\netcoreapp2.1\prjSIGECO.AssemblyInfo.cs
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Release\netcoreapp2.1\AspNetMaker2019.dll
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Release\netcoreapp2.1\AspNetMaker2019.pdb

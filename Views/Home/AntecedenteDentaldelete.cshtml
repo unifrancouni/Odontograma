@@ -1,0 +1,169 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	AntecedenteDental_Delete.Page_Render();
+
+	// Check action result
+	if (AntecedenteDental_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fAntecedenteDentaldelete = currentForm = new ew.Form("fAntecedenteDentaldelete", "delete");
+
+// Form_CustomValidate event
+fAntecedenteDentaldelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fAntecedenteDentaldelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fAntecedenteDentaldelete.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteDental_Delete.nExpedienteID.Lookup.ToClientList());
+fAntecedenteDentaldelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Delete.nExpedienteID.LookupOptions()));
+fAntecedenteDentaldelete.lists["x_nEstadoID"] = @Html.Raw(AntecedenteDental_Delete.nEstadoID.Lookup.ToClientList());
+fAntecedenteDentaldelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@AntecedenteDental_Delete.ShowPageHeader()
+@AntecedenteDental_Delete.ShowMessages()
+<form name="fAntecedenteDentaldelete" id="fAntecedenteDentaldelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (AntecedenteDental_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in AntecedenteDental_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (AntecedenteDental.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<th class="@Html.Raw(AntecedenteDental.nExpedienteID.HeaderCellClass)"><span id="elh_AntecedenteDental_nExpedienteID" class="AntecedenteDental_nExpedienteID">@Html.Raw(AntecedenteDental.nExpedienteID.Caption)</span></th>
+} @* nExpedienteID.Visible (end) *@
+@if (AntecedenteDental.dFechaUltimaVisitaDentista.Visible) { // dFechaUltimaVisitaDentista (begin)
+		<th class="@Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.HeaderCellClass)"><span id="elh_AntecedenteDental_dFechaUltimaVisitaDentista" class="AntecedenteDental_dFechaUltimaVisitaDentista">@Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.Caption)</span></th>
+} @* dFechaUltimaVisitaDentista.Visible (end) *@
+@if (AntecedenteDental.sMotivoVisita.Visible) { // sMotivoVisita (begin)
+		<th class="@Html.Raw(AntecedenteDental.sMotivoVisita.HeaderCellClass)"><span id="elh_AntecedenteDental_sMotivoVisita" class="AntecedenteDental_sMotivoVisita">@Html.Raw(AntecedenteDental.sMotivoVisita.Caption)</span></th>
+} @* sMotivoVisita.Visible (end) *@
+@if (AntecedenteDental.sExperienciaAsistencial.Visible) { // sExperienciaAsistencial (begin)
+		<th class="@Html.Raw(AntecedenteDental.sExperienciaAsistencial.HeaderCellClass)"><span id="elh_AntecedenteDental_sExperienciaAsistencial" class="AntecedenteDental_sExperienciaAsistencial">@Html.Raw(AntecedenteDental.sExperienciaAsistencial.Caption)</span></th>
+} @* sExperienciaAsistencial.Visible (end) *@
+@if (AntecedenteDental.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(AntecedenteDental.nEstadoID.HeaderCellClass)"><span id="elh_AntecedenteDental_nEstadoID" class="AntecedenteDental_nEstadoID">@Html.Raw(AntecedenteDental.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ AntecedenteDental_Delete.RecordCount = 0; }
+@while (AntecedenteDental_Delete.Recordset != null && await AntecedenteDental_Delete.Recordset.ReadAsync()) { // DN
+	AntecedenteDental_Delete.RecordCount++;
+	AntecedenteDental_Delete.RowCnt++;
+
+	// Set row properties
+	AntecedenteDental_Delete.ResetAttributes();
+	AntecedenteDental_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await AntecedenteDental_Delete.LoadRowValues(AntecedenteDental_Delete.Recordset);
+
+	// Render row
+	await AntecedenteDental_Delete.RenderRow();
+	<tr @Html.Raw(AntecedenteDental_Delete.RowAttributes)>
+@if (AntecedenteDental.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<td @Html.Raw(AntecedenteDental.nExpedienteID.CellAttributes)>
+<span id="el@(AntecedenteDental_Delete.RowCnt)_AntecedenteDental_nExpedienteID" class="AntecedenteDental_nExpedienteID">
+<span @Html.Raw(AntecedenteDental.nExpedienteID.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+} @* nExpedienteID.Visible (end) *@
+@if (AntecedenteDental.dFechaUltimaVisitaDentista.Visible) { // dFechaUltimaVisitaDentista (begin)
+		<td @Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.CellAttributes)>
+<span id="el@(AntecedenteDental_Delete.RowCnt)_AntecedenteDental_dFechaUltimaVisitaDentista" class="AntecedenteDental_dFechaUltimaVisitaDentista">
+<span @Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.ViewAttributes)>
+@Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.GetViewValue())</span>
+</span>
+</td>
+} @* dFechaUltimaVisitaDentista.Visible (end) *@
+@if (AntecedenteDental.sMotivoVisita.Visible) { // sMotivoVisita (begin)
+		<td @Html.Raw(AntecedenteDental.sMotivoVisita.CellAttributes)>
+<span id="el@(AntecedenteDental_Delete.RowCnt)_AntecedenteDental_sMotivoVisita" class="AntecedenteDental_sMotivoVisita">
+<span @Html.Raw(AntecedenteDental.sMotivoVisita.ViewAttributes)>
+@Html.Raw(AntecedenteDental.sMotivoVisita.GetViewValue())</span>
+</span>
+</td>
+} @* sMotivoVisita.Visible (end) *@
+@if (AntecedenteDental.sExperienciaAsistencial.Visible) { // sExperienciaAsistencial (begin)
+		<td @Html.Raw(AntecedenteDental.sExperienciaAsistencial.CellAttributes)>
+<span id="el@(AntecedenteDental_Delete.RowCnt)_AntecedenteDental_sExperienciaAsistencial" class="AntecedenteDental_sExperienciaAsistencial">
+<span @Html.Raw(AntecedenteDental.sExperienciaAsistencial.ViewAttributes)>
+@Html.Raw(AntecedenteDental.sExperienciaAsistencial.GetViewValue())</span>
+</span>
+</td>
+} @* sExperienciaAsistencial.Visible (end) *@
+@if (AntecedenteDental.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(AntecedenteDental.nEstadoID.CellAttributes)>
+<span id="el@(AntecedenteDental_Delete.RowCnt)_AntecedenteDental_nEstadoID" class="AntecedenteDental_nEstadoID">
+<span @Html.Raw(AntecedenteDental.nEstadoID.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ AntecedenteDental_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(AntecedenteDental_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@AntecedenteDental_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

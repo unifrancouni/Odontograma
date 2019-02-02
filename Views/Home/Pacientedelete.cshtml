@@ -1,0 +1,189 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Paciente_Delete.Page_Render();
+
+	// Check action result
+	if (Paciente_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fPacientedelete = currentForm = new ew.Form("fPacientedelete", "delete");
+
+// Form_CustomValidate event
+fPacientedelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPacientedelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPacientedelete.lists["x_nGeneroID"] = @Html.Raw(Paciente_Delete.nGeneroID.Lookup.ToClientList());
+fPacientedelete.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_Delete.nGeneroID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Paciente_Delete.ShowPageHeader()
+@Paciente_Delete.ShowMessages()
+<form name="fPacientedelete" id="fPacientedelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Paciente_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in Paciente_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (Paciente.nCodigo.Visible) { // nCodigo (begin)
+		<th class="@Html.Raw(Paciente.nCodigo.HeaderCellClass)"><span id="elh_Paciente_nCodigo" class="Paciente_nCodigo">@Html.Raw(Paciente.nCodigo.Caption)</span></th>
+} @* nCodigo.Visible (end) *@
+@if (Paciente.sNombre.Visible) { // sNombre (begin)
+		<th class="@Html.Raw(Paciente.sNombre.HeaderCellClass)"><span id="elh_Paciente_sNombre" class="Paciente_sNombre">@Html.Raw(Paciente.sNombre.Caption)</span></th>
+} @* sNombre.Visible (end) *@
+@if (Paciente.sApellido1.Visible) { // sApellido1 (begin)
+		<th class="@Html.Raw(Paciente.sApellido1.HeaderCellClass)"><span id="elh_Paciente_sApellido1" class="Paciente_sApellido1">@Html.Raw(Paciente.sApellido1.Caption)</span></th>
+} @* sApellido1.Visible (end) *@
+@if (Paciente.sApellido2.Visible) { // sApellido2 (begin)
+		<th class="@Html.Raw(Paciente.sApellido2.HeaderCellClass)"><span id="elh_Paciente_sApellido2" class="Paciente_sApellido2">@Html.Raw(Paciente.sApellido2.Caption)</span></th>
+} @* sApellido2.Visible (end) *@
+@if (Paciente.nGeneroID.Visible) { // nGeneroID (begin)
+		<th class="@Html.Raw(Paciente.nGeneroID.HeaderCellClass)"><span id="elh_Paciente_nGeneroID" class="Paciente_nGeneroID">@Html.Raw(Paciente.nGeneroID.Caption)</span></th>
+} @* nGeneroID.Visible (end) *@
+@if (Paciente.sCedula.Visible) { // sCedula (begin)
+		<th class="@Html.Raw(Paciente.sCedula.HeaderCellClass)"><span id="elh_Paciente_sCedula" class="Paciente_sCedula">@Html.Raw(Paciente.sCedula.Caption)</span></th>
+} @* sCedula.Visible (end) *@
+@if (Paciente.sTelefono.Visible) { // sTelefono (begin)
+		<th class="@Html.Raw(Paciente.sTelefono.HeaderCellClass)"><span id="elh_Paciente_sTelefono" class="Paciente_sTelefono">@Html.Raw(Paciente.sTelefono.Caption)</span></th>
+} @* sTelefono.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ Paciente_Delete.RecordCount = 0; }
+@while (Paciente_Delete.Recordset != null && await Paciente_Delete.Recordset.ReadAsync()) { // DN
+	Paciente_Delete.RecordCount++;
+	Paciente_Delete.RowCnt++;
+
+	// Set row properties
+	Paciente_Delete.ResetAttributes();
+	Paciente_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await Paciente_Delete.LoadRowValues(Paciente_Delete.Recordset);
+
+	// Render row
+	await Paciente_Delete.RenderRow();
+	<tr @Html.Raw(Paciente_Delete.RowAttributes)>
+@if (Paciente.nCodigo.Visible) { // nCodigo (begin)
+		<td @Html.Raw(Paciente.nCodigo.CellAttributes)>
+<span id="el@(Paciente_Delete.RowCnt)_Paciente_nCodigo" class="Paciente_nCodigo">
+<span @Html.Raw(Paciente.nCodigo.ViewAttributes)>
+@Html.Raw(Paciente.nCodigo.GetViewValue())</span>
+</span>
+</td>
+} @* nCodigo.Visible (end) *@
+@if (Paciente.sNombre.Visible) { // sNombre (begin)
+		<td @Html.Raw(Paciente.sNombre.CellAttributes)>
+<span id="el@(Paciente_Delete.RowCnt)_Paciente_sNombre" class="Paciente_sNombre">
+<span @Html.Raw(Paciente.sNombre.ViewAttributes)>
+@Html.Raw(Paciente.sNombre.GetViewValue())</span>
+</span>
+</td>
+} @* sNombre.Visible (end) *@
+@if (Paciente.sApellido1.Visible) { // sApellido1 (begin)
+		<td @Html.Raw(Paciente.sApellido1.CellAttributes)>
+<span id="el@(Paciente_Delete.RowCnt)_Paciente_sApellido1" class="Paciente_sApellido1">
+<span @Html.Raw(Paciente.sApellido1.ViewAttributes)>
+@Html.Raw(Paciente.sApellido1.GetViewValue())</span>
+</span>
+</td>
+} @* sApellido1.Visible (end) *@
+@if (Paciente.sApellido2.Visible) { // sApellido2 (begin)
+		<td @Html.Raw(Paciente.sApellido2.CellAttributes)>
+<span id="el@(Paciente_Delete.RowCnt)_Paciente_sApellido2" class="Paciente_sApellido2">
+<span @Html.Raw(Paciente.sApellido2.ViewAttributes)>
+@Html.Raw(Paciente.sApellido2.GetViewValue())</span>
+</span>
+</td>
+} @* sApellido2.Visible (end) *@
+@if (Paciente.nGeneroID.Visible) { // nGeneroID (begin)
+		<td @Html.Raw(Paciente.nGeneroID.CellAttributes)>
+<span id="el@(Paciente_Delete.RowCnt)_Paciente_nGeneroID" class="Paciente_nGeneroID">
+<span @Html.Raw(Paciente.nGeneroID.ViewAttributes)>
+@Html.Raw(Paciente.nGeneroID.GetViewValue())</span>
+</span>
+</td>
+} @* nGeneroID.Visible (end) *@
+@if (Paciente.sCedula.Visible) { // sCedula (begin)
+		<td @Html.Raw(Paciente.sCedula.CellAttributes)>
+<span id="el@(Paciente_Delete.RowCnt)_Paciente_sCedula" class="Paciente_sCedula">
+<span @Html.Raw(Paciente.sCedula.ViewAttributes)>
+@Html.Raw(Paciente.sCedula.GetViewValue())</span>
+</span>
+</td>
+} @* sCedula.Visible (end) *@
+@if (Paciente.sTelefono.Visible) { // sTelefono (begin)
+		<td @Html.Raw(Paciente.sTelefono.CellAttributes)>
+<span id="el@(Paciente_Delete.RowCnt)_Paciente_sTelefono" class="Paciente_sTelefono">
+<span @Html.Raw(Paciente.sTelefono.ViewAttributes)>
+@Html.Raw(Paciente.sTelefono.GetViewValue())</span>
+</span>
+</td>
+} @* sTelefono.Visible (end) *@
+	</tr>
+}
+@{ Paciente_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Paciente_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@Paciente_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

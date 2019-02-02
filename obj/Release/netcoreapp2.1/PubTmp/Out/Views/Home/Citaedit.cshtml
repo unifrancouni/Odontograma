@@ -1,0 +1,244 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Cita_Edit.Page_Render();
+
+	// Check action result
+	if (Cita_Edit.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "edit";
+var fCitaedit = currentForm = new ew.Form("fCitaedit", "edit");
+
+// Validate form
+fCitaedit.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (Cita_Edit.nExpedienteID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nExpedienteID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Cita.nExpedienteID.RequiredErrorMessage.Replace("%s", Cita.nExpedienteID.Caption)))");
+		</text>
+	}
+	@if (Cita_Edit.sMotivoCita.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sMotivoCita");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Cita.sMotivoCita.RequiredErrorMessage.Replace("%s", Cita.sMotivoCita.Caption)))");
+		</text>
+	}
+	@if (Cita_Edit.dFechaHoraCita.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaHoraCita");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Cita.dFechaHoraCita.RequiredErrorMessage.Replace("%s", Cita.dFechaHoraCita.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaHoraCita");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Cita.dFechaHoraCita.ErrorMessage))");
+	@if (Cita_Edit.dHora.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dHora");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Cita.dHora.RequiredErrorMessage.Replace("%s", Cita.dHora.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dHora");
+		if (elm && !ew.checkTime(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Cita.dHora.ErrorMessage))");
+	@if (Cita_Edit.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Cita.nEstadoID.RequiredErrorMessage.Replace("%s", Cita.nEstadoID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fCitaedit.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fCitaedit.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fCitaedit.lists["x_nExpedienteID"] = @Html.Raw(Cita_Edit.nExpedienteID.Lookup.ToClientList());
+fCitaedit.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Cita_Edit.nExpedienteID.LookupOptions()));
+fCitaedit.lists["x_nEstadoID"] = @Html.Raw(Cita_Edit.nEstadoID.Lookup.ToClientList());
+fCitaedit.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_Edit.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Cita_Edit.ShowPageHeader()
+@Cita_Edit.ShowMessages()
+<form name="fCitaedit" id="fCitaedit" class="@Cita_Edit.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (Cita_Edit.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="update">
+@if (Cita_Edit.IsModal) {
+<input type="hidden" name="modal" value="@ConvertToInt(Cita_Edit.IsModal)">
+}
+<div class="ew-edit-div"><!-- page* -->
+@if (Cita.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	<div id="r_nExpedienteID" class="form-group row">
+		<label id="elh_Cita_nExpedienteID" for="x_nExpedienteID" class="@Cita_Edit.LeftColumnClass">@Html.Raw(Cita.nExpedienteID.Caption)@Html.Raw(Cita.nExpedienteID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Cita_Edit.RightColumnClass"><div @Html.Raw(Cita.nExpedienteID.CellAttributes)>
+<span id="el_Cita_nExpedienteID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(Cita.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Cita.nExpedienteID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Cita.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((Cita.nExpedienteID.ReadOnly || Cita.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Cita.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
+<input type="hidden" data-table="Cita" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@Cita.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Cita.nExpedienteID.CurrentValue"@Html.Raw(Cita.nExpedienteID.EditAttributes)>
+</span>
+@Html.Raw(Cita.nExpedienteID.CustomMessage)</div></div>
+	</div>
+} @* nExpedienteID.Visible (end) *@
+@if (Cita.sMotivoCita.Visible) { // sMotivoCita.Visible (begin)
+	<div id="r_sMotivoCita" class="form-group row">
+		<label id="elh_Cita_sMotivoCita" for="x_sMotivoCita" class="@Cita_Edit.LeftColumnClass">@Html.Raw(Cita.sMotivoCita.Caption)@Html.Raw(Cita.sMotivoCita.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Cita_Edit.RightColumnClass"><div @Html.Raw(Cita.sMotivoCita.CellAttributes)>
+<span id="el_Cita_sMotivoCita">
+<input type="text" data-table="Cita" data-field="x_sMotivoCita" name="x_sMotivoCita" id="x_sMotivoCita" size="30" maxlength="200" placeholder="@Cita.sMotivoCita.PlaceHolder" value="@Cita.sMotivoCita.EditValue" @Html.Raw(Cita.sMotivoCita.EditAttributes)>
+</span>
+@Html.Raw(Cita.sMotivoCita.CustomMessage)</div></div>
+	</div>
+} @* sMotivoCita.Visible (end) *@
+@if (Cita.dFechaHoraCita.Visible) { // dFechaHoraCita.Visible (begin)
+	<div id="r_dFechaHoraCita" class="form-group row">
+		<label id="elh_Cita_dFechaHoraCita" for="x_dFechaHoraCita" class="@Cita_Edit.LeftColumnClass">@Html.Raw(Cita.dFechaHoraCita.Caption)@Html.Raw(Cita.dFechaHoraCita.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Cita_Edit.RightColumnClass"><div @Html.Raw(Cita.dFechaHoraCita.CellAttributes)>
+<span id="el_Cita_dFechaHoraCita">
+<input type="text" data-table="Cita" data-field="x_dFechaHoraCita" name="x_dFechaHoraCita" id="x_dFechaHoraCita" placeholder="@Cita.dFechaHoraCita.PlaceHolder" value="@Cita.dFechaHoraCita.EditValue" @Html.Raw(Cita.dFechaHoraCita.EditAttributes)>
+@if (!Cita.dFechaHoraCita.ReadOnly && !Cita.dFechaHoraCita.Disabled && !Cita.dFechaHoraCita.EditAttrs.ContainsKey("readonly") && !Cita.dFechaHoraCita.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fCitaedit", "x_dFechaHoraCita", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(Cita.dFechaHoraCita.CustomMessage)</div></div>
+	</div>
+} @* dFechaHoraCita.Visible (end) *@
+@if (Cita.dHora.Visible) { // dHora.Visible (begin)
+	<div id="r_dHora" class="form-group row">
+		<label id="elh_Cita_dHora" for="x_dHora" class="@Cita_Edit.LeftColumnClass">@Html.Raw(Cita.dHora.Caption)@Html.Raw(Cita.dHora.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Cita_Edit.RightColumnClass"><div @Html.Raw(Cita.dHora.CellAttributes)>
+<span id="el_Cita_dHora">
+<input type="text" data-table="Cita" data-field="x_dHora" name="x_dHora" id="x_dHora" placeholder="@Cita.dHora.PlaceHolder" value="@Cita.dHora.EditValue" @Html.Raw(Cita.dHora.EditAttributes)>
+</span>
+@Html.Raw(Cita.dHora.CustomMessage)</div></div>
+	</div>
+} @* dHora.Visible (end) *@
+@if (Cita.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	<div id="r_nEstadoID" class="form-group row">
+		<label id="elh_Cita_nEstadoID" for="x_nEstadoID" class="@Cita_Edit.LeftColumnClass">@Html.Raw(Cita.nEstadoID.Caption)@Html.Raw(Cita.nEstadoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Cita_Edit.RightColumnClass"><div @Html.Raw(Cita.nEstadoID.CellAttributes)>
+<span id="el_Cita_nEstadoID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(Cita.nEstadoID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(Cita.nEstadoID.ViewValue)</button>
+		<div id="dsl_x_nEstadoID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@Cita.nEstadoID.RadioButtonListHtml(true, "x_nEstadoID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x_nEstadoID" class="ew-template"><input type="radio" class="form-check-input" data-table="Cita" data-field="x_nEstadoID" data-value-separator="@Cita.nEstadoID.DisplayValueSeparatorAttribute" data-please-select-text="@Cita.nEstadoID.PleaseSelectText" name="x_nEstadoID" id="x_nEstadoID" value="{value}"@Html.Raw(Cita.nEstadoID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!Cita.nEstadoID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(Cita.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+@Html.Raw(Cita.nEstadoID.CustomMessage)</div></div>
+	</div>
+} @* nEstadoID.Visible (end) *@
+</div><!-- /page* -->
+	<input type="hidden" data-table="Cita" data-field="x_nCitaID" name="x_nCitaID" id="x_nCitaID" value="@Cita.nCitaID.CurrentValue">
+@{ Cita_Edit.CloseRecordset(); }
+@if (!Cita_Edit.IsModal) {
+@:<div class="form-group row"><!-- buttons .form-group -->
+	@:<div class="@Cita_Edit.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("SaveBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Cita_Edit.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+	@:</div><!-- /buttons offset -->
+@:</div><!-- /buttons .form-group -->
+}
+</form>
+@Cita_Edit.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

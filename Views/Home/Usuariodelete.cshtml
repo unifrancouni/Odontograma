@@ -1,0 +1,132 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Usuario_Delete.Page_Render();
+
+	// Check action result
+	if (Usuario_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fUsuariodelete = currentForm = new ew.Form("fUsuariodelete", "delete");
+
+// Form_CustomValidate event
+fUsuariodelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fUsuariodelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+// Form object for search
+
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Usuario_Delete.ShowPageHeader()
+@Usuario_Delete.ShowMessages()
+<form name="fUsuariodelete" id="fUsuariodelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Usuario_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in Usuario_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (Usuario.nUsuarioId.Visible) { // nUsuarioId (begin)
+		<th class="@Html.Raw(Usuario.nUsuarioId.HeaderCellClass)"><span id="elh_Usuario_nUsuarioId" class="Usuario_nUsuarioId">@Html.Raw(Usuario.nUsuarioId.Caption)</span></th>
+} @* nUsuarioId.Visible (end) *@
+@if (Usuario.sEmail.Visible) { // sEmail (begin)
+		<th class="@Html.Raw(Usuario.sEmail.HeaderCellClass)"><span id="elh_Usuario_sEmail" class="Usuario_sEmail">@Html.Raw(Usuario.sEmail.Caption)</span></th>
+} @* sEmail.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ Usuario_Delete.RecordCount = 0; }
+@while (Usuario_Delete.Recordset != null && await Usuario_Delete.Recordset.ReadAsync()) { // DN
+	Usuario_Delete.RecordCount++;
+	Usuario_Delete.RowCnt++;
+
+	// Set row properties
+	Usuario_Delete.ResetAttributes();
+	Usuario_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await Usuario_Delete.LoadRowValues(Usuario_Delete.Recordset);
+
+	// Render row
+	await Usuario_Delete.RenderRow();
+	<tr @Html.Raw(Usuario_Delete.RowAttributes)>
+@if (Usuario.nUsuarioId.Visible) { // nUsuarioId (begin)
+		<td @Html.Raw(Usuario.nUsuarioId.CellAttributes)>
+<span id="el@(Usuario_Delete.RowCnt)_Usuario_nUsuarioId" class="Usuario_nUsuarioId">
+<span @Html.Raw(Usuario.nUsuarioId.ViewAttributes)>
+@Html.Raw(Usuario.nUsuarioId.GetViewValue())</span>
+</span>
+</td>
+} @* nUsuarioId.Visible (end) *@
+@if (Usuario.sEmail.Visible) { // sEmail (begin)
+		<td @Html.Raw(Usuario.sEmail.CellAttributes)>
+<span id="el@(Usuario_Delete.RowCnt)_Usuario_sEmail" class="Usuario_sEmail">
+<span @Html.Raw(Usuario.sEmail.ViewAttributes)>
+@Html.Raw(Usuario.sEmail.GetViewValue())</span>
+</span>
+</td>
+} @* sEmail.Visible (end) *@
+	</tr>
+}
+@{ Usuario_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Usuario_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@Usuario_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

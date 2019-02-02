@@ -1,0 +1,474 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	AntecedenteDental_Add.Page_Render();
+
+	// Check action result
+	if (AntecedenteDental_Add.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "add";
+var fAntecedenteDentaladd = currentForm = new ew.Form("fAntecedenteDentaladd", "add");
+
+// Validate form
+fAntecedenteDentaladd.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (AntecedenteDental_Add.nExpedienteID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nExpedienteID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nExpedienteID.RequiredErrorMessage.Replace("%s", AntecedenteDental.nExpedienteID.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.dFechaUltimaVisitaDentista.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaUltimaVisitaDentista");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.dFechaUltimaVisitaDentista.RequiredErrorMessage.Replace("%s", AntecedenteDental.dFechaUltimaVisitaDentista.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaUltimaVisitaDentista");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.dFechaUltimaVisitaDentista.ErrorMessage))");
+	@if (AntecedenteDental_Add.sMotivoVisita.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sMotivoVisita");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.sMotivoVisita.RequiredErrorMessage.Replace("%s", AntecedenteDental.sMotivoVisita.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.sExperienciaAsistencial.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sExperienciaAsistencial");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.sExperienciaAsistencial.RequiredErrorMessage.Replace("%s", AntecedenteDental.sExperienciaAsistencial.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nTratamientoQuirurgico.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nTratamientoQuirurgico");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nTratamientoQuirurgico.RequiredErrorMessage.Replace("%s", AntecedenteDental.nTratamientoQuirurgico.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nTratamientoRestauracion.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nTratamientoRestauracion");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nTratamientoRestauracion.RequiredErrorMessage.Replace("%s", AntecedenteDental.nTratamientoRestauracion.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nTratamientoPeridoncia.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nTratamientoPeridoncia");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nTratamientoPeridoncia.RequiredErrorMessage.Replace("%s", AntecedenteDental.nTratamientoPeridoncia.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nTratamientoEndodoncia.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nTratamientoEndodoncia");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nTratamientoEndodoncia.RequiredErrorMessage.Replace("%s", AntecedenteDental.nTratamientoEndodoncia.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nTratamientoOrtodoncia.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nTratamientoOrtodoncia");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nTratamientoOrtodoncia.RequiredErrorMessage.Replace("%s", AntecedenteDental.nTratamientoOrtodoncia.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nTratamientoProtesis.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nTratamientoProtesis");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nTratamientoProtesis.RequiredErrorMessage.Replace("%s", AntecedenteDental.nTratamientoProtesis.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nColocadoAnestesia.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nColocadoAnestesia");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nColocadoAnestesia.RequiredErrorMessage.Replace("%s", AntecedenteDental.nColocadoAnestesia.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nReaccionAlergicaAnestesia.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nReaccionAlergicaAnestesia");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nReaccionAlergicaAnestesia.RequiredErrorMessage.Replace("%s", AntecedenteDental.nReaccionAlergicaAnestesia.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.sReaccionAlergicaAnestesia.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sReaccionAlergicaAnestesia");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.sReaccionAlergicaAnestesia.RequiredErrorMessage.Replace("%s", AntecedenteDental.sReaccionAlergicaAnestesia.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.sDescripcionTejidosBlandos.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sDescripcionTejidosBlandos");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.sDescripcionTejidosBlandos.RequiredErrorMessage.Replace("%s", AntecedenteDental.sDescripcionTejidosBlandos.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.sHistoriaEnfermedadActual.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sHistoriaEnfermedadActual");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.sHistoriaEnfermedadActual.RequiredErrorMessage.Replace("%s", AntecedenteDental.sHistoriaEnfermedadActual.Caption)))");
+		</text>
+	}
+	@if (AntecedenteDental_Add.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteDental.nEstadoID.RequiredErrorMessage.Replace("%s", AntecedenteDental.nEstadoID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fAntecedenteDentaladd.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fAntecedenteDentaladd.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fAntecedenteDentaladd.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteDental_Add.nExpedienteID.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nExpedienteID.LookupOptions()));
+fAntecedenteDentaladd.lists["x_nTratamientoQuirurgico"] = @Html.Raw(AntecedenteDental_Add.nTratamientoQuirurgico.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nTratamientoQuirurgico"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nTratamientoQuirurgico.Options(false))); // DN
+fAntecedenteDentaladd.lists["x_nTratamientoRestauracion"] = @Html.Raw(AntecedenteDental_Add.nTratamientoRestauracion.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nTratamientoRestauracion"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nTratamientoRestauracion.Options(false))); // DN
+fAntecedenteDentaladd.lists["x_nTratamientoPeridoncia"] = @Html.Raw(AntecedenteDental_Add.nTratamientoPeridoncia.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nTratamientoPeridoncia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nTratamientoPeridoncia.Options(false))); // DN
+fAntecedenteDentaladd.lists["x_nTratamientoEndodoncia"] = @Html.Raw(AntecedenteDental_Add.nTratamientoEndodoncia.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nTratamientoEndodoncia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nTratamientoEndodoncia.Options(false))); // DN
+fAntecedenteDentaladd.lists["x_nTratamientoOrtodoncia"] = @Html.Raw(AntecedenteDental_Add.nTratamientoOrtodoncia.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nTratamientoOrtodoncia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nTratamientoOrtodoncia.Options(false))); // DN
+fAntecedenteDentaladd.lists["x_nTratamientoProtesis"] = @Html.Raw(AntecedenteDental_Add.nTratamientoProtesis.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nTratamientoProtesis"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nTratamientoProtesis.Options(false))); // DN
+fAntecedenteDentaladd.lists["x_nColocadoAnestesia"] = @Html.Raw(AntecedenteDental_Add.nColocadoAnestesia.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nColocadoAnestesia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nColocadoAnestesia.Options(false))); // DN
+fAntecedenteDentaladd.lists["x_nReaccionAlergicaAnestesia"] = @Html.Raw(AntecedenteDental_Add.nReaccionAlergicaAnestesia.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nReaccionAlergicaAnestesia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nReaccionAlergicaAnestesia.Options(false))); // DN
+fAntecedenteDentaladd.lists["x_nEstadoID"] = @Html.Raw(AntecedenteDental_Add.nEstadoID.Lookup.ToClientList());
+fAntecedenteDentaladd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@AntecedenteDental_Add.ShowPageHeader()
+@AntecedenteDental_Add.ShowMessages()
+<form name="fAntecedenteDentaladd" id="fAntecedenteDentaladd" class="@AntecedenteDental_Add.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (AntecedenteDental_Add.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="t" value="AntecedenteDental">
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(AntecedenteDental_Add.IsModal)">
+<div class="ew-add-div"><!-- page* -->
+@if (AntecedenteDental.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	<div id="r_nExpedienteID" class="form-group row">
+		<label id="elh_AntecedenteDental_nExpedienteID" for="x_nExpedienteID" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nExpedienteID.Caption)@Html.Raw(AntecedenteDental.nExpedienteID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nExpedienteID.CellAttributes)>
+<span id="el_AntecedenteDental_nExpedienteID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(AntecedenteDental.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : AntecedenteDental.nExpedienteID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(AntecedenteDental.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((AntecedenteDental.nExpedienteID.ReadOnly || AntecedenteDental.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(AntecedenteDental.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
+<input type="hidden" data-table="AntecedenteDental" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@AntecedenteDental.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@AntecedenteDental.nExpedienteID.CurrentValue"@Html.Raw(AntecedenteDental.nExpedienteID.EditAttributes)>
+</span>
+@Html.Raw(AntecedenteDental.nExpedienteID.CustomMessage)</div></div>
+	</div>
+} @* nExpedienteID.Visible (end) *@
+@if (AntecedenteDental.dFechaUltimaVisitaDentista.Visible) { // dFechaUltimaVisitaDentista.Visible (begin)
+	<div id="r_dFechaUltimaVisitaDentista" class="form-group row">
+		<label id="elh_AntecedenteDental_dFechaUltimaVisitaDentista" for="x_dFechaUltimaVisitaDentista" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.Caption)@Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.CellAttributes)>
+<span id="el_AntecedenteDental_dFechaUltimaVisitaDentista">
+<input type="text" data-table="AntecedenteDental" data-field="x_dFechaUltimaVisitaDentista" name="x_dFechaUltimaVisitaDentista" id="x_dFechaUltimaVisitaDentista" placeholder="@AntecedenteDental.dFechaUltimaVisitaDentista.PlaceHolder" value="@AntecedenteDental.dFechaUltimaVisitaDentista.EditValue" @Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.EditAttributes)>
+@if (!AntecedenteDental.dFechaUltimaVisitaDentista.ReadOnly && !AntecedenteDental.dFechaUltimaVisitaDentista.Disabled && !AntecedenteDental.dFechaUltimaVisitaDentista.EditAttrs.ContainsKey("readonly") && !AntecedenteDental.dFechaUltimaVisitaDentista.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fAntecedenteDentaladd", "x_dFechaUltimaVisitaDentista", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.CustomMessage)</div></div>
+	</div>
+} @* dFechaUltimaVisitaDentista.Visible (end) *@
+@if (AntecedenteDental.sMotivoVisita.Visible) { // sMotivoVisita.Visible (begin)
+	<div id="r_sMotivoVisita" class="form-group row">
+		<label id="elh_AntecedenteDental_sMotivoVisita" for="x_sMotivoVisita" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.sMotivoVisita.Caption)@Html.Raw(AntecedenteDental.sMotivoVisita.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.sMotivoVisita.CellAttributes)>
+<span id="el_AntecedenteDental_sMotivoVisita">
+<textarea data-table="AntecedenteDental" data-field="x_sMotivoVisita" name="x_sMotivoVisita" id="x_sMotivoVisita" cols="35" rows="4" placeholder="@AntecedenteDental.sMotivoVisita.PlaceHolder" @Html.Raw(AntecedenteDental.sMotivoVisita.EditAttributes)>@AntecedenteDental.sMotivoVisita.EditValue</textarea>
+</span>
+@Html.Raw(AntecedenteDental.sMotivoVisita.CustomMessage)</div></div>
+	</div>
+} @* sMotivoVisita.Visible (end) *@
+@if (AntecedenteDental.sExperienciaAsistencial.Visible) { // sExperienciaAsistencial.Visible (begin)
+	<div id="r_sExperienciaAsistencial" class="form-group row">
+		<label id="elh_AntecedenteDental_sExperienciaAsistencial" for="x_sExperienciaAsistencial" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.sExperienciaAsistencial.Caption)@Html.Raw(AntecedenteDental.sExperienciaAsistencial.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.sExperienciaAsistencial.CellAttributes)>
+<span id="el_AntecedenteDental_sExperienciaAsistencial">
+<textarea data-table="AntecedenteDental" data-field="x_sExperienciaAsistencial" name="x_sExperienciaAsistencial" id="x_sExperienciaAsistencial" cols="35" rows="4" placeholder="@AntecedenteDental.sExperienciaAsistencial.PlaceHolder" @Html.Raw(AntecedenteDental.sExperienciaAsistencial.EditAttributes)>@AntecedenteDental.sExperienciaAsistencial.EditValue</textarea>
+</span>
+@Html.Raw(AntecedenteDental.sExperienciaAsistencial.CustomMessage)</div></div>
+	</div>
+} @* sExperienciaAsistencial.Visible (end) *@
+@if (AntecedenteDental.nTratamientoQuirurgico.Visible) { // nTratamientoQuirurgico.Visible (begin)
+	<div id="r_nTratamientoQuirurgico" class="form-group row">
+		<label id="elh_AntecedenteDental_nTratamientoQuirurgico" for="x_nTratamientoQuirurgico" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nTratamientoQuirurgico.Caption)@Html.Raw(AntecedenteDental.nTratamientoQuirurgico.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nTratamientoQuirurgico.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoQuirurgico">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="AntecedenteDental" data-field="x_nTratamientoQuirurgico" data-value-separator="@AntecedenteDental.nTratamientoQuirurgico.DisplayValueSeparatorAttribute" id="x_nTratamientoQuirurgico" name="x_nTratamientoQuirurgico"@Html.Raw(AntecedenteDental.nTratamientoQuirurgico.EditAttributes)>
+		@AntecedenteDental.nTratamientoQuirurgico.SelectOptionListHtml("x_nTratamientoQuirurgico")
+	</select>
+</div>
+</span>
+@Html.Raw(AntecedenteDental.nTratamientoQuirurgico.CustomMessage)</div></div>
+	</div>
+} @* nTratamientoQuirurgico.Visible (end) *@
+@if (AntecedenteDental.nTratamientoRestauracion.Visible) { // nTratamientoRestauracion.Visible (begin)
+	<div id="r_nTratamientoRestauracion" class="form-group row">
+		<label id="elh_AntecedenteDental_nTratamientoRestauracion" for="x_nTratamientoRestauracion" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nTratamientoRestauracion.Caption)@Html.Raw(AntecedenteDental.nTratamientoRestauracion.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nTratamientoRestauracion.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoRestauracion">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="AntecedenteDental" data-field="x_nTratamientoRestauracion" data-value-separator="@AntecedenteDental.nTratamientoRestauracion.DisplayValueSeparatorAttribute" id="x_nTratamientoRestauracion" name="x_nTratamientoRestauracion"@Html.Raw(AntecedenteDental.nTratamientoRestauracion.EditAttributes)>
+		@AntecedenteDental.nTratamientoRestauracion.SelectOptionListHtml("x_nTratamientoRestauracion")
+	</select>
+</div>
+</span>
+@Html.Raw(AntecedenteDental.nTratamientoRestauracion.CustomMessage)</div></div>
+	</div>
+} @* nTratamientoRestauracion.Visible (end) *@
+@if (AntecedenteDental.nTratamientoPeridoncia.Visible) { // nTratamientoPeridoncia.Visible (begin)
+	<div id="r_nTratamientoPeridoncia" class="form-group row">
+		<label id="elh_AntecedenteDental_nTratamientoPeridoncia" for="x_nTratamientoPeridoncia" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nTratamientoPeridoncia.Caption)@Html.Raw(AntecedenteDental.nTratamientoPeridoncia.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nTratamientoPeridoncia.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoPeridoncia">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="AntecedenteDental" data-field="x_nTratamientoPeridoncia" data-value-separator="@AntecedenteDental.nTratamientoPeridoncia.DisplayValueSeparatorAttribute" id="x_nTratamientoPeridoncia" name="x_nTratamientoPeridoncia"@Html.Raw(AntecedenteDental.nTratamientoPeridoncia.EditAttributes)>
+		@AntecedenteDental.nTratamientoPeridoncia.SelectOptionListHtml("x_nTratamientoPeridoncia")
+	</select>
+</div>
+</span>
+@Html.Raw(AntecedenteDental.nTratamientoPeridoncia.CustomMessage)</div></div>
+	</div>
+} @* nTratamientoPeridoncia.Visible (end) *@
+@if (AntecedenteDental.nTratamientoEndodoncia.Visible) { // nTratamientoEndodoncia.Visible (begin)
+	<div id="r_nTratamientoEndodoncia" class="form-group row">
+		<label id="elh_AntecedenteDental_nTratamientoEndodoncia" for="x_nTratamientoEndodoncia" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nTratamientoEndodoncia.Caption)@Html.Raw(AntecedenteDental.nTratamientoEndodoncia.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nTratamientoEndodoncia.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoEndodoncia">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="AntecedenteDental" data-field="x_nTratamientoEndodoncia" data-value-separator="@AntecedenteDental.nTratamientoEndodoncia.DisplayValueSeparatorAttribute" id="x_nTratamientoEndodoncia" name="x_nTratamientoEndodoncia"@Html.Raw(AntecedenteDental.nTratamientoEndodoncia.EditAttributes)>
+		@AntecedenteDental.nTratamientoEndodoncia.SelectOptionListHtml("x_nTratamientoEndodoncia")
+	</select>
+</div>
+</span>
+@Html.Raw(AntecedenteDental.nTratamientoEndodoncia.CustomMessage)</div></div>
+	</div>
+} @* nTratamientoEndodoncia.Visible (end) *@
+@if (AntecedenteDental.nTratamientoOrtodoncia.Visible) { // nTratamientoOrtodoncia.Visible (begin)
+	<div id="r_nTratamientoOrtodoncia" class="form-group row">
+		<label id="elh_AntecedenteDental_nTratamientoOrtodoncia" for="x_nTratamientoOrtodoncia" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.Caption)@Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoOrtodoncia">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="AntecedenteDental" data-field="x_nTratamientoOrtodoncia" data-value-separator="@AntecedenteDental.nTratamientoOrtodoncia.DisplayValueSeparatorAttribute" id="x_nTratamientoOrtodoncia" name="x_nTratamientoOrtodoncia"@Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.EditAttributes)>
+		@AntecedenteDental.nTratamientoOrtodoncia.SelectOptionListHtml("x_nTratamientoOrtodoncia")
+	</select>
+</div>
+</span>
+@Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.CustomMessage)</div></div>
+	</div>
+} @* nTratamientoOrtodoncia.Visible (end) *@
+@if (AntecedenteDental.nTratamientoProtesis.Visible) { // nTratamientoProtesis.Visible (begin)
+	<div id="r_nTratamientoProtesis" class="form-group row">
+		<label id="elh_AntecedenteDental_nTratamientoProtesis" for="x_nTratamientoProtesis" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nTratamientoProtesis.Caption)@Html.Raw(AntecedenteDental.nTratamientoProtesis.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nTratamientoProtesis.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoProtesis">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="AntecedenteDental" data-field="x_nTratamientoProtesis" data-value-separator="@AntecedenteDental.nTratamientoProtesis.DisplayValueSeparatorAttribute" id="x_nTratamientoProtesis" name="x_nTratamientoProtesis"@Html.Raw(AntecedenteDental.nTratamientoProtesis.EditAttributes)>
+		@AntecedenteDental.nTratamientoProtesis.SelectOptionListHtml("x_nTratamientoProtesis")
+	</select>
+</div>
+</span>
+@Html.Raw(AntecedenteDental.nTratamientoProtesis.CustomMessage)</div></div>
+	</div>
+} @* nTratamientoProtesis.Visible (end) *@
+@if (AntecedenteDental.nColocadoAnestesia.Visible) { // nColocadoAnestesia.Visible (begin)
+	<div id="r_nColocadoAnestesia" class="form-group row">
+		<label id="elh_AntecedenteDental_nColocadoAnestesia" for="x_nColocadoAnestesia" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nColocadoAnestesia.Caption)@Html.Raw(AntecedenteDental.nColocadoAnestesia.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nColocadoAnestesia.CellAttributes)>
+<span id="el_AntecedenteDental_nColocadoAnestesia">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="AntecedenteDental" data-field="x_nColocadoAnestesia" data-value-separator="@AntecedenteDental.nColocadoAnestesia.DisplayValueSeparatorAttribute" id="x_nColocadoAnestesia" name="x_nColocadoAnestesia"@Html.Raw(AntecedenteDental.nColocadoAnestesia.EditAttributes)>
+		@AntecedenteDental.nColocadoAnestesia.SelectOptionListHtml("x_nColocadoAnestesia")
+	</select>
+</div>
+</span>
+@Html.Raw(AntecedenteDental.nColocadoAnestesia.CustomMessage)</div></div>
+	</div>
+} @* nColocadoAnestesia.Visible (end) *@
+@if (AntecedenteDental.nReaccionAlergicaAnestesia.Visible) { // nReaccionAlergicaAnestesia.Visible (begin)
+	<div id="r_nReaccionAlergicaAnestesia" class="form-group row">
+		<label id="elh_AntecedenteDental_nReaccionAlergicaAnestesia" for="x_nReaccionAlergicaAnestesia" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.Caption)@Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.CellAttributes)>
+<span id="el_AntecedenteDental_nReaccionAlergicaAnestesia">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="AntecedenteDental" data-field="x_nReaccionAlergicaAnestesia" data-value-separator="@AntecedenteDental.nReaccionAlergicaAnestesia.DisplayValueSeparatorAttribute" id="x_nReaccionAlergicaAnestesia" name="x_nReaccionAlergicaAnestesia"@Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.EditAttributes)>
+		@AntecedenteDental.nReaccionAlergicaAnestesia.SelectOptionListHtml("x_nReaccionAlergicaAnestesia")
+	</select>
+</div>
+</span>
+@Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.CustomMessage)</div></div>
+	</div>
+} @* nReaccionAlergicaAnestesia.Visible (end) *@
+@if (AntecedenteDental.sReaccionAlergicaAnestesia.Visible) { // sReaccionAlergicaAnestesia.Visible (begin)
+	<div id="r_sReaccionAlergicaAnestesia" class="form-group row">
+		<label id="elh_AntecedenteDental_sReaccionAlergicaAnestesia" for="x_sReaccionAlergicaAnestesia" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.Caption)@Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.CellAttributes)>
+<span id="el_AntecedenteDental_sReaccionAlergicaAnestesia">
+<textarea data-table="AntecedenteDental" data-field="x_sReaccionAlergicaAnestesia" name="x_sReaccionAlergicaAnestesia" id="x_sReaccionAlergicaAnestesia" cols="35" rows="4" placeholder="@AntecedenteDental.sReaccionAlergicaAnestesia.PlaceHolder" @Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.EditAttributes)>@AntecedenteDental.sReaccionAlergicaAnestesia.EditValue</textarea>
+</span>
+@Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.CustomMessage)</div></div>
+	</div>
+} @* sReaccionAlergicaAnestesia.Visible (end) *@
+@if (AntecedenteDental.sDescripcionTejidosBlandos.Visible) { // sDescripcionTejidosBlandos.Visible (begin)
+	<div id="r_sDescripcionTejidosBlandos" class="form-group row">
+		<label id="elh_AntecedenteDental_sDescripcionTejidosBlandos" for="x_sDescripcionTejidosBlandos" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.Caption)@Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.CellAttributes)>
+<span id="el_AntecedenteDental_sDescripcionTejidosBlandos">
+<textarea data-table="AntecedenteDental" data-field="x_sDescripcionTejidosBlandos" name="x_sDescripcionTejidosBlandos" id="x_sDescripcionTejidosBlandos" cols="35" rows="4" placeholder="@AntecedenteDental.sDescripcionTejidosBlandos.PlaceHolder" @Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.EditAttributes)>@AntecedenteDental.sDescripcionTejidosBlandos.EditValue</textarea>
+</span>
+@Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.CustomMessage)</div></div>
+	</div>
+} @* sDescripcionTejidosBlandos.Visible (end) *@
+@if (AntecedenteDental.sHistoriaEnfermedadActual.Visible) { // sHistoriaEnfermedadActual.Visible (begin)
+	<div id="r_sHistoriaEnfermedadActual" class="form-group row">
+		<label id="elh_AntecedenteDental_sHistoriaEnfermedadActual" for="x_sHistoriaEnfermedadActual" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.Caption)@Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.CellAttributes)>
+<span id="el_AntecedenteDental_sHistoriaEnfermedadActual">
+<textarea data-table="AntecedenteDental" data-field="x_sHistoriaEnfermedadActual" name="x_sHistoriaEnfermedadActual" id="x_sHistoriaEnfermedadActual" cols="35" rows="4" placeholder="@AntecedenteDental.sHistoriaEnfermedadActual.PlaceHolder" @Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.EditAttributes)>@AntecedenteDental.sHistoriaEnfermedadActual.EditValue</textarea>
+</span>
+@Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.CustomMessage)</div></div>
+	</div>
+} @* sHistoriaEnfermedadActual.Visible (end) *@
+@if (AntecedenteDental.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	<div id="r_nEstadoID" class="form-group row">
+		<label id="elh_AntecedenteDental_nEstadoID" for="x_nEstadoID" class="@AntecedenteDental_Add.LeftColumnClass">@Html.Raw(AntecedenteDental.nEstadoID.Caption)@Html.Raw(AntecedenteDental.nEstadoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nEstadoID.CellAttributes)>
+<span id="el_AntecedenteDental_nEstadoID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(AntecedenteDental.nEstadoID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(AntecedenteDental.nEstadoID.ViewValue)</button>
+		<div id="dsl_x_nEstadoID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@AntecedenteDental.nEstadoID.RadioButtonListHtml(true, "x_nEstadoID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x_nEstadoID" class="ew-template"><input type="radio" class="form-check-input" data-table="AntecedenteDental" data-field="x_nEstadoID" data-value-separator="@AntecedenteDental.nEstadoID.DisplayValueSeparatorAttribute" data-please-select-text="@AntecedenteDental.nEstadoID.PleaseSelectText" name="x_nEstadoID" id="x_nEstadoID" value="{value}"@Html.Raw(AntecedenteDental.nEstadoID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!AntecedenteDental.nEstadoID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(AntecedenteDental.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+@Html.Raw(AntecedenteDental.nEstadoID.CustomMessage)</div></div>
+	</div>
+} @* nEstadoID.Visible (end) *@
+</div><!-- /page* -->
+@{ AntecedenteDental_Add.CloseRecordset(); }
+@if (!AntecedenteDental_Add.IsModal) {
+<div class="form-group row"><!-- buttons .form-group -->
+	<div class="@AntecedenteDental_Add.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("AddBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(AntecedenteDental_Add.ReturnUrl)"> @Html.Raw(Language.Phrase("CancelBtn"))</button>
+	</div><!-- /buttons offset -->
+</div><!-- /buttons .form-group -->
+}
+</form>
+@AntecedenteDental_Add.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

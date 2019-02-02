@@ -1,0 +1,386 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Paciente_Edit.Page_Render();
+
+	// Check action result
+	if (Paciente_Edit.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "edit";
+var fPacienteedit = currentForm = new ew.Form("fPacienteedit", "edit");
+
+// Validate form
+fPacienteedit.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (Paciente_Edit.nCodigo.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nCodigo");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.nCodigo.RequiredErrorMessage.Replace("%s", Paciente.nCodigo.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sNombre.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sNombre");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sNombre.RequiredErrorMessage.Replace("%s", Paciente.sNombre.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sApellido1.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sApellido1");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sApellido1.RequiredErrorMessage.Replace("%s", Paciente.sApellido1.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sApellido2.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sApellido2");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sApellido2.RequiredErrorMessage.Replace("%s", Paciente.sApellido2.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.nGeneroID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nGeneroID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.nGeneroID.RequiredErrorMessage.Replace("%s", Paciente.nGeneroID.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sLugarNacimiento.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sLugarNacimiento");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sLugarNacimiento.RequiredErrorMessage.Replace("%s", Paciente.sLugarNacimiento.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.dFechaNacimiento.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaNacimiento");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.dFechaNacimiento.RequiredErrorMessage.Replace("%s", Paciente.dFechaNacimiento.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaNacimiento");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.dFechaNacimiento.ErrorMessage))");
+	@if (Paciente_Edit.sDireccion.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sDireccion");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sDireccion.RequiredErrorMessage.Replace("%s", Paciente.sDireccion.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sCedula.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sCedula");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sCedula.RequiredErrorMessage.Replace("%s", Paciente.sCedula.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sTelefono.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sTelefono");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sTelefono.RequiredErrorMessage.Replace("%s", Paciente.sTelefono.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sEmergenciaNombre.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sEmergenciaNombre");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sEmergenciaNombre.RequiredErrorMessage.Replace("%s", Paciente.sEmergenciaNombre.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sEmergenciaParentesco.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sEmergenciaParentesco");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sEmergenciaParentesco.RequiredErrorMessage.Replace("%s", Paciente.sEmergenciaParentesco.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.sEmergenciaTelefono.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sEmergenciaTelefono");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.sEmergenciaTelefono.RequiredErrorMessage.Replace("%s", Paciente.sEmergenciaTelefono.Caption)))");
+		</text>
+	}
+	@if (Paciente_Edit.nActivo.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nActivo");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Paciente.nActivo.RequiredErrorMessage.Replace("%s", Paciente.nActivo.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fPacienteedit.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPacienteedit.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPacienteedit.lists["x_nGeneroID"] = @Html.Raw(Paciente_Edit.nGeneroID.Lookup.ToClientList());
+fPacienteedit.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_Edit.nGeneroID.LookupOptions()));
+fPacienteedit.lists["x_nActivo"] = @Html.Raw(Paciente_Edit.nActivo.Lookup.ToClientList());
+fPacienteedit.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Paciente_Edit.nActivo.Options(false))); // DN
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Paciente_Edit.ShowPageHeader()
+@Paciente_Edit.ShowMessages()
+<form name="fPacienteedit" id="fPacienteedit" class="@Paciente_Edit.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (Paciente_Edit.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="update">
+@if (Paciente_Edit.IsModal) {
+<input type="hidden" name="modal" value="@ConvertToInt(Paciente_Edit.IsModal)">
+}
+<div class="ew-edit-div"><!-- page* -->
+@if (Paciente.nCodigo.Visible) { // nCodigo.Visible (begin)
+	<div id="r_nCodigo" class="form-group row">
+		<label id="elh_Paciente_nCodigo" for="x_nCodigo" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.nCodigo.Caption)@Html.Raw(Paciente.nCodigo.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.nCodigo.CellAttributes)>
+<span id="el_Paciente_nCodigo">
+<span @Html.Raw(Paciente.nCodigo.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(Paciente.nCodigo.EditValue))"></span>
+</span>
+<input type="hidden" data-table="Paciente" data-field="x_nCodigo" name="x_nCodigo" id="x_nCodigo" value="@Paciente.nCodigo.CurrentValue">
+@Html.Raw(Paciente.nCodigo.CustomMessage)</div></div>
+	</div>
+} @* nCodigo.Visible (end) *@
+@if (Paciente.sNombre.Visible) { // sNombre.Visible (begin)
+	<div id="r_sNombre" class="form-group row">
+		<label id="elh_Paciente_sNombre" for="x_sNombre" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sNombre.Caption)@Html.Raw(Paciente.sNombre.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sNombre.CellAttributes)>
+<span id="el_Paciente_sNombre">
+<input type="text" data-table="Paciente" data-field="x_sNombre" name="x_sNombre" id="x_sNombre" size="30" maxlength="150" placeholder="@Paciente.sNombre.PlaceHolder" value="@Paciente.sNombre.EditValue" @Html.Raw(Paciente.sNombre.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sNombre.CustomMessage)</div></div>
+	</div>
+} @* sNombre.Visible (end) *@
+@if (Paciente.sApellido1.Visible) { // sApellido1.Visible (begin)
+	<div id="r_sApellido1" class="form-group row">
+		<label id="elh_Paciente_sApellido1" for="x_sApellido1" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sApellido1.Caption)@Html.Raw(Paciente.sApellido1.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sApellido1.CellAttributes)>
+<span id="el_Paciente_sApellido1">
+<input type="text" data-table="Paciente" data-field="x_sApellido1" name="x_sApellido1" id="x_sApellido1" size="30" maxlength="100" placeholder="@Paciente.sApellido1.PlaceHolder" value="@Paciente.sApellido1.EditValue" @Html.Raw(Paciente.sApellido1.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sApellido1.CustomMessage)</div></div>
+	</div>
+} @* sApellido1.Visible (end) *@
+@if (Paciente.sApellido2.Visible) { // sApellido2.Visible (begin)
+	<div id="r_sApellido2" class="form-group row">
+		<label id="elh_Paciente_sApellido2" for="x_sApellido2" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sApellido2.Caption)@Html.Raw(Paciente.sApellido2.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sApellido2.CellAttributes)>
+<span id="el_Paciente_sApellido2">
+<input type="text" data-table="Paciente" data-field="x_sApellido2" name="x_sApellido2" id="x_sApellido2" size="30" maxlength="100" placeholder="@Paciente.sApellido2.PlaceHolder" value="@Paciente.sApellido2.EditValue" @Html.Raw(Paciente.sApellido2.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sApellido2.CustomMessage)</div></div>
+	</div>
+} @* sApellido2.Visible (end) *@
+@if (Paciente.nGeneroID.Visible) { // nGeneroID.Visible (begin)
+	<div id="r_nGeneroID" class="form-group row">
+		<label id="elh_Paciente_nGeneroID" for="x_nGeneroID" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.nGeneroID.Caption)@Html.Raw(Paciente.nGeneroID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.nGeneroID.CellAttributes)>
+<span id="el_Paciente_nGeneroID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nGeneroID">@(SameString(Paciente.nGeneroID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Paciente.nGeneroID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Paciente.nGeneroID.Caption))" class="ew-lookup-btn btn btn-default"@((Paciente.nGeneroID.ReadOnly || Paciente.nGeneroID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nGeneroID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Paciente.nGeneroID.Lookup.GetParamTag("p_x_nGeneroID"))
+<input type="hidden" data-table="Paciente" data-field="x_nGeneroID" data-multiple="0" data-lookup="1" data-value-separator="@Paciente.nGeneroID.DisplayValueSeparatorAttribute" name="x_nGeneroID" id="x_nGeneroID" value="@Paciente.nGeneroID.CurrentValue"@Html.Raw(Paciente.nGeneroID.EditAttributes)>
+</span>
+@Html.Raw(Paciente.nGeneroID.CustomMessage)</div></div>
+	</div>
+} @* nGeneroID.Visible (end) *@
+@if (Paciente.sLugarNacimiento.Visible) { // sLugarNacimiento.Visible (begin)
+	<div id="r_sLugarNacimiento" class="form-group row">
+		<label id="elh_Paciente_sLugarNacimiento" for="x_sLugarNacimiento" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sLugarNacimiento.Caption)@Html.Raw(Paciente.sLugarNacimiento.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sLugarNacimiento.CellAttributes)>
+<span id="el_Paciente_sLugarNacimiento">
+<input type="text" data-table="Paciente" data-field="x_sLugarNacimiento" name="x_sLugarNacimiento" id="x_sLugarNacimiento" size="30" maxlength="100" placeholder="@Paciente.sLugarNacimiento.PlaceHolder" value="@Paciente.sLugarNacimiento.EditValue" @Html.Raw(Paciente.sLugarNacimiento.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sLugarNacimiento.CustomMessage)</div></div>
+	</div>
+} @* sLugarNacimiento.Visible (end) *@
+@if (Paciente.dFechaNacimiento.Visible) { // dFechaNacimiento.Visible (begin)
+	<div id="r_dFechaNacimiento" class="form-group row">
+		<label id="elh_Paciente_dFechaNacimiento" for="x_dFechaNacimiento" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.dFechaNacimiento.Caption)@Html.Raw(Paciente.dFechaNacimiento.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.dFechaNacimiento.CellAttributes)>
+<span id="el_Paciente_dFechaNacimiento">
+<input type="text" data-table="Paciente" data-field="x_dFechaNacimiento" name="x_dFechaNacimiento" id="x_dFechaNacimiento" placeholder="@Paciente.dFechaNacimiento.PlaceHolder" value="@Paciente.dFechaNacimiento.EditValue" @Html.Raw(Paciente.dFechaNacimiento.EditAttributes)>
+@if (!Paciente.dFechaNacimiento.ReadOnly && !Paciente.dFechaNacimiento.Disabled && !Paciente.dFechaNacimiento.EditAttrs.ContainsKey("readonly") && !Paciente.dFechaNacimiento.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fPacienteedit", "x_dFechaNacimiento", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(Paciente.dFechaNacimiento.CustomMessage)</div></div>
+	</div>
+} @* dFechaNacimiento.Visible (end) *@
+@if (Paciente.sDireccion.Visible) { // sDireccion.Visible (begin)
+	<div id="r_sDireccion" class="form-group row">
+		<label id="elh_Paciente_sDireccion" for="x_sDireccion" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sDireccion.Caption)@Html.Raw(Paciente.sDireccion.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sDireccion.CellAttributes)>
+<span id="el_Paciente_sDireccion">
+<input type="text" data-table="Paciente" data-field="x_sDireccion" name="x_sDireccion" id="x_sDireccion" size="30" maxlength="200" placeholder="@Paciente.sDireccion.PlaceHolder" value="@Paciente.sDireccion.EditValue" @Html.Raw(Paciente.sDireccion.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sDireccion.CustomMessage)</div></div>
+	</div>
+} @* sDireccion.Visible (end) *@
+@if (Paciente.sCedula.Visible) { // sCedula.Visible (begin)
+	<div id="r_sCedula" class="form-group row">
+		<label id="elh_Paciente_sCedula" for="x_sCedula" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sCedula.Caption)@Html.Raw(Paciente.sCedula.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sCedula.CellAttributes)>
+<span id="el_Paciente_sCedula">
+<input type="text" data-table="Paciente" data-field="x_sCedula" name="x_sCedula" id="x_sCedula" size="30" maxlength="50" placeholder="@Paciente.sCedula.PlaceHolder" value="@Paciente.sCedula.EditValue" @Html.Raw(Paciente.sCedula.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sCedula.CustomMessage)</div></div>
+	</div>
+} @* sCedula.Visible (end) *@
+@if (Paciente.sTelefono.Visible) { // sTelefono.Visible (begin)
+	<div id="r_sTelefono" class="form-group row">
+		<label id="elh_Paciente_sTelefono" for="x_sTelefono" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sTelefono.Caption)@Html.Raw(Paciente.sTelefono.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sTelefono.CellAttributes)>
+<span id="el_Paciente_sTelefono">
+<input type="text" data-table="Paciente" data-field="x_sTelefono" name="x_sTelefono" id="x_sTelefono" size="30" maxlength="50" placeholder="@Paciente.sTelefono.PlaceHolder" value="@Paciente.sTelefono.EditValue" @Html.Raw(Paciente.sTelefono.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sTelefono.CustomMessage)</div></div>
+	</div>
+} @* sTelefono.Visible (end) *@
+@if (Paciente.sEmergenciaNombre.Visible) { // sEmergenciaNombre.Visible (begin)
+	<div id="r_sEmergenciaNombre" class="form-group row">
+		<label id="elh_Paciente_sEmergenciaNombre" for="x_sEmergenciaNombre" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sEmergenciaNombre.Caption)@Html.Raw(Paciente.sEmergenciaNombre.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sEmergenciaNombre.CellAttributes)>
+<span id="el_Paciente_sEmergenciaNombre">
+<input type="text" data-table="Paciente" data-field="x_sEmergenciaNombre" name="x_sEmergenciaNombre" id="x_sEmergenciaNombre" size="30" maxlength="150" placeholder="@Paciente.sEmergenciaNombre.PlaceHolder" value="@Paciente.sEmergenciaNombre.EditValue" @Html.Raw(Paciente.sEmergenciaNombre.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sEmergenciaNombre.CustomMessage)</div></div>
+	</div>
+} @* sEmergenciaNombre.Visible (end) *@
+@if (Paciente.sEmergenciaParentesco.Visible) { // sEmergenciaParentesco.Visible (begin)
+	<div id="r_sEmergenciaParentesco" class="form-group row">
+		<label id="elh_Paciente_sEmergenciaParentesco" for="x_sEmergenciaParentesco" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sEmergenciaParentesco.Caption)@Html.Raw(Paciente.sEmergenciaParentesco.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sEmergenciaParentesco.CellAttributes)>
+<span id="el_Paciente_sEmergenciaParentesco">
+<input type="text" data-table="Paciente" data-field="x_sEmergenciaParentesco" name="x_sEmergenciaParentesco" id="x_sEmergenciaParentesco" size="30" maxlength="100" placeholder="@Paciente.sEmergenciaParentesco.PlaceHolder" value="@Paciente.sEmergenciaParentesco.EditValue" @Html.Raw(Paciente.sEmergenciaParentesco.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sEmergenciaParentesco.CustomMessage)</div></div>
+	</div>
+} @* sEmergenciaParentesco.Visible (end) *@
+@if (Paciente.sEmergenciaTelefono.Visible) { // sEmergenciaTelefono.Visible (begin)
+	<div id="r_sEmergenciaTelefono" class="form-group row">
+		<label id="elh_Paciente_sEmergenciaTelefono" for="x_sEmergenciaTelefono" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.sEmergenciaTelefono.Caption)@Html.Raw(Paciente.sEmergenciaTelefono.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.sEmergenciaTelefono.CellAttributes)>
+<span id="el_Paciente_sEmergenciaTelefono">
+<input type="text" data-table="Paciente" data-field="x_sEmergenciaTelefono" name="x_sEmergenciaTelefono" id="x_sEmergenciaTelefono" size="30" maxlength="50" placeholder="@Paciente.sEmergenciaTelefono.PlaceHolder" value="@Paciente.sEmergenciaTelefono.EditValue" @Html.Raw(Paciente.sEmergenciaTelefono.EditAttributes)>
+</span>
+@Html.Raw(Paciente.sEmergenciaTelefono.CustomMessage)</div></div>
+	</div>
+} @* sEmergenciaTelefono.Visible (end) *@
+@if (Paciente.nActivo.Visible) { // nActivo.Visible (begin)
+	<div id="r_nActivo" class="form-group row">
+		<label id="elh_Paciente_nActivo" class="@Paciente_Edit.LeftColumnClass">@Html.Raw(Paciente.nActivo.Caption)@Html.Raw(Paciente.nActivo.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Paciente_Edit.RightColumnClass"><div @Html.Raw(Paciente.nActivo.CellAttributes)>
+<span id="el_Paciente_nActivo">
+<input type="checkbox" data-table="Paciente" data-field="x_nActivo" name="x_nActivo" id="x_nActivo" value="1" checked="@ConvertToBool(Paciente.nActivo.CurrentValue)" @Html.Raw(Paciente.nActivo.EditAttributes)>
+</span>
+@Html.Raw(Paciente.nActivo.CustomMessage)</div></div>
+	</div>
+} @* nActivo.Visible (end) *@
+</div><!-- /page* -->
+	<input type="hidden" data-table="Paciente" data-field="x_nPacienteID" name="x_nPacienteID" id="x_nPacienteID" value="@Paciente.nPacienteID.CurrentValue">
+@{ Paciente_Edit.CloseRecordset(); }
+@if (Paciente_Edit.CurrentDetailTables.Contains("Expediente") && Expediente.DetailEdit) {
+	if (!Empty(Paciente_Edit.CurrentDetailTable)) {
+		<h4 class="ew-detail-caption">@Html.Raw(Language.TablePhrase("Expediente", "TblCaption"))</h4>
+	}
+		@await Html.PartialAsync("Expedientegrid")
+	View = this;
+}
+@if (!Paciente_Edit.IsModal) {
+@:<div class="form-group row"><!-- buttons .form-group -->
+	@:<div class="@Paciente_Edit.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("SaveBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Paciente_Edit.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+	@:</div><!-- /buttons offset -->
+@:</div><!-- /buttons .form-group -->
+}
+</form>
+@Paciente_Edit.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

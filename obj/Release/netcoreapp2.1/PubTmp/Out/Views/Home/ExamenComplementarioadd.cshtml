@@ -1,0 +1,260 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	ExamenComplementario_Add.Page_Render();
+
+	// Check action result
+	if (ExamenComplementario_Add.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "add";
+var fExamenComplementarioadd = currentForm = new ew.Form("fExamenComplementarioadd", "add");
+
+// Validate form
+fExamenComplementarioadd.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (ExamenComplementario_Add.nExpedienteID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nExpedienteID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ExamenComplementario.nExpedienteID.RequiredErrorMessage.Replace("%s", ExamenComplementario.nExpedienteID.Caption)))");
+		</text>
+	}
+	@if (ExamenComplementario_Add.nEstudiosRadiologicos.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstudiosRadiologicos");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ExamenComplementario.nEstudiosRadiologicos.RequiredErrorMessage.Replace("%s", ExamenComplementario.nEstudiosRadiologicos.Caption)))");
+		</text>
+	}
+	@if (ExamenComplementario_Add.sDescripcionER.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sDescripcionER");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ExamenComplementario.sDescripcionER.RequiredErrorMessage.Replace("%s", ExamenComplementario.sDescripcionER.Caption)))");
+		</text>
+	}
+	@if (ExamenComplementario_Add.nEstudiosLaboratorio.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstudiosLaboratorio");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ExamenComplementario.nEstudiosLaboratorio.RequiredErrorMessage.Replace("%s", ExamenComplementario.nEstudiosLaboratorio.Caption)))");
+		</text>
+	}
+	@if (ExamenComplementario_Add.sDescripcionEL.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sDescripcionEL");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ExamenComplementario.sDescripcionEL.RequiredErrorMessage.Replace("%s", ExamenComplementario.sDescripcionEL.Caption)))");
+		</text>
+	}
+	@if (ExamenComplementario_Add.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ExamenComplementario.nEstadoID.RequiredErrorMessage.Replace("%s", ExamenComplementario.nEstadoID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fExamenComplementarioadd.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExamenComplementarioadd.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExamenComplementarioadd.lists["x_nExpedienteID"] = @Html.Raw(ExamenComplementario_Add.nExpedienteID.Lookup.ToClientList());
+fExamenComplementarioadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nExpedienteID.LookupOptions()));
+fExamenComplementarioadd.lists["x_nEstudiosRadiologicos"] = @Html.Raw(ExamenComplementario_Add.nEstudiosRadiologicos.Lookup.ToClientList());
+fExamenComplementarioadd.lists["x_nEstudiosRadiologicos"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nEstudiosRadiologicos.Options(false))); // DN
+fExamenComplementarioadd.lists["x_nEstudiosLaboratorio"] = @Html.Raw(ExamenComplementario_Add.nEstudiosLaboratorio.Lookup.ToClientList());
+fExamenComplementarioadd.lists["x_nEstudiosLaboratorio"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nEstudiosLaboratorio.Options(false))); // DN
+fExamenComplementarioadd.lists["x_nEstadoID"] = @Html.Raw(ExamenComplementario_Add.nEstadoID.Lookup.ToClientList());
+fExamenComplementarioadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@ExamenComplementario_Add.ShowPageHeader()
+@ExamenComplementario_Add.ShowMessages()
+<form name="fExamenComplementarioadd" id="fExamenComplementarioadd" class="@ExamenComplementario_Add.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (ExamenComplementario_Add.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="t" value="ExamenComplementario">
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(ExamenComplementario_Add.IsModal)">
+<div class="ew-add-div"><!-- page* -->
+@if (ExamenComplementario.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	<div id="r_nExpedienteID" class="form-group row">
+		<label id="elh_ExamenComplementario_nExpedienteID" for="x_nExpedienteID" class="@ExamenComplementario_Add.LeftColumnClass">@Html.Raw(ExamenComplementario.nExpedienteID.Caption)@Html.Raw(ExamenComplementario.nExpedienteID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@ExamenComplementario_Add.RightColumnClass"><div @Html.Raw(ExamenComplementario.nExpedienteID.CellAttributes)>
+<span id="el_ExamenComplementario_nExpedienteID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(ExamenComplementario.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : ExamenComplementario.nExpedienteID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(ExamenComplementario.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((ExamenComplementario.nExpedienteID.ReadOnly || ExamenComplementario.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(ExamenComplementario.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
+<input type="hidden" data-table="ExamenComplementario" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@ExamenComplementario.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@ExamenComplementario.nExpedienteID.CurrentValue"@Html.Raw(ExamenComplementario.nExpedienteID.EditAttributes)>
+</span>
+@Html.Raw(ExamenComplementario.nExpedienteID.CustomMessage)</div></div>
+	</div>
+} @* nExpedienteID.Visible (end) *@
+@if (ExamenComplementario.nEstudiosRadiologicos.Visible) { // nEstudiosRadiologicos.Visible (begin)
+	<div id="r_nEstudiosRadiologicos" class="form-group row">
+		<label id="elh_ExamenComplementario_nEstudiosRadiologicos" for="x_nEstudiosRadiologicos" class="@ExamenComplementario_Add.LeftColumnClass">@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.Caption)@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@ExamenComplementario_Add.RightColumnClass"><div @Html.Raw(ExamenComplementario.nEstudiosRadiologicos.CellAttributes)>
+<span id="el_ExamenComplementario_nEstudiosRadiologicos">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="ExamenComplementario" data-field="x_nEstudiosRadiologicos" data-value-separator="@ExamenComplementario.nEstudiosRadiologicos.DisplayValueSeparatorAttribute" id="x_nEstudiosRadiologicos" name="x_nEstudiosRadiologicos"@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.EditAttributes)>
+		@ExamenComplementario.nEstudiosRadiologicos.SelectOptionListHtml("x_nEstudiosRadiologicos")
+	</select>
+</div>
+</span>
+@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.CustomMessage)</div></div>
+	</div>
+} @* nEstudiosRadiologicos.Visible (end) *@
+@if (ExamenComplementario.sDescripcionER.Visible) { // sDescripcionER.Visible (begin)
+	<div id="r_sDescripcionER" class="form-group row">
+		<label id="elh_ExamenComplementario_sDescripcionER" for="x_sDescripcionER" class="@ExamenComplementario_Add.LeftColumnClass">@Html.Raw(ExamenComplementario.sDescripcionER.Caption)@Html.Raw(ExamenComplementario.sDescripcionER.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@ExamenComplementario_Add.RightColumnClass"><div @Html.Raw(ExamenComplementario.sDescripcionER.CellAttributes)>
+<span id="el_ExamenComplementario_sDescripcionER">
+<textarea data-table="ExamenComplementario" data-field="x_sDescripcionER" name="x_sDescripcionER" id="x_sDescripcionER" cols="35" rows="4" placeholder="@ExamenComplementario.sDescripcionER.PlaceHolder" @Html.Raw(ExamenComplementario.sDescripcionER.EditAttributes)>@ExamenComplementario.sDescripcionER.EditValue</textarea>
+</span>
+@Html.Raw(ExamenComplementario.sDescripcionER.CustomMessage)</div></div>
+	</div>
+} @* sDescripcionER.Visible (end) *@
+@if (ExamenComplementario.nEstudiosLaboratorio.Visible) { // nEstudiosLaboratorio.Visible (begin)
+	<div id="r_nEstudiosLaboratorio" class="form-group row">
+		<label id="elh_ExamenComplementario_nEstudiosLaboratorio" for="x_nEstudiosLaboratorio" class="@ExamenComplementario_Add.LeftColumnClass">@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.Caption)@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@ExamenComplementario_Add.RightColumnClass"><div @Html.Raw(ExamenComplementario.nEstudiosLaboratorio.CellAttributes)>
+<span id="el_ExamenComplementario_nEstudiosLaboratorio">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="ExamenComplementario" data-field="x_nEstudiosLaboratorio" data-value-separator="@ExamenComplementario.nEstudiosLaboratorio.DisplayValueSeparatorAttribute" id="x_nEstudiosLaboratorio" name="x_nEstudiosLaboratorio"@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.EditAttributes)>
+		@ExamenComplementario.nEstudiosLaboratorio.SelectOptionListHtml("x_nEstudiosLaboratorio")
+	</select>
+</div>
+</span>
+@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.CustomMessage)</div></div>
+	</div>
+} @* nEstudiosLaboratorio.Visible (end) *@
+@if (ExamenComplementario.sDescripcionEL.Visible) { // sDescripcionEL.Visible (begin)
+	<div id="r_sDescripcionEL" class="form-group row">
+		<label id="elh_ExamenComplementario_sDescripcionEL" for="x_sDescripcionEL" class="@ExamenComplementario_Add.LeftColumnClass">@Html.Raw(ExamenComplementario.sDescripcionEL.Caption)@Html.Raw(ExamenComplementario.sDescripcionEL.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@ExamenComplementario_Add.RightColumnClass"><div @Html.Raw(ExamenComplementario.sDescripcionEL.CellAttributes)>
+<span id="el_ExamenComplementario_sDescripcionEL">
+<textarea data-table="ExamenComplementario" data-field="x_sDescripcionEL" name="x_sDescripcionEL" id="x_sDescripcionEL" cols="35" rows="4" placeholder="@ExamenComplementario.sDescripcionEL.PlaceHolder" @Html.Raw(ExamenComplementario.sDescripcionEL.EditAttributes)>@ExamenComplementario.sDescripcionEL.EditValue</textarea>
+</span>
+@Html.Raw(ExamenComplementario.sDescripcionEL.CustomMessage)</div></div>
+	</div>
+} @* sDescripcionEL.Visible (end) *@
+@if (ExamenComplementario.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	<div id="r_nEstadoID" class="form-group row">
+		<label id="elh_ExamenComplementario_nEstadoID" for="x_nEstadoID" class="@ExamenComplementario_Add.LeftColumnClass">@Html.Raw(ExamenComplementario.nEstadoID.Caption)@Html.Raw(ExamenComplementario.nEstadoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@ExamenComplementario_Add.RightColumnClass"><div @Html.Raw(ExamenComplementario.nEstadoID.CellAttributes)>
+<span id="el_ExamenComplementario_nEstadoID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(ExamenComplementario.nEstadoID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(ExamenComplementario.nEstadoID.ViewValue)</button>
+		<div id="dsl_x_nEstadoID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@ExamenComplementario.nEstadoID.RadioButtonListHtml(true, "x_nEstadoID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x_nEstadoID" class="ew-template"><input type="radio" class="form-check-input" data-table="ExamenComplementario" data-field="x_nEstadoID" data-value-separator="@ExamenComplementario.nEstadoID.DisplayValueSeparatorAttribute" data-please-select-text="@ExamenComplementario.nEstadoID.PleaseSelectText" name="x_nEstadoID" id="x_nEstadoID" value="{value}"@Html.Raw(ExamenComplementario.nEstadoID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!ExamenComplementario.nEstadoID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(ExamenComplementario.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+@Html.Raw(ExamenComplementario.nEstadoID.CustomMessage)</div></div>
+	</div>
+} @* nEstadoID.Visible (end) *@
+</div><!-- /page* -->
+@{ ExamenComplementario_Add.CloseRecordset(); }
+@if (!ExamenComplementario_Add.IsModal) {
+<div class="form-group row"><!-- buttons .form-group -->
+	<div class="@ExamenComplementario_Add.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("AddBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(ExamenComplementario_Add.ReturnUrl)"> @Html.Raw(Language.Phrase("CancelBtn"))</button>
+	</div><!-- /buttons offset -->
+</div><!-- /buttons .form-group -->
+}
+</form>
+@ExamenComplementario_Add.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

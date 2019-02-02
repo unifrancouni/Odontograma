@@ -1,0 +1,235 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	AntecedenteFamiliar_Edit.Page_Render();
+
+	// Check action result
+	if (AntecedenteFamiliar_Edit.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "edit";
+var fAntecedenteFamiliaredit = currentForm = new ew.Form("fAntecedenteFamiliaredit", "edit");
+
+// Validate form
+fAntecedenteFamiliaredit.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (AntecedenteFamiliar_Edit.nExpedienteID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nExpedienteID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteFamiliar.nExpedienteID.RequiredErrorMessage.Replace("%s", AntecedenteFamiliar.nExpedienteID.Caption)))");
+		</text>
+	}
+	@if (AntecedenteFamiliar_Edit.nParentescoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nParentescoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteFamiliar.nParentescoID.RequiredErrorMessage.Replace("%s", AntecedenteFamiliar.nParentescoID.Caption)))");
+		</text>
+	}
+	@if (AntecedenteFamiliar_Edit.sAntecedente.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sAntecedente");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteFamiliar.sAntecedente.RequiredErrorMessage.Replace("%s", AntecedenteFamiliar.sAntecedente.Caption)))");
+		</text>
+	}
+	@if (AntecedenteFamiliar_Edit.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(AntecedenteFamiliar.nEstadoID.RequiredErrorMessage.Replace("%s", AntecedenteFamiliar.nEstadoID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fAntecedenteFamiliaredit.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fAntecedenteFamiliaredit.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fAntecedenteFamiliaredit.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteFamiliar_Edit.nExpedienteID.Lookup.ToClientList());
+fAntecedenteFamiliaredit.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Edit.nExpedienteID.LookupOptions()));
+fAntecedenteFamiliaredit.lists["x_nParentescoID"] = @Html.Raw(AntecedenteFamiliar_Edit.nParentescoID.Lookup.ToClientList());
+fAntecedenteFamiliaredit.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Edit.nParentescoID.LookupOptions()));
+fAntecedenteFamiliaredit.lists["x_nEstadoID"] = @Html.Raw(AntecedenteFamiliar_Edit.nEstadoID.Lookup.ToClientList());
+fAntecedenteFamiliaredit.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Edit.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@AntecedenteFamiliar_Edit.ShowPageHeader()
+@AntecedenteFamiliar_Edit.ShowMessages()
+<form name="fAntecedenteFamiliaredit" id="fAntecedenteFamiliaredit" class="@AntecedenteFamiliar_Edit.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (AntecedenteFamiliar_Edit.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="update">
+@if (AntecedenteFamiliar_Edit.IsModal) {
+<input type="hidden" name="modal" value="@ConvertToInt(AntecedenteFamiliar_Edit.IsModal)">
+}
+<div class="ew-edit-div"><!-- page* -->
+@if (AntecedenteFamiliar.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	<div id="r_nExpedienteID" class="form-group row">
+		<label id="elh_AntecedenteFamiliar_nExpedienteID" for="x_nExpedienteID" class="@AntecedenteFamiliar_Edit.LeftColumnClass">@Html.Raw(AntecedenteFamiliar.nExpedienteID.Caption)@Html.Raw(AntecedenteFamiliar.nExpedienteID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteFamiliar_Edit.RightColumnClass"><div @Html.Raw(AntecedenteFamiliar.nExpedienteID.CellAttributes)>
+<span id="el_AntecedenteFamiliar_nExpedienteID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(AntecedenteFamiliar.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : AntecedenteFamiliar.nExpedienteID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(AntecedenteFamiliar.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((AntecedenteFamiliar.nExpedienteID.ReadOnly || AntecedenteFamiliar.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(AntecedenteFamiliar.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
+<input type="hidden" data-table="AntecedenteFamiliar" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@AntecedenteFamiliar.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@AntecedenteFamiliar.nExpedienteID.CurrentValue"@Html.Raw(AntecedenteFamiliar.nExpedienteID.EditAttributes)>
+</span>
+@Html.Raw(AntecedenteFamiliar.nExpedienteID.CustomMessage)</div></div>
+	</div>
+} @* nExpedienteID.Visible (end) *@
+@if (AntecedenteFamiliar.nParentescoID.Visible) { // nParentescoID.Visible (begin)
+	<div id="r_nParentescoID" class="form-group row">
+		<label id="elh_AntecedenteFamiliar_nParentescoID" for="x_nParentescoID" class="@AntecedenteFamiliar_Edit.LeftColumnClass">@Html.Raw(AntecedenteFamiliar.nParentescoID.Caption)@Html.Raw(AntecedenteFamiliar.nParentescoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteFamiliar_Edit.RightColumnClass"><div @Html.Raw(AntecedenteFamiliar.nParentescoID.CellAttributes)>
+<span id="el_AntecedenteFamiliar_nParentescoID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(AntecedenteFamiliar.nParentescoID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(AntecedenteFamiliar.nParentescoID.ViewValue)</button>
+		<div id="dsl_x_nParentescoID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@AntecedenteFamiliar.nParentescoID.RadioButtonListHtml(true, "x_nParentescoID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x_nParentescoID" class="ew-template"><input type="radio" class="form-check-input" data-table="AntecedenteFamiliar" data-field="x_nParentescoID" data-value-separator="@AntecedenteFamiliar.nParentescoID.DisplayValueSeparatorAttribute" data-please-select-text="@AntecedenteFamiliar.nParentescoID.PleaseSelectText" name="x_nParentescoID" id="x_nParentescoID" value="{value}"@Html.Raw(AntecedenteFamiliar.nParentescoID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!AntecedenteFamiliar.nParentescoID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(AntecedenteFamiliar.nParentescoID.Lookup.GetParamTag("p_x_nParentescoID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+@Html.Raw(AntecedenteFamiliar.nParentescoID.CustomMessage)</div></div>
+	</div>
+} @* nParentescoID.Visible (end) *@
+@if (AntecedenteFamiliar.sAntecedente.Visible) { // sAntecedente.Visible (begin)
+	<div id="r_sAntecedente" class="form-group row">
+		<label id="elh_AntecedenteFamiliar_sAntecedente" for="x_sAntecedente" class="@AntecedenteFamiliar_Edit.LeftColumnClass">@Html.Raw(AntecedenteFamiliar.sAntecedente.Caption)@Html.Raw(AntecedenteFamiliar.sAntecedente.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteFamiliar_Edit.RightColumnClass"><div @Html.Raw(AntecedenteFamiliar.sAntecedente.CellAttributes)>
+<span id="el_AntecedenteFamiliar_sAntecedente">
+<input type="text" data-table="AntecedenteFamiliar" data-field="x_sAntecedente" name="x_sAntecedente" id="x_sAntecedente" size="30" maxlength="200" placeholder="@AntecedenteFamiliar.sAntecedente.PlaceHolder" value="@AntecedenteFamiliar.sAntecedente.EditValue" @Html.Raw(AntecedenteFamiliar.sAntecedente.EditAttributes)>
+</span>
+@Html.Raw(AntecedenteFamiliar.sAntecedente.CustomMessage)</div></div>
+	</div>
+} @* sAntecedente.Visible (end) *@
+@if (AntecedenteFamiliar.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	<div id="r_nEstadoID" class="form-group row">
+		<label id="elh_AntecedenteFamiliar_nEstadoID" for="x_nEstadoID" class="@AntecedenteFamiliar_Edit.LeftColumnClass">@Html.Raw(AntecedenteFamiliar.nEstadoID.Caption)@Html.Raw(AntecedenteFamiliar.nEstadoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@AntecedenteFamiliar_Edit.RightColumnClass"><div @Html.Raw(AntecedenteFamiliar.nEstadoID.CellAttributes)>
+<span id="el_AntecedenteFamiliar_nEstadoID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(AntecedenteFamiliar.nEstadoID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(AntecedenteFamiliar.nEstadoID.ViewValue)</button>
+		<div id="dsl_x_nEstadoID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@AntecedenteFamiliar.nEstadoID.RadioButtonListHtml(true, "x_nEstadoID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x_nEstadoID" class="ew-template"><input type="radio" class="form-check-input" data-table="AntecedenteFamiliar" data-field="x_nEstadoID" data-value-separator="@AntecedenteFamiliar.nEstadoID.DisplayValueSeparatorAttribute" data-please-select-text="@AntecedenteFamiliar.nEstadoID.PleaseSelectText" name="x_nEstadoID" id="x_nEstadoID" value="{value}"@Html.Raw(AntecedenteFamiliar.nEstadoID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!AntecedenteFamiliar.nEstadoID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(AntecedenteFamiliar.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+@Html.Raw(AntecedenteFamiliar.nEstadoID.CustomMessage)</div></div>
+	</div>
+} @* nEstadoID.Visible (end) *@
+</div><!-- /page* -->
+	<input type="hidden" data-table="AntecedenteFamiliar" data-field="x_nAntecedenteFamiliarID" name="x_nAntecedenteFamiliarID" id="x_nAntecedenteFamiliarID" value="@AntecedenteFamiliar.nAntecedenteFamiliarID.CurrentValue">
+@{ AntecedenteFamiliar_Edit.CloseRecordset(); }
+@if (!AntecedenteFamiliar_Edit.IsModal) {
+@:<div class="form-group row"><!-- buttons .form-group -->
+	@:<div class="@AntecedenteFamiliar_Edit.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("SaveBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(AntecedenteFamiliar_Edit.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+	@:</div><!-- /buttons offset -->
+@:</div><!-- /buttons .form-group -->
+}
+</form>
+@AntecedenteFamiliar_Edit.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

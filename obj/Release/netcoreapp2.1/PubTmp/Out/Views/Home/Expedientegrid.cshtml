@@ -1,0 +1,732 @@
+@{
+
+	// View
+	View = this;
+
+	// Set up CurrentGrid
+	CurrentGrid = Expediente_Grid;
+
+	// Run
+	await Expediente_Grid.Run();
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Expediente_Grid.Page_Render();
+
+	// Check action result
+	if (Expediente_Grid.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Expediente.IsExport()) {
+<script>
+
+// Form object
+var fExpedientegrid = new ew.Form("fExpedientegrid", "grid");
+fExpedientegrid.formKeyCountName = "@Expediente_Grid.FormKeyCountName";
+
+// Validate form
+fExpedientegrid.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+		var checkrow = gridinsert ? !this.emptyRow(infix) : true;
+		if (checkrow) {
+			addcnt++;
+	@if (Expediente_Grid.nCodigoExpediente.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nCodigoExpediente");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nCodigoExpediente.RequiredErrorMessage.Replace("%s", Expediente.nCodigoExpediente.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_nCodigoExpediente");
+		if (elm && !ew.checkInteger(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nCodigoExpediente.ErrorMessage))");
+	@if (Expediente_Grid.dFechaExpediente.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaExpediente");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.dFechaExpediente.RequiredErrorMessage.Replace("%s", Expediente.dFechaExpediente.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaExpediente");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.dFechaExpediente.ErrorMessage))");
+	@if (Expediente_Grid.sACPPESA.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sACPPESA");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.sACPPESA.RequiredErrorMessage.Replace("%s", Expediente.sACPPESA.Caption)))");
+		</text>
+	}
+	@if (Expediente_Grid.nGrupoSanguineoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nGrupoSanguineoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nGrupoSanguineoID.RequiredErrorMessage.Replace("%s", Expediente.nGrupoSanguineoID.Caption)))");
+		</text>
+	}
+	@if (Expediente_Grid.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nEstadoID.RequiredErrorMessage.Replace("%s", Expediente.nEstadoID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+		} // End Grid Add checking
+	}
+	return true;
+}
+
+// Check empty row
+fExpedientegrid.emptyRow = function(infix) {
+	var fobj = this._form;
+	if (ew.valueChanged(fobj, infix, "nCodigoExpediente", false)) return false;
+	if (ew.valueChanged(fobj, infix, "dFechaExpediente", false)) return false;
+	if (ew.valueChanged(fobj, infix, "sACPPESA", false)) return false;
+	if (ew.valueChanged(fobj, infix, "nGrupoSanguineoID", false)) return false;
+	if (ew.valueChanged(fobj, infix, "nEstadoID", false)) return false;
+	return true;
+}
+
+// Form_CustomValidate event
+fExpedientegrid.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExpedientegrid.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExpedientegrid.lists["x_nGrupoSanguineoID"] = @Html.Raw(Expediente_Grid.nGrupoSanguineoID.Lookup.ToClientList());
+fExpedientegrid.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_Grid.nGrupoSanguineoID.LookupOptions()));
+fExpedientegrid.lists["x_nEstadoID"] = @Html.Raw(Expediente_Grid.nEstadoID.Lookup.ToClientList());
+fExpedientegrid.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_Grid.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+}
+@{ Expediente_Grid.RenderOtherOptions(); }
+@Expediente_Grid.ShowPageHeader()
+@Expediente_Grid.ShowMessages()
+@if (Expediente_Grid.TotalRecords > 0 || Expediente_Grid.CurrentAction != "") {
+<div class="card ew-card ew-grid@(Expediente_Grid.IsAddOrEdit ? " ew-grid-add-edit" : "") Expediente">
+<div id="fExpedientegrid" class="ew-form ew-list-form form-inline">
+<div id="gmp_Expediente" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table id="tbl_Expedientegrid" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	Expediente_Grid.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await Expediente_Grid.RenderListOptions();
+
+	// Render list options (header, left)
+	Expediente_Grid.ListOptions.Render("header", "left");
+}
+@if (Expediente.nCodigoExpediente.Visible) { // nCodigoExpediente.Visible (begin)
+	if (Expediente_Grid.SortUrl(Expediente.nCodigoExpediente) == "") {
+		<th data-name="nCodigoExpediente" class="@Expediente.nCodigoExpediente.HeaderCellClass"><div id="elh_Expediente_nCodigoExpediente" class="Expediente_nCodigoExpediente"><div class="ew-table-header-caption">@Html.Raw(Expediente.nCodigoExpediente.Caption)</div></div></th>
+	} else {
+		<th data-name="nCodigoExpediente" class="@Expediente.nCodigoExpediente.HeaderCellClass"><div><div id="elh_Expediente_nCodigoExpediente" class="Expediente_nCodigoExpediente">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.nCodigoExpediente.Caption)</span><span class="ew-table-header-sort">@if (Expediente.nCodigoExpediente.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.nCodigoExpediente.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nCodigoExpediente.Visible (end) *@
+@if (Expediente.dFechaExpediente.Visible) { // dFechaExpediente.Visible (begin)
+	if (Expediente_Grid.SortUrl(Expediente.dFechaExpediente) == "") {
+		<th data-name="dFechaExpediente" class="@Expediente.dFechaExpediente.HeaderCellClass"><div id="elh_Expediente_dFechaExpediente" class="Expediente_dFechaExpediente"><div class="ew-table-header-caption">@Html.Raw(Expediente.dFechaExpediente.Caption)</div></div></th>
+	} else {
+		<th data-name="dFechaExpediente" class="@Expediente.dFechaExpediente.HeaderCellClass"><div><div id="elh_Expediente_dFechaExpediente" class="Expediente_dFechaExpediente">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.dFechaExpediente.Caption)</span><span class="ew-table-header-sort">@if (Expediente.dFechaExpediente.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.dFechaExpediente.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* dFechaExpediente.Visible (end) *@
+@if (Expediente.sACPPESA.Visible) { // sACPPESA.Visible (begin)
+	if (Expediente_Grid.SortUrl(Expediente.sACPPESA) == "") {
+		<th data-name="sACPPESA" class="@Expediente.sACPPESA.HeaderCellClass"><div id="elh_Expediente_sACPPESA" class="Expediente_sACPPESA"><div class="ew-table-header-caption">@Html.Raw(Expediente.sACPPESA.Caption)</div></div></th>
+	} else {
+		<th data-name="sACPPESA" class="@Expediente.sACPPESA.HeaderCellClass"><div><div id="elh_Expediente_sACPPESA" class="Expediente_sACPPESA">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.sACPPESA.Caption)</span><span class="ew-table-header-sort">@if (Expediente.sACPPESA.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.sACPPESA.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sACPPESA.Visible (end) *@
+@if (Expediente.nGrupoSanguineoID.Visible) { // nGrupoSanguineoID.Visible (begin)
+	if (Expediente_Grid.SortUrl(Expediente.nGrupoSanguineoID) == "") {
+		<th data-name="nGrupoSanguineoID" class="@Expediente.nGrupoSanguineoID.HeaderCellClass"><div id="elh_Expediente_nGrupoSanguineoID" class="Expediente_nGrupoSanguineoID"><div class="ew-table-header-caption">@Html.Raw(Expediente.nGrupoSanguineoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nGrupoSanguineoID" class="@Expediente.nGrupoSanguineoID.HeaderCellClass"><div><div id="elh_Expediente_nGrupoSanguineoID" class="Expediente_nGrupoSanguineoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.nGrupoSanguineoID.Caption)</span><span class="ew-table-header-sort">@if (Expediente.nGrupoSanguineoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.nGrupoSanguineoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nGrupoSanguineoID.Visible (end) *@
+@if (Expediente.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	if (Expediente_Grid.SortUrl(Expediente.nEstadoID) == "") {
+		<th data-name="nEstadoID" class="@Expediente.nEstadoID.HeaderCellClass"><div id="elh_Expediente_nEstadoID" class="Expediente_nEstadoID"><div class="ew-table-header-caption">@Html.Raw(Expediente.nEstadoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nEstadoID" class="@Expediente.nEstadoID.HeaderCellClass"><div><div id="elh_Expediente_nEstadoID" class="Expediente_nEstadoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.nEstadoID.Caption)</span><span class="ew-table-header-sort">@if (Expediente.nEstadoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.nEstadoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nEstadoID.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	Expediente_Grid.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+Expediente_Grid.StartRecord = 1;
+Expediente_Grid.StopRecord = Expediente_Grid.TotalRecords; // Show all records
+
+// Restore number of post back records
+if (CurrentForm != null && Expediente_Grid.EventCancelled) {
+	CurrentForm.Index = -1;
+	if (CurrentForm.HasValue(Expediente_Grid.FormKeyCountName) && (Expediente_Grid.IsGridAdd || Expediente_Grid.IsGridEdit || Expediente_Grid.IsConfirm)) {
+		Expediente_Grid.KeyCount = CurrentForm.GetInt(Expediente_Grid.FormKeyCountName);
+		Expediente_Grid.StopRecord = Expediente_Grid.StartRecord + Expediente_Grid.KeyCount - 1;
+	}
+}
+if (Expediente_Grid.Recordset != null && Expediente_Grid.Recordset.HasRows) {
+	if (!Expediente_Grid.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= Expediente_Grid.StartRecord - 1; i++) { // Move to first record
+			if (await Expediente_Grid.Recordset.ReadAsync()) {
+				Expediente_Grid.RecordCount++;
+			}
+		}
+	} else {
+		Expediente_Grid.RecordCount = Expediente_Grid.StartRecord - 1;
+	}
+} else if (!Expediente_Grid.AllowAddDeleteRow && Expediente_Grid.StopRecord == 0) {
+	Expediente_Grid.StopRecord = Expediente_Grid.GridAddRowCount;
+}
+
+// Initialize aggregate
+Expediente_Grid.RowType = Config.RowTypeAggregateInit;
+Expediente_Grid.ResetAttributes();
+await Expediente_Grid.RenderRow();
+if (Expediente_Grid.IsGridAdd) {
+	Expediente_Grid.RowIndex = 0;
+}
+if (Expediente_Grid.IsGridEdit) {
+	Expediente_Grid.RowIndex = 0;
+}
+
+// Output data rows
+bool eof = (Expediente_Grid.Recordset == null); // DN
+while (Expediente_Grid.RecordCount < Expediente_Grid.StopRecord) { // Begin While
+	if ((!Expediente_Grid.IsGridAdd || Expediente_Grid.CurrentMode == "copy") && !eof) { // DN
+		eof = !await Expediente_Grid.Recordset.ReadAsync();
+	}
+	Expediente_Grid.RecordCount++;
+	if (Expediente_Grid.RecordCount >= Expediente_Grid.StartRecord) {
+		Expediente_Grid.RowCnt++;
+		if (Expediente_Grid.IsGridAdd || Expediente_Grid.IsGridEdit || Expediente_Grid.IsConfirm) {
+			Expediente_Grid.RowIndex = ConvertToInt(Expediente_Grid.RowIndex) + 1;
+			CurrentForm.Index = ConvertToInt(Expediente_Grid.RowIndex);
+			if (CurrentForm.HasValue(Expediente_Grid.FormActionName) && Expediente_Grid.EventCancelled) {
+				Expediente_Grid.RowAction = CurrentForm.GetValue(Expediente_Grid.FormActionName);
+			} else if (Expediente_Grid.IsGridAdd) {
+				Expediente_Grid.RowAction = "insert";
+			} else {
+				Expediente_Grid.RowAction = "";
+			}
+		}
+
+		// Set up key count
+		Expediente_Grid.KeyCount = ConvertToInt(Expediente_Grid.RowIndex);
+
+		// Init row class and style
+		Expediente_Grid.ResetAttributes();
+		Expediente_Grid.CssClass = "";
+		if (Expediente_Grid.IsGridAdd) {
+			if (Expediente_Grid.CurrentMode == "copy") {
+				await Expediente_Grid.LoadRowValues(Expediente_Grid.Recordset); // Load row values
+				Expediente_Grid.SetRecordKey(ref Expediente_Grid.RowOldKey, Expediente_Grid.Recordset); // Set old record key
+			} else {
+				await Expediente_Grid.LoadRowValues(); // Load default values
+				Expediente_Grid.RowOldKey = ""; // Clear old key value
+			}
+		} else {
+			await Expediente_Grid.LoadRowValues(Expediente_Grid.Recordset); // Load row values
+		}
+		Expediente_Grid.RowType = Config.RowTypeView; // Render view
+		if (Expediente_Grid.IsGridAdd) { // Grid add
+			Expediente_Grid.RowType = Config.RowTypeAdd; // Render add
+		}
+		if (Expediente_Grid.IsGridAdd && Expediente_Grid.EventCancelled && !CurrentForm.HasValue("k_blankrow")) { // Insert failed
+			await Expediente_Grid.RestoreCurrentRowFormValues(Expediente_Grid.RowIndex); // Restore form values
+		}
+		if (Expediente_Grid.IsGridEdit) { // Grid edit
+			if (Expediente_Grid.EventCancelled) {
+				await Expediente_Grid.RestoreCurrentRowFormValues(Expediente_Grid.RowIndex); // Restore form values
+			}
+			if (Expediente_Grid.RowAction == "insert") {
+				Expediente_Grid.RowType = Config.RowTypeAdd; // Render add
+			} else {
+				Expediente_Grid.RowType = Config.RowTypeEdit; // Render edit
+			}
+		}
+		if (Expediente_Grid.IsGridEdit && (Expediente_Grid.RowType == Config.RowTypeEdit || Expediente_Grid.RowType == Config.RowTypeAdd) && Expediente_Grid.EventCancelled) { // Update failed
+			await Expediente_Grid.RestoreCurrentRowFormValues(Expediente_Grid.RowIndex); // Restore form values
+		}
+		if (Expediente_Grid.RowType == Config.RowTypeEdit) { // Edit row
+			Expediente_Grid.EditRowCount++;
+		}
+		if (Expediente_Grid.IsConfirm) { // Confirm row
+			await Expediente_Grid.RestoreCurrentRowFormValues(Expediente_Grid.RowIndex); // Restore form values
+		}
+
+		// Set up row id / data-rowindex
+		Expediente_Grid.RowAttrs.Add("data-rowindex", Convert.ToString(Expediente_Grid.RowCnt));
+		Expediente_Grid.RowAttrs.Add("id", "r" + Convert.ToString(Expediente_Grid.RowCnt) + "_Expediente");
+		Expediente_Grid.RowAttrs.Add("data-rowtype", Convert.ToString(Expediente_Grid.RowType));
+
+		// Render row
+		await Expediente_Grid.RenderRow();
+
+		// Render list options
+		await Expediente_Grid.RenderListOptions();
+
+		// Skip delete row / empty row for confirm page
+		if (Expediente_Grid.RowAction != "delete" && Expediente_Grid.RowAction != "insertdelete" && !(Expediente_Grid.RowAction == "insert" && Expediente_Grid.IsConfirm && Expediente_Grid.EmptyRow())) {
+	<tr @Html.Raw(Expediente_Grid.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		Expediente_Grid.ListOptions.Render("body", "left", Expediente_Grid.RowCnt);
+	}
+	@if (Expediente.nCodigoExpediente.Visible) { // nCodigoExpediente.Visible (begin)
+		<td data-name="nCodigoExpediente"@Html.Raw(Expediente.nCodigoExpediente.CellAttributes)>
+		@if (Expediente.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* nCodigoExpediente (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nCodigoExpediente" class="form-group Expediente_nCodigoExpediente">
+<input type="text" data-table="Expediente" data-field="x_nCodigoExpediente" name="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" size="30" placeholder="@Expediente.nCodigoExpediente.PlaceHolder" value="@Expediente.nCodigoExpediente.EditValue" @Html.Raw(Expediente.nCodigoExpediente.EditAttributes)>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_nCodigoExpediente" name="o@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="o@(Expediente_Grid.RowIndex)_nCodigoExpediente" value="@Expediente.nCodigoExpediente.OldValue">
+			 @* nCodigoExpediente (end) *@
+		} @* Add (end) *@
+		@if (Expediente.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* nCodigoExpediente (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nCodigoExpediente" class="form-group Expediente_nCodigoExpediente">
+<input type="text" data-table="Expediente" data-field="x_nCodigoExpediente" name="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" size="30" placeholder="@Expediente.nCodigoExpediente.PlaceHolder" value="@Expediente.nCodigoExpediente.EditValue" @Html.Raw(Expediente.nCodigoExpediente.EditAttributes)>
+</span>
+			 @* nCodigoExpediente (end) *@
+		} @* Edit (end) *@
+		@if (Expediente.RowType == Config.RowTypeView) { // View (begin)
+			 @* nCodigoExpediente (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nCodigoExpediente" class="Expediente_nCodigoExpediente">
+<span @Html.Raw(Expediente.nCodigoExpediente.ViewAttributes)>
+@Html.Raw(Expediente.nCodigoExpediente.GetViewValue())</span>
+</span>
+			@if (!Expediente.IsConfirm) {
+<input type="hidden" data-table="Expediente" data-field="x_nCodigoExpediente" name="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" value="@Expediente.nCodigoExpediente.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_nCodigoExpediente" name="o@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="o@(Expediente_Grid.RowIndex)_nCodigoExpediente" value="@Expediente.nCodigoExpediente.OldValue">
+			} else {
+<input type="hidden" data-table="Expediente" data-field="x_nCodigoExpediente" name="fExpedientegrid$x@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="fExpedientegrid$x@(Expediente_Grid.RowIndex)_nCodigoExpediente" value="@Expediente.nCodigoExpediente.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_nCodigoExpediente" name="fExpedientegrid$o@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="fExpedientegrid$o@(Expediente_Grid.RowIndex)_nCodigoExpediente" value="@Expediente.nCodigoExpediente.OldValue">
+			}
+			 @* nCodigoExpediente (end) *@
+		} @* View (end) *@
+</td>
+	} @* nCodigoExpediente.Visible (end) *@
+			@if (Expediente.RowType == Config.RowTypeAdd) { // Add (begin)
+				 @* nExpedienteID (begin) *@
+	<input type="hidden" data-table="Expediente" data-field="x_nExpedienteID" name="x@(Expediente_Grid.RowIndex)_nExpedienteID" id="x@(Expediente_Grid.RowIndex)_nExpedienteID" value="@Expediente.nExpedienteID.CurrentValue">
+	<input type="hidden" data-table="Expediente" data-field="x_nExpedienteID" name="o@(Expediente_Grid.RowIndex)_nExpedienteID" id="o@(Expediente_Grid.RowIndex)_nExpedienteID" value="@Expediente.nExpedienteID.OldValue">
+				 @* nExpedienteID (end) *@
+			} @* Add (end) *@
+			@if (Expediente.RowType == Config.RowTypeEdit) { // Edit (begin)
+				 @* nExpedienteID (begin) *@
+	<input type="hidden" data-table="Expediente" data-field="x_nExpedienteID" name="x@(Expediente_Grid.RowIndex)_nExpedienteID" id="x@(Expediente_Grid.RowIndex)_nExpedienteID" value="@Expediente.nExpedienteID.CurrentValue">
+				 @* nExpedienteID (end) *@
+			} @* Edit (end) *@
+	@if (Expediente.dFechaExpediente.Visible) { // dFechaExpediente.Visible (begin)
+		<td data-name="dFechaExpediente"@Html.Raw(Expediente.dFechaExpediente.CellAttributes)>
+		@if (Expediente.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* dFechaExpediente (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_dFechaExpediente" class="form-group Expediente_dFechaExpediente">
+<input type="text" data-table="Expediente" data-field="x_dFechaExpediente" name="x@(Expediente_Grid.RowIndex)_dFechaExpediente" id="x@(Expediente_Grid.RowIndex)_dFechaExpediente" placeholder="@Expediente.dFechaExpediente.PlaceHolder" value="@Expediente.dFechaExpediente.EditValue" @Html.Raw(Expediente.dFechaExpediente.EditAttributes)>
+@if (!Expediente.dFechaExpediente.ReadOnly && !Expediente.dFechaExpediente.Disabled && !Expediente.dFechaExpediente.EditAttrs.ContainsKey("readonly") && !Expediente.dFechaExpediente.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fExpedientegrid", "x@(Expediente_Grid.RowIndex)_dFechaExpediente", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_dFechaExpediente" name="o@(Expediente_Grid.RowIndex)_dFechaExpediente" id="o@(Expediente_Grid.RowIndex)_dFechaExpediente" value="@Expediente.dFechaExpediente.OldValue">
+			 @* dFechaExpediente (end) *@
+		} @* Add (end) *@
+		@if (Expediente.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* dFechaExpediente (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_dFechaExpediente" class="form-group Expediente_dFechaExpediente">
+<input type="text" data-table="Expediente" data-field="x_dFechaExpediente" name="x@(Expediente_Grid.RowIndex)_dFechaExpediente" id="x@(Expediente_Grid.RowIndex)_dFechaExpediente" placeholder="@Expediente.dFechaExpediente.PlaceHolder" value="@Expediente.dFechaExpediente.EditValue" @Html.Raw(Expediente.dFechaExpediente.EditAttributes)>
+@if (!Expediente.dFechaExpediente.ReadOnly && !Expediente.dFechaExpediente.Disabled && !Expediente.dFechaExpediente.EditAttrs.ContainsKey("readonly") && !Expediente.dFechaExpediente.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fExpedientegrid", "x@(Expediente_Grid.RowIndex)_dFechaExpediente", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+			 @* dFechaExpediente (end) *@
+		} @* Edit (end) *@
+		@if (Expediente.RowType == Config.RowTypeView) { // View (begin)
+			 @* dFechaExpediente (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_dFechaExpediente" class="Expediente_dFechaExpediente">
+<span @Html.Raw(Expediente.dFechaExpediente.ViewAttributes)>
+@Html.Raw(Expediente.dFechaExpediente.GetViewValue())</span>
+</span>
+			@if (!Expediente.IsConfirm) {
+<input type="hidden" data-table="Expediente" data-field="x_dFechaExpediente" name="x@(Expediente_Grid.RowIndex)_dFechaExpediente" id="x@(Expediente_Grid.RowIndex)_dFechaExpediente" value="@Expediente.dFechaExpediente.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_dFechaExpediente" name="o@(Expediente_Grid.RowIndex)_dFechaExpediente" id="o@(Expediente_Grid.RowIndex)_dFechaExpediente" value="@Expediente.dFechaExpediente.OldValue">
+			} else {
+<input type="hidden" data-table="Expediente" data-field="x_dFechaExpediente" name="fExpedientegrid$x@(Expediente_Grid.RowIndex)_dFechaExpediente" id="fExpedientegrid$x@(Expediente_Grid.RowIndex)_dFechaExpediente" value="@Expediente.dFechaExpediente.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_dFechaExpediente" name="fExpedientegrid$o@(Expediente_Grid.RowIndex)_dFechaExpediente" id="fExpedientegrid$o@(Expediente_Grid.RowIndex)_dFechaExpediente" value="@Expediente.dFechaExpediente.OldValue">
+			}
+			 @* dFechaExpediente (end) *@
+		} @* View (end) *@
+</td>
+	} @* dFechaExpediente.Visible (end) *@
+	@if (Expediente.sACPPESA.Visible) { // sACPPESA.Visible (begin)
+		<td data-name="sACPPESA"@Html.Raw(Expediente.sACPPESA.CellAttributes)>
+		@if (Expediente.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* sACPPESA (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_sACPPESA" class="form-group Expediente_sACPPESA">
+<input type="text" data-table="Expediente" data-field="x_sACPPESA" name="x@(Expediente_Grid.RowIndex)_sACPPESA" id="x@(Expediente_Grid.RowIndex)_sACPPESA" size="30" maxlength="500" placeholder="@Expediente.sACPPESA.PlaceHolder" value="@Expediente.sACPPESA.EditValue" @Html.Raw(Expediente.sACPPESA.EditAttributes)>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_sACPPESA" name="o@(Expediente_Grid.RowIndex)_sACPPESA" id="o@(Expediente_Grid.RowIndex)_sACPPESA" value="@Expediente.sACPPESA.OldValue">
+			 @* sACPPESA (end) *@
+		} @* Add (end) *@
+		@if (Expediente.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* sACPPESA (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_sACPPESA" class="form-group Expediente_sACPPESA">
+<input type="text" data-table="Expediente" data-field="x_sACPPESA" name="x@(Expediente_Grid.RowIndex)_sACPPESA" id="x@(Expediente_Grid.RowIndex)_sACPPESA" size="30" maxlength="500" placeholder="@Expediente.sACPPESA.PlaceHolder" value="@Expediente.sACPPESA.EditValue" @Html.Raw(Expediente.sACPPESA.EditAttributes)>
+</span>
+			 @* sACPPESA (end) *@
+		} @* Edit (end) *@
+		@if (Expediente.RowType == Config.RowTypeView) { // View (begin)
+			 @* sACPPESA (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_sACPPESA" class="Expediente_sACPPESA">
+<span @Html.Raw(Expediente.sACPPESA.ViewAttributes)>
+@Html.Raw(Expediente.sACPPESA.GetViewValue())</span>
+</span>
+			@if (!Expediente.IsConfirm) {
+<input type="hidden" data-table="Expediente" data-field="x_sACPPESA" name="x@(Expediente_Grid.RowIndex)_sACPPESA" id="x@(Expediente_Grid.RowIndex)_sACPPESA" value="@Expediente.sACPPESA.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_sACPPESA" name="o@(Expediente_Grid.RowIndex)_sACPPESA" id="o@(Expediente_Grid.RowIndex)_sACPPESA" value="@Expediente.sACPPESA.OldValue">
+			} else {
+<input type="hidden" data-table="Expediente" data-field="x_sACPPESA" name="fExpedientegrid$x@(Expediente_Grid.RowIndex)_sACPPESA" id="fExpedientegrid$x@(Expediente_Grid.RowIndex)_sACPPESA" value="@Expediente.sACPPESA.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_sACPPESA" name="fExpedientegrid$o@(Expediente_Grid.RowIndex)_sACPPESA" id="fExpedientegrid$o@(Expediente_Grid.RowIndex)_sACPPESA" value="@Expediente.sACPPESA.OldValue">
+			}
+			 @* sACPPESA (end) *@
+		} @* View (end) *@
+</td>
+	} @* sACPPESA.Visible (end) *@
+	@if (Expediente.nGrupoSanguineoID.Visible) { // nGrupoSanguineoID.Visible (begin)
+		<td data-name="nGrupoSanguineoID"@Html.Raw(Expediente.nGrupoSanguineoID.CellAttributes)>
+		@if (Expediente.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* nGrupoSanguineoID (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nGrupoSanguineoID" class="form-group Expediente_nGrupoSanguineoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID">@(SameString(Expediente.nGrupoSanguineoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nGrupoSanguineoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nGrupoSanguineoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nGrupoSanguineoID.ReadOnly || Expediente.nGrupoSanguineoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nGrupoSanguineoID.Lookup.GetParamTag("p_x" + Expediente_Grid.RowIndex + "_nGrupoSanguineoID"))
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nGrupoSanguineoID.DisplayValueSeparatorAttribute" name="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.CurrentValue"@Html.Raw(Expediente.nGrupoSanguineoID.EditAttributes)>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" name="o@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="o@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.OldValue">
+			 @* nGrupoSanguineoID (end) *@
+		} @* Add (end) *@
+		@if (Expediente.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* nGrupoSanguineoID (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nGrupoSanguineoID" class="form-group Expediente_nGrupoSanguineoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID">@(SameString(Expediente.nGrupoSanguineoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nGrupoSanguineoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nGrupoSanguineoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nGrupoSanguineoID.ReadOnly || Expediente.nGrupoSanguineoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nGrupoSanguineoID.Lookup.GetParamTag("p_x" + Expediente_Grid.RowIndex + "_nGrupoSanguineoID"))
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nGrupoSanguineoID.DisplayValueSeparatorAttribute" name="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.CurrentValue"@Html.Raw(Expediente.nGrupoSanguineoID.EditAttributes)>
+</span>
+			 @* nGrupoSanguineoID (end) *@
+		} @* Edit (end) *@
+		@if (Expediente.RowType == Config.RowTypeView) { // View (begin)
+			 @* nGrupoSanguineoID (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nGrupoSanguineoID" class="Expediente_nGrupoSanguineoID">
+<span @Html.Raw(Expediente.nGrupoSanguineoID.ViewAttributes)>
+@Html.Raw(Expediente.nGrupoSanguineoID.GetViewValue())</span>
+</span>
+			@if (!Expediente.IsConfirm) {
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" name="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" name="o@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="o@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.OldValue">
+			} else {
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" name="fExpedientegrid$x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="fExpedientegrid$x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" name="fExpedientegrid$o@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="fExpedientegrid$o@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.OldValue">
+			}
+			 @* nGrupoSanguineoID (end) *@
+		} @* View (end) *@
+</td>
+	} @* nGrupoSanguineoID.Visible (end) *@
+	@if (Expediente.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+		<td data-name="nEstadoID"@Html.Raw(Expediente.nEstadoID.CellAttributes)>
+		@if (Expediente.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* nEstadoID (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nEstadoID" class="form-group Expediente_nEstadoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(Expediente_Grid.RowIndex)_nEstadoID">@(SameString(Expediente.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nEstadoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nEstadoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nEstadoID.ReadOnly || Expediente.nEstadoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(Expediente_Grid.RowIndex)_nEstadoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nEstadoID.Lookup.GetParamTag("p_x" + Expediente_Grid.RowIndex + "_nEstadoID"))
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nEstadoID.DisplayValueSeparatorAttribute" name="x@(Expediente_Grid.RowIndex)_nEstadoID" id="x@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.CurrentValue"@Html.Raw(Expediente.nEstadoID.EditAttributes)>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" name="o@(Expediente_Grid.RowIndex)_nEstadoID" id="o@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.OldValue">
+			 @* nEstadoID (end) *@
+		} @* Add (end) *@
+		@if (Expediente.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* nEstadoID (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nEstadoID" class="form-group Expediente_nEstadoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(Expediente_Grid.RowIndex)_nEstadoID">@(SameString(Expediente.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nEstadoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nEstadoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nEstadoID.ReadOnly || Expediente.nEstadoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(Expediente_Grid.RowIndex)_nEstadoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nEstadoID.Lookup.GetParamTag("p_x" + Expediente_Grid.RowIndex + "_nEstadoID"))
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nEstadoID.DisplayValueSeparatorAttribute" name="x@(Expediente_Grid.RowIndex)_nEstadoID" id="x@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.CurrentValue"@Html.Raw(Expediente.nEstadoID.EditAttributes)>
+</span>
+			 @* nEstadoID (end) *@
+		} @* Edit (end) *@
+		@if (Expediente.RowType == Config.RowTypeView) { // View (begin)
+			 @* nEstadoID (begin) *@
+<span id="el@(Expediente_Grid.RowCnt)_Expediente_nEstadoID" class="Expediente_nEstadoID">
+<span @Html.Raw(Expediente.nEstadoID.ViewAttributes)>
+@Html.Raw(Expediente.nEstadoID.GetViewValue())</span>
+</span>
+			@if (!Expediente.IsConfirm) {
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" name="x@(Expediente_Grid.RowIndex)_nEstadoID" id="x@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" name="o@(Expediente_Grid.RowIndex)_nEstadoID" id="o@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.OldValue">
+			} else {
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" name="fExpedientegrid$x@(Expediente_Grid.RowIndex)_nEstadoID" id="fExpedientegrid$x@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.FormValue">
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" name="fExpedientegrid$o@(Expediente_Grid.RowIndex)_nEstadoID" id="fExpedientegrid$o@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.OldValue">
+			}
+			 @* nEstadoID (end) *@
+		} @* View (end) *@
+</td>
+	} @* nEstadoID.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		Expediente_Grid.ListOptions.Render("body", "right", Expediente_Grid.RowCnt);
+	}
+	</tr>
+		if (Expediente_Grid.RowType == Config.RowTypeAdd || Expediente_Grid.RowType == Config.RowTypeEdit) {
+			<script>
+			fExpedientegrid.updateLists(@Expediente_Grid.RowIndex);
+			</script>
+		}
+	} @* End if *@
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+@if (Expediente_Grid.CurrentMode == "add" || Expediente_Grid.CurrentMode == "copy" || Expediente_Grid.CurrentMode == "edit") {
+	Expediente_Grid.RowIndex = "$rowindex$";
+	await Expediente_Grid.LoadRowValues();
+
+	// Set row properties
+	Expediente_Grid.ResetAttributes();
+	Expediente_Grid.RowAttrs.Add("data-rowindex", Convert.ToString(Expediente_Grid.RowIndex));
+	Expediente_Grid.RowAttrs.Add("id", "r0_Expediente");
+	Expediente_Grid.RowAttrs.Add("data-rowtype", Convert.ToString(Config.RowTypeAdd));
+	Expediente_Grid.RowAttrs.AppendClass("ew-template");
+	Expediente_Grid.RowType = Config.RowTypeAdd;
+
+	// Render row
+	await Expediente_Grid.RenderRow();
+
+	// Render list options
+	await Expediente_Grid.RenderListOptions();
+	Expediente_Grid.StartRowCount = 0;
+	<tr @Html.Raw(Expediente_Grid.RowAttributes)>
+	@* Render list options (body, left) *@
+	@Expediente_Grid.ListOptions.RenderBody("left", Expediente_Grid.RowIndex)
+	@if (Expediente.nCodigoExpediente.Visible) { // nCodigoExpediente.Visible (begin)
+		<td data-name="nCodigoExpediente">
+@if (!Expediente.IsConfirm) { // nCodigoExpediente (begin)
+<span id="el$rowindex$_Expediente_nCodigoExpediente" class="form-group Expediente_nCodigoExpediente">
+<input type="text" data-table="Expediente" data-field="x_nCodigoExpediente" name="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" size="30" placeholder="@Expediente.nCodigoExpediente.PlaceHolder" value="@Expediente.nCodigoExpediente.EditValue" @Html.Raw(Expediente.nCodigoExpediente.EditAttributes)>
+</span>
+} else { // nCodigoExpediente (confirm)
+<span id="el$rowindex$_Expediente_nCodigoExpediente" class="form-group Expediente_nCodigoExpediente">
+<span @Html.Raw(Expediente.nCodigoExpediente.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(Expediente.nCodigoExpediente.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_nCodigoExpediente" name="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="x@(Expediente_Grid.RowIndex)_nCodigoExpediente" value="@Expediente.nCodigoExpediente.FormValue">
+} @* nCodigoExpediente (end) *@
+<input type="hidden" data-table="Expediente" data-field="x_nCodigoExpediente" name="o@(Expediente_Grid.RowIndex)_nCodigoExpediente" id="o@(Expediente_Grid.RowIndex)_nCodigoExpediente" value="@Expediente.nCodigoExpediente.OldValue">
+</td>
+	} @* nCodigoExpediente.Visible (end) *@
+	@if (Expediente.dFechaExpediente.Visible) { // dFechaExpediente.Visible (begin)
+		<td data-name="dFechaExpediente">
+@if (!Expediente.IsConfirm) { // dFechaExpediente (begin)
+<span id="el$rowindex$_Expediente_dFechaExpediente" class="form-group Expediente_dFechaExpediente">
+<input type="text" data-table="Expediente" data-field="x_dFechaExpediente" name="x@(Expediente_Grid.RowIndex)_dFechaExpediente" id="x@(Expediente_Grid.RowIndex)_dFechaExpediente" placeholder="@Expediente.dFechaExpediente.PlaceHolder" value="@Expediente.dFechaExpediente.EditValue" @Html.Raw(Expediente.dFechaExpediente.EditAttributes)>
+@if (!Expediente.dFechaExpediente.ReadOnly && !Expediente.dFechaExpediente.Disabled && !Expediente.dFechaExpediente.EditAttrs.ContainsKey("readonly") && !Expediente.dFechaExpediente.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fExpedientegrid", "x@(Expediente_Grid.RowIndex)_dFechaExpediente", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+} else { // dFechaExpediente (confirm)
+<span id="el$rowindex$_Expediente_dFechaExpediente" class="form-group Expediente_dFechaExpediente">
+<span @Html.Raw(Expediente.dFechaExpediente.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(Expediente.dFechaExpediente.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_dFechaExpediente" name="x@(Expediente_Grid.RowIndex)_dFechaExpediente" id="x@(Expediente_Grid.RowIndex)_dFechaExpediente" value="@Expediente.dFechaExpediente.FormValue">
+} @* dFechaExpediente (end) *@
+<input type="hidden" data-table="Expediente" data-field="x_dFechaExpediente" name="o@(Expediente_Grid.RowIndex)_dFechaExpediente" id="o@(Expediente_Grid.RowIndex)_dFechaExpediente" value="@Expediente.dFechaExpediente.OldValue">
+</td>
+	} @* dFechaExpediente.Visible (end) *@
+	@if (Expediente.sACPPESA.Visible) { // sACPPESA.Visible (begin)
+		<td data-name="sACPPESA">
+@if (!Expediente.IsConfirm) { // sACPPESA (begin)
+<span id="el$rowindex$_Expediente_sACPPESA" class="form-group Expediente_sACPPESA">
+<input type="text" data-table="Expediente" data-field="x_sACPPESA" name="x@(Expediente_Grid.RowIndex)_sACPPESA" id="x@(Expediente_Grid.RowIndex)_sACPPESA" size="30" maxlength="500" placeholder="@Expediente.sACPPESA.PlaceHolder" value="@Expediente.sACPPESA.EditValue" @Html.Raw(Expediente.sACPPESA.EditAttributes)>
+</span>
+} else { // sACPPESA (confirm)
+<span id="el$rowindex$_Expediente_sACPPESA" class="form-group Expediente_sACPPESA">
+<span @Html.Raw(Expediente.sACPPESA.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(Expediente.sACPPESA.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_sACPPESA" name="x@(Expediente_Grid.RowIndex)_sACPPESA" id="x@(Expediente_Grid.RowIndex)_sACPPESA" value="@Expediente.sACPPESA.FormValue">
+} @* sACPPESA (end) *@
+<input type="hidden" data-table="Expediente" data-field="x_sACPPESA" name="o@(Expediente_Grid.RowIndex)_sACPPESA" id="o@(Expediente_Grid.RowIndex)_sACPPESA" value="@Expediente.sACPPESA.OldValue">
+</td>
+	} @* sACPPESA.Visible (end) *@
+	@if (Expediente.nGrupoSanguineoID.Visible) { // nGrupoSanguineoID.Visible (begin)
+		<td data-name="nGrupoSanguineoID">
+@if (!Expediente.IsConfirm) { // nGrupoSanguineoID (begin)
+<span id="el$rowindex$_Expediente_nGrupoSanguineoID" class="form-group Expediente_nGrupoSanguineoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID">@(SameString(Expediente.nGrupoSanguineoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nGrupoSanguineoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nGrupoSanguineoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nGrupoSanguineoID.ReadOnly || Expediente.nGrupoSanguineoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nGrupoSanguineoID.Lookup.GetParamTag("p_x" + Expediente_Grid.RowIndex + "_nGrupoSanguineoID"))
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nGrupoSanguineoID.DisplayValueSeparatorAttribute" name="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.CurrentValue"@Html.Raw(Expediente.nGrupoSanguineoID.EditAttributes)>
+</span>
+} else { // nGrupoSanguineoID (confirm)
+<span id="el$rowindex$_Expediente_nGrupoSanguineoID" class="form-group Expediente_nGrupoSanguineoID">
+<span @Html.Raw(Expediente.nGrupoSanguineoID.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(Expediente.nGrupoSanguineoID.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" name="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="x@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.FormValue">
+} @* nGrupoSanguineoID (end) *@
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" name="o@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" id="o@(Expediente_Grid.RowIndex)_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.OldValue">
+</td>
+	} @* nGrupoSanguineoID.Visible (end) *@
+	@if (Expediente.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+		<td data-name="nEstadoID">
+@if (!Expediente.IsConfirm) { // nEstadoID (begin)
+<span id="el$rowindex$_Expediente_nEstadoID" class="form-group Expediente_nEstadoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(Expediente_Grid.RowIndex)_nEstadoID">@(SameString(Expediente.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nEstadoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nEstadoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nEstadoID.ReadOnly || Expediente.nEstadoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(Expediente_Grid.RowIndex)_nEstadoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nEstadoID.Lookup.GetParamTag("p_x" + Expediente_Grid.RowIndex + "_nEstadoID"))
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nEstadoID.DisplayValueSeparatorAttribute" name="x@(Expediente_Grid.RowIndex)_nEstadoID" id="x@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.CurrentValue"@Html.Raw(Expediente.nEstadoID.EditAttributes)>
+</span>
+} else { // nEstadoID (confirm)
+<span id="el$rowindex$_Expediente_nEstadoID" class="form-group Expediente_nEstadoID">
+<span @Html.Raw(Expediente.nEstadoID.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(Expediente.nEstadoID.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" name="x@(Expediente_Grid.RowIndex)_nEstadoID" id="x@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.FormValue">
+} @* nEstadoID (end) *@
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" name="o@(Expediente_Grid.RowIndex)_nEstadoID" id="o@(Expediente_Grid.RowIndex)_nEstadoID" value="@Expediente.nEstadoID.OldValue">
+</td>
+	} @* nEstadoID.Visible (end) *@
+	@* Render list options (body, right) *@
+	@Expediente_Grid.ListOptions.RenderBody("right", Expediente_Grid.RowCnt)
+<script>
+fExpedientegrid.updateLists(@Expediente_Grid.RowIndex);
+</script>
+	</tr>
+}
+</tbody>
+</table><!-- /.ew-table -->
+@if (Expediente_Grid.CurrentMode == "add" || Expediente_Grid.CurrentMode == "copy") {
+<input type="hidden" name="@Expediente_Grid.FormKeyCountName" id="@Expediente_Grid.FormKeyCountName" value="@Expediente_Grid.KeyCount">
+@Html.Raw(Expediente_Grid.MultiSelectKey)
+}
+@if (Expediente_Grid.CurrentMode == "edit") {
+<input type="hidden" name="@Expediente_Grid.FormKeyCountName" id="@Expediente_Grid.FormKeyCountName" value="@Expediente_Grid.KeyCount">
+@Html.Raw(Expediente_Grid.MultiSelectKey)
+}
+@if (Empty(Expediente_Grid.CurrentMode)) {
+<input type="hidden" name="action" id="action" value="">
+}
+<input type="hidden" name="detailpage" value="fExpedientegrid">
+</div><!-- /.ew-grid-middle-panel -->
+@{ Expediente_Grid.CloseRecordset(); }
+</div>
+@if (Expediente_Grid.ShowOtherOptions) {
+	<div class="card-footer ew-grid-lower-panel">
+	@Expediente_Grid.OtherOptions.RenderBody("bottom")
+	</div>
+	<div class="clearfix"></div>
+}
+</div><!-- /.ew-grid -->
+}
+@if (Expediente_Grid.TotalRecords <= 0 && Expediente_Grid.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@Expediente_Grid.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@{
+
+	// Clear CurrentGrid
+	CurrentGrid = null;
+}

@@ -1,0 +1,548 @@
+@{
+
+	// View
+	View = this;
+
+	// Set up CurrentGrid
+	CurrentGrid = ValorCatalogo_Grid;
+
+	// Run
+	await ValorCatalogo_Grid.Run();
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	ValorCatalogo_Grid.Page_Render();
+
+	// Check action result
+	if (ValorCatalogo_Grid.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!ValorCatalogo.IsExport()) {
+<script>
+
+// Form object
+var fValorCatalogogrid = new ew.Form("fValorCatalogogrid", "grid");
+fValorCatalogogrid.formKeyCountName = "@ValorCatalogo_Grid.FormKeyCountName";
+
+// Validate form
+fValorCatalogogrid.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+		var checkrow = gridinsert ? !this.emptyRow(infix) : true;
+		if (checkrow) {
+			addcnt++;
+	@if (ValorCatalogo_Grid.nCodigo.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nCodigo");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ValorCatalogo.nCodigo.RequiredErrorMessage.Replace("%s", ValorCatalogo.nCodigo.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_nCodigo");
+		if (elm && !ew.checkInteger(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(ValorCatalogo.nCodigo.ErrorMessage))");
+	@if (ValorCatalogo_Grid.sDescripcion.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sDescripcion");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ValorCatalogo.sDescripcion.RequiredErrorMessage.Replace("%s", ValorCatalogo.sDescripcion.Caption)))");
+		</text>
+	}
+	@if (ValorCatalogo_Grid.nActivo.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nActivo");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(ValorCatalogo.nActivo.RequiredErrorMessage.Replace("%s", ValorCatalogo.nActivo.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+		} // End Grid Add checking
+	}
+	return true;
+}
+
+// Check empty row
+fValorCatalogogrid.emptyRow = function(infix) {
+	var fobj = this._form;
+	if (ew.valueChanged(fobj, infix, "nCodigo", false)) return false;
+	if (ew.valueChanged(fobj, infix, "sDescripcion", false)) return false;
+	if (ew.valueChanged(fobj, infix, "nActivo", false)) return false;
+	return true;
+}
+
+// Form_CustomValidate event
+fValorCatalogogrid.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fValorCatalogogrid.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fValorCatalogogrid.lists["x_nActivo"] = @Html.Raw(ValorCatalogo_Grid.nActivo.Lookup.ToClientList());
+fValorCatalogogrid.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(ValorCatalogo_Grid.nActivo.Options(false))); // DN
+
+// Form object for search
+</script>
+}
+@{ ValorCatalogo_Grid.RenderOtherOptions(); }
+@ValorCatalogo_Grid.ShowPageHeader()
+@ValorCatalogo_Grid.ShowMessages()
+@if (ValorCatalogo_Grid.TotalRecords > 0 || ValorCatalogo_Grid.CurrentAction != "") {
+<div class="card ew-card ew-grid@(ValorCatalogo_Grid.IsAddOrEdit ? " ew-grid-add-edit" : "") ValorCatalogo">
+<div id="fValorCatalogogrid" class="ew-form ew-list-form form-inline">
+<div id="gmp_ValorCatalogo" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table id="tbl_ValorCatalogogrid" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	ValorCatalogo_Grid.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await ValorCatalogo_Grid.RenderListOptions();
+
+	// Render list options (header, left)
+	ValorCatalogo_Grid.ListOptions.Render("header", "left");
+}
+@if (ValorCatalogo.nCodigo.Visible) { // nCodigo.Visible (begin)
+	if (ValorCatalogo_Grid.SortUrl(ValorCatalogo.nCodigo) == "") {
+		<th data-name="nCodigo" class="@ValorCatalogo.nCodigo.HeaderCellClass"><div id="elh_ValorCatalogo_nCodigo" class="ValorCatalogo_nCodigo"><div class="ew-table-header-caption">@Html.Raw(ValorCatalogo.nCodigo.Caption)</div></div></th>
+	} else {
+		<th data-name="nCodigo" class="@ValorCatalogo.nCodigo.HeaderCellClass"><div><div id="elh_ValorCatalogo_nCodigo" class="ValorCatalogo_nCodigo">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ValorCatalogo.nCodigo.Caption)</span><span class="ew-table-header-sort">@if (ValorCatalogo.nCodigo.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ValorCatalogo.nCodigo.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nCodigo.Visible (end) *@
+@if (ValorCatalogo.sDescripcion.Visible) { // sDescripcion.Visible (begin)
+	if (ValorCatalogo_Grid.SortUrl(ValorCatalogo.sDescripcion) == "") {
+		<th data-name="sDescripcion" class="@ValorCatalogo.sDescripcion.HeaderCellClass"><div id="elh_ValorCatalogo_sDescripcion" class="ValorCatalogo_sDescripcion"><div class="ew-table-header-caption">@Html.Raw(ValorCatalogo.sDescripcion.Caption)</div></div></th>
+	} else {
+		<th data-name="sDescripcion" class="@ValorCatalogo.sDescripcion.HeaderCellClass"><div><div id="elh_ValorCatalogo_sDescripcion" class="ValorCatalogo_sDescripcion">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ValorCatalogo.sDescripcion.Caption)</span><span class="ew-table-header-sort">@if (ValorCatalogo.sDescripcion.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ValorCatalogo.sDescripcion.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sDescripcion.Visible (end) *@
+@if (ValorCatalogo.nActivo.Visible) { // nActivo.Visible (begin)
+	if (ValorCatalogo_Grid.SortUrl(ValorCatalogo.nActivo) == "") {
+		<th data-name="nActivo" class="@ValorCatalogo.nActivo.HeaderCellClass"><div id="elh_ValorCatalogo_nActivo" class="ValorCatalogo_nActivo"><div class="ew-table-header-caption">@Html.Raw(ValorCatalogo.nActivo.Caption)</div></div></th>
+	} else {
+		<th data-name="nActivo" class="@ValorCatalogo.nActivo.HeaderCellClass"><div><div id="elh_ValorCatalogo_nActivo" class="ValorCatalogo_nActivo">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ValorCatalogo.nActivo.Caption)</span><span class="ew-table-header-sort">@if (ValorCatalogo.nActivo.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ValorCatalogo.nActivo.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nActivo.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	ValorCatalogo_Grid.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+ValorCatalogo_Grid.StartRecord = 1;
+ValorCatalogo_Grid.StopRecord = ValorCatalogo_Grid.TotalRecords; // Show all records
+
+// Restore number of post back records
+if (CurrentForm != null && ValorCatalogo_Grid.EventCancelled) {
+	CurrentForm.Index = -1;
+	if (CurrentForm.HasValue(ValorCatalogo_Grid.FormKeyCountName) && (ValorCatalogo_Grid.IsGridAdd || ValorCatalogo_Grid.IsGridEdit || ValorCatalogo_Grid.IsConfirm)) {
+		ValorCatalogo_Grid.KeyCount = CurrentForm.GetInt(ValorCatalogo_Grid.FormKeyCountName);
+		ValorCatalogo_Grid.StopRecord = ValorCatalogo_Grid.StartRecord + ValorCatalogo_Grid.KeyCount - 1;
+	}
+}
+if (ValorCatalogo_Grid.Recordset != null && ValorCatalogo_Grid.Recordset.HasRows) {
+	if (!ValorCatalogo_Grid.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= ValorCatalogo_Grid.StartRecord - 1; i++) { // Move to first record
+			if (await ValorCatalogo_Grid.Recordset.ReadAsync()) {
+				ValorCatalogo_Grid.RecordCount++;
+			}
+		}
+	} else {
+		ValorCatalogo_Grid.RecordCount = ValorCatalogo_Grid.StartRecord - 1;
+	}
+} else if (!ValorCatalogo_Grid.AllowAddDeleteRow && ValorCatalogo_Grid.StopRecord == 0) {
+	ValorCatalogo_Grid.StopRecord = ValorCatalogo_Grid.GridAddRowCount;
+}
+
+// Initialize aggregate
+ValorCatalogo_Grid.RowType = Config.RowTypeAggregateInit;
+ValorCatalogo_Grid.ResetAttributes();
+await ValorCatalogo_Grid.RenderRow();
+if (ValorCatalogo_Grid.IsGridAdd) {
+	ValorCatalogo_Grid.RowIndex = 0;
+}
+if (ValorCatalogo_Grid.IsGridEdit) {
+	ValorCatalogo_Grid.RowIndex = 0;
+}
+
+// Output data rows
+bool eof = (ValorCatalogo_Grid.Recordset == null); // DN
+while (ValorCatalogo_Grid.RecordCount < ValorCatalogo_Grid.StopRecord) { // Begin While
+	if ((!ValorCatalogo_Grid.IsGridAdd || ValorCatalogo_Grid.CurrentMode == "copy") && !eof) { // DN
+		eof = !await ValorCatalogo_Grid.Recordset.ReadAsync();
+	}
+	ValorCatalogo_Grid.RecordCount++;
+	if (ValorCatalogo_Grid.RecordCount >= ValorCatalogo_Grid.StartRecord) {
+		ValorCatalogo_Grid.RowCnt++;
+		if (ValorCatalogo_Grid.IsGridAdd || ValorCatalogo_Grid.IsGridEdit || ValorCatalogo_Grid.IsConfirm) {
+			ValorCatalogo_Grid.RowIndex = ConvertToInt(ValorCatalogo_Grid.RowIndex) + 1;
+			CurrentForm.Index = ConvertToInt(ValorCatalogo_Grid.RowIndex);
+			if (CurrentForm.HasValue(ValorCatalogo_Grid.FormActionName) && ValorCatalogo_Grid.EventCancelled) {
+				ValorCatalogo_Grid.RowAction = CurrentForm.GetValue(ValorCatalogo_Grid.FormActionName);
+			} else if (ValorCatalogo_Grid.IsGridAdd) {
+				ValorCatalogo_Grid.RowAction = "insert";
+			} else {
+				ValorCatalogo_Grid.RowAction = "";
+			}
+		}
+
+		// Set up key count
+		ValorCatalogo_Grid.KeyCount = ConvertToInt(ValorCatalogo_Grid.RowIndex);
+
+		// Init row class and style
+		ValorCatalogo_Grid.ResetAttributes();
+		ValorCatalogo_Grid.CssClass = "";
+		if (ValorCatalogo_Grid.IsGridAdd) {
+			if (ValorCatalogo_Grid.CurrentMode == "copy") {
+				await ValorCatalogo_Grid.LoadRowValues(ValorCatalogo_Grid.Recordset); // Load row values
+				ValorCatalogo_Grid.SetRecordKey(ref ValorCatalogo_Grid.RowOldKey, ValorCatalogo_Grid.Recordset); // Set old record key
+			} else {
+				await ValorCatalogo_Grid.LoadRowValues(); // Load default values
+				ValorCatalogo_Grid.RowOldKey = ""; // Clear old key value
+			}
+		} else {
+			await ValorCatalogo_Grid.LoadRowValues(ValorCatalogo_Grid.Recordset); // Load row values
+		}
+		ValorCatalogo_Grid.RowType = Config.RowTypeView; // Render view
+		if (ValorCatalogo_Grid.IsGridAdd) { // Grid add
+			ValorCatalogo_Grid.RowType = Config.RowTypeAdd; // Render add
+		}
+		if (ValorCatalogo_Grid.IsGridAdd && ValorCatalogo_Grid.EventCancelled && !CurrentForm.HasValue("k_blankrow")) { // Insert failed
+			await ValorCatalogo_Grid.RestoreCurrentRowFormValues(ValorCatalogo_Grid.RowIndex); // Restore form values
+		}
+		if (ValorCatalogo_Grid.IsGridEdit) { // Grid edit
+			if (ValorCatalogo_Grid.EventCancelled) {
+				await ValorCatalogo_Grid.RestoreCurrentRowFormValues(ValorCatalogo_Grid.RowIndex); // Restore form values
+			}
+			if (ValorCatalogo_Grid.RowAction == "insert") {
+				ValorCatalogo_Grid.RowType = Config.RowTypeAdd; // Render add
+			} else {
+				ValorCatalogo_Grid.RowType = Config.RowTypeEdit; // Render edit
+			}
+		}
+		if (ValorCatalogo_Grid.IsGridEdit && (ValorCatalogo_Grid.RowType == Config.RowTypeEdit || ValorCatalogo_Grid.RowType == Config.RowTypeAdd) && ValorCatalogo_Grid.EventCancelled) { // Update failed
+			await ValorCatalogo_Grid.RestoreCurrentRowFormValues(ValorCatalogo_Grid.RowIndex); // Restore form values
+		}
+		if (ValorCatalogo_Grid.RowType == Config.RowTypeEdit) { // Edit row
+			ValorCatalogo_Grid.EditRowCount++;
+		}
+		if (ValorCatalogo_Grid.IsConfirm) { // Confirm row
+			await ValorCatalogo_Grid.RestoreCurrentRowFormValues(ValorCatalogo_Grid.RowIndex); // Restore form values
+		}
+
+		// Set up row id / data-rowindex
+		ValorCatalogo_Grid.RowAttrs.Add("data-rowindex", Convert.ToString(ValorCatalogo_Grid.RowCnt));
+		ValorCatalogo_Grid.RowAttrs.Add("id", "r" + Convert.ToString(ValorCatalogo_Grid.RowCnt) + "_ValorCatalogo");
+		ValorCatalogo_Grid.RowAttrs.Add("data-rowtype", Convert.ToString(ValorCatalogo_Grid.RowType));
+
+		// Render row
+		await ValorCatalogo_Grid.RenderRow();
+
+		// Render list options
+		await ValorCatalogo_Grid.RenderListOptions();
+
+		// Skip delete row / empty row for confirm page
+		if (ValorCatalogo_Grid.RowAction != "delete" && ValorCatalogo_Grid.RowAction != "insertdelete" && !(ValorCatalogo_Grid.RowAction == "insert" && ValorCatalogo_Grid.IsConfirm && ValorCatalogo_Grid.EmptyRow())) {
+	<tr @Html.Raw(ValorCatalogo_Grid.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		ValorCatalogo_Grid.ListOptions.Render("body", "left", ValorCatalogo_Grid.RowCnt);
+	}
+	@if (ValorCatalogo.nCodigo.Visible) { // nCodigo.Visible (begin)
+		<td data-name="nCodigo"@Html.Raw(ValorCatalogo.nCodigo.CellAttributes)>
+		@if (ValorCatalogo.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* nCodigo (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_nCodigo" class="form-group ValorCatalogo_nCodigo">
+<input type="text" data-table="ValorCatalogo" data-field="x_nCodigo" name="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" size="30" placeholder="@ValorCatalogo.nCodigo.PlaceHolder" value="@ValorCatalogo.nCodigo.EditValue" @Html.Raw(ValorCatalogo.nCodigo.EditAttributes)>
+</span>
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nCodigo" name="o@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="o@(ValorCatalogo_Grid.RowIndex)_nCodigo" value="@ValorCatalogo.nCodigo.OldValue">
+			 @* nCodigo (end) *@
+		} @* Add (end) *@
+		@if (ValorCatalogo.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* nCodigo (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_nCodigo" class="form-group ValorCatalogo_nCodigo">
+<input type="text" data-table="ValorCatalogo" data-field="x_nCodigo" name="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" size="30" placeholder="@ValorCatalogo.nCodigo.PlaceHolder" value="@ValorCatalogo.nCodigo.EditValue" @Html.Raw(ValorCatalogo.nCodigo.EditAttributes)>
+</span>
+			 @* nCodigo (end) *@
+		} @* Edit (end) *@
+		@if (ValorCatalogo.RowType == Config.RowTypeView) { // View (begin)
+			 @* nCodigo (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_nCodigo" class="ValorCatalogo_nCodigo">
+<span @Html.Raw(ValorCatalogo.nCodigo.ViewAttributes)>
+@Html.Raw(ValorCatalogo.nCodigo.GetViewValue())</span>
+</span>
+			@if (!ValorCatalogo.IsConfirm) {
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nCodigo" name="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" value="@ValorCatalogo.nCodigo.FormValue">
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nCodigo" name="o@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="o@(ValorCatalogo_Grid.RowIndex)_nCodigo" value="@ValorCatalogo.nCodigo.OldValue">
+			} else {
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nCodigo" name="fValorCatalogogrid$x@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="fValorCatalogogrid$x@(ValorCatalogo_Grid.RowIndex)_nCodigo" value="@ValorCatalogo.nCodigo.FormValue">
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nCodigo" name="fValorCatalogogrid$o@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="fValorCatalogogrid$o@(ValorCatalogo_Grid.RowIndex)_nCodigo" value="@ValorCatalogo.nCodigo.OldValue">
+			}
+			 @* nCodigo (end) *@
+		} @* View (end) *@
+</td>
+	} @* nCodigo.Visible (end) *@
+			@if (ValorCatalogo.RowType == Config.RowTypeAdd) { // Add (begin)
+				 @* nValorCatalogoID (begin) *@
+	<input type="hidden" data-table="ValorCatalogo" data-field="x_nValorCatalogoID" name="x@(ValorCatalogo_Grid.RowIndex)_nValorCatalogoID" id="x@(ValorCatalogo_Grid.RowIndex)_nValorCatalogoID" value="@ValorCatalogo.nValorCatalogoID.CurrentValue">
+	<input type="hidden" data-table="ValorCatalogo" data-field="x_nValorCatalogoID" name="o@(ValorCatalogo_Grid.RowIndex)_nValorCatalogoID" id="o@(ValorCatalogo_Grid.RowIndex)_nValorCatalogoID" value="@ValorCatalogo.nValorCatalogoID.OldValue">
+				 @* nValorCatalogoID (end) *@
+			} @* Add (end) *@
+			@if (ValorCatalogo.RowType == Config.RowTypeEdit) { // Edit (begin)
+				 @* nValorCatalogoID (begin) *@
+	<input type="hidden" data-table="ValorCatalogo" data-field="x_nValorCatalogoID" name="x@(ValorCatalogo_Grid.RowIndex)_nValorCatalogoID" id="x@(ValorCatalogo_Grid.RowIndex)_nValorCatalogoID" value="@ValorCatalogo.nValorCatalogoID.CurrentValue">
+				 @* nValorCatalogoID (end) *@
+			} @* Edit (end) *@
+	@if (ValorCatalogo.sDescripcion.Visible) { // sDescripcion.Visible (begin)
+		<td data-name="sDescripcion"@Html.Raw(ValorCatalogo.sDescripcion.CellAttributes)>
+		@if (ValorCatalogo.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* sDescripcion (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_sDescripcion" class="form-group ValorCatalogo_sDescripcion">
+<input type="text" data-table="ValorCatalogo" data-field="x_sDescripcion" name="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" size="30" maxlength="50" placeholder="@ValorCatalogo.sDescripcion.PlaceHolder" value="@ValorCatalogo.sDescripcion.EditValue" @Html.Raw(ValorCatalogo.sDescripcion.EditAttributes)>
+</span>
+<input type="hidden" data-table="ValorCatalogo" data-field="x_sDescripcion" name="o@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="o@(ValorCatalogo_Grid.RowIndex)_sDescripcion" value="@ValorCatalogo.sDescripcion.OldValue">
+			 @* sDescripcion (end) *@
+		} @* Add (end) *@
+		@if (ValorCatalogo.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* sDescripcion (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_sDescripcion" class="form-group ValorCatalogo_sDescripcion">
+<input type="text" data-table="ValorCatalogo" data-field="x_sDescripcion" name="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" size="30" maxlength="50" placeholder="@ValorCatalogo.sDescripcion.PlaceHolder" value="@ValorCatalogo.sDescripcion.EditValue" @Html.Raw(ValorCatalogo.sDescripcion.EditAttributes)>
+</span>
+			 @* sDescripcion (end) *@
+		} @* Edit (end) *@
+		@if (ValorCatalogo.RowType == Config.RowTypeView) { // View (begin)
+			 @* sDescripcion (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_sDescripcion" class="ValorCatalogo_sDescripcion">
+<span @Html.Raw(ValorCatalogo.sDescripcion.ViewAttributes)>
+@Html.Raw(ValorCatalogo.sDescripcion.GetViewValue())</span>
+</span>
+			@if (!ValorCatalogo.IsConfirm) {
+<input type="hidden" data-table="ValorCatalogo" data-field="x_sDescripcion" name="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" value="@ValorCatalogo.sDescripcion.FormValue">
+<input type="hidden" data-table="ValorCatalogo" data-field="x_sDescripcion" name="o@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="o@(ValorCatalogo_Grid.RowIndex)_sDescripcion" value="@ValorCatalogo.sDescripcion.OldValue">
+			} else {
+<input type="hidden" data-table="ValorCatalogo" data-field="x_sDescripcion" name="fValorCatalogogrid$x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="fValorCatalogogrid$x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" value="@ValorCatalogo.sDescripcion.FormValue">
+<input type="hidden" data-table="ValorCatalogo" data-field="x_sDescripcion" name="fValorCatalogogrid$o@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="fValorCatalogogrid$o@(ValorCatalogo_Grid.RowIndex)_sDescripcion" value="@ValorCatalogo.sDescripcion.OldValue">
+			}
+			 @* sDescripcion (end) *@
+		} @* View (end) *@
+</td>
+	} @* sDescripcion.Visible (end) *@
+	@if (ValorCatalogo.nActivo.Visible) { // nActivo.Visible (begin)
+		<td data-name="nActivo"@Html.Raw(ValorCatalogo.nActivo.CellAttributes)>
+		@if (ValorCatalogo.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* nActivo (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_nActivo" class="form-group ValorCatalogo_nActivo">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="ValorCatalogo" data-field="x_nActivo" data-value-separator="@ValorCatalogo.nActivo.DisplayValueSeparatorAttribute" id="x@(ValorCatalogo_Grid.RowIndex)_nActivo" name="x@(ValorCatalogo_Grid.RowIndex)_nActivo"@Html.Raw(ValorCatalogo.nActivo.EditAttributes)>
+		@ValorCatalogo.nActivo.SelectOptionListHtml("x@(ValorCatalogo_Grid.RowIndex)_nActivo")
+	</select>
+</div>
+</span>
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nActivo" name="o@(ValorCatalogo_Grid.RowIndex)_nActivo" id="o@(ValorCatalogo_Grid.RowIndex)_nActivo" value="@ValorCatalogo.nActivo.OldValue">
+			 @* nActivo (end) *@
+		} @* Add (end) *@
+		@if (ValorCatalogo.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* nActivo (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_nActivo" class="form-group ValorCatalogo_nActivo">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="ValorCatalogo" data-field="x_nActivo" data-value-separator="@ValorCatalogo.nActivo.DisplayValueSeparatorAttribute" id="x@(ValorCatalogo_Grid.RowIndex)_nActivo" name="x@(ValorCatalogo_Grid.RowIndex)_nActivo"@Html.Raw(ValorCatalogo.nActivo.EditAttributes)>
+		@ValorCatalogo.nActivo.SelectOptionListHtml("x@(ValorCatalogo_Grid.RowIndex)_nActivo")
+	</select>
+</div>
+</span>
+			 @* nActivo (end) *@
+		} @* Edit (end) *@
+		@if (ValorCatalogo.RowType == Config.RowTypeView) { // View (begin)
+			 @* nActivo (begin) *@
+<span id="el@(ValorCatalogo_Grid.RowCnt)_ValorCatalogo_nActivo" class="ValorCatalogo_nActivo">
+<span @Html.Raw(ValorCatalogo.nActivo.ViewAttributes)>
+@Html.Raw(ValorCatalogo.nActivo.GetViewValue())</span>
+</span>
+			@if (!ValorCatalogo.IsConfirm) {
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nActivo" name="x@(ValorCatalogo_Grid.RowIndex)_nActivo" id="x@(ValorCatalogo_Grid.RowIndex)_nActivo" value="@ValorCatalogo.nActivo.FormValue">
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nActivo" name="o@(ValorCatalogo_Grid.RowIndex)_nActivo" id="o@(ValorCatalogo_Grid.RowIndex)_nActivo" value="@ValorCatalogo.nActivo.OldValue">
+			} else {
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nActivo" name="fValorCatalogogrid$x@(ValorCatalogo_Grid.RowIndex)_nActivo" id="fValorCatalogogrid$x@(ValorCatalogo_Grid.RowIndex)_nActivo" value="@ValorCatalogo.nActivo.FormValue">
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nActivo" name="fValorCatalogogrid$o@(ValorCatalogo_Grid.RowIndex)_nActivo" id="fValorCatalogogrid$o@(ValorCatalogo_Grid.RowIndex)_nActivo" value="@ValorCatalogo.nActivo.OldValue">
+			}
+			 @* nActivo (end) *@
+		} @* View (end) *@
+</td>
+	} @* nActivo.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		ValorCatalogo_Grid.ListOptions.Render("body", "right", ValorCatalogo_Grid.RowCnt);
+	}
+	</tr>
+		if (ValorCatalogo_Grid.RowType == Config.RowTypeAdd || ValorCatalogo_Grid.RowType == Config.RowTypeEdit) {
+			<script>
+			fValorCatalogogrid.updateLists(@ValorCatalogo_Grid.RowIndex);
+			</script>
+		}
+	} @* End if *@
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+@if (ValorCatalogo_Grid.CurrentMode == "add" || ValorCatalogo_Grid.CurrentMode == "copy" || ValorCatalogo_Grid.CurrentMode == "edit") {
+	ValorCatalogo_Grid.RowIndex = "$rowindex$";
+	await ValorCatalogo_Grid.LoadRowValues();
+
+	// Set row properties
+	ValorCatalogo_Grid.ResetAttributes();
+	ValorCatalogo_Grid.RowAttrs.Add("data-rowindex", Convert.ToString(ValorCatalogo_Grid.RowIndex));
+	ValorCatalogo_Grid.RowAttrs.Add("id", "r0_ValorCatalogo");
+	ValorCatalogo_Grid.RowAttrs.Add("data-rowtype", Convert.ToString(Config.RowTypeAdd));
+	ValorCatalogo_Grid.RowAttrs.AppendClass("ew-template");
+	ValorCatalogo_Grid.RowType = Config.RowTypeAdd;
+
+	// Render row
+	await ValorCatalogo_Grid.RenderRow();
+
+	// Render list options
+	await ValorCatalogo_Grid.RenderListOptions();
+	ValorCatalogo_Grid.StartRowCount = 0;
+	<tr @Html.Raw(ValorCatalogo_Grid.RowAttributes)>
+	@* Render list options (body, left) *@
+	@ValorCatalogo_Grid.ListOptions.RenderBody("left", ValorCatalogo_Grid.RowIndex)
+	@if (ValorCatalogo.nCodigo.Visible) { // nCodigo.Visible (begin)
+		<td data-name="nCodigo">
+@if (!ValorCatalogo.IsConfirm) { // nCodigo (begin)
+<span id="el$rowindex$_ValorCatalogo_nCodigo" class="form-group ValorCatalogo_nCodigo">
+<input type="text" data-table="ValorCatalogo" data-field="x_nCodigo" name="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" size="30" placeholder="@ValorCatalogo.nCodigo.PlaceHolder" value="@ValorCatalogo.nCodigo.EditValue" @Html.Raw(ValorCatalogo.nCodigo.EditAttributes)>
+</span>
+} else { // nCodigo (confirm)
+<span id="el$rowindex$_ValorCatalogo_nCodigo" class="form-group ValorCatalogo_nCodigo">
+<span @Html.Raw(ValorCatalogo.nCodigo.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(ValorCatalogo.nCodigo.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nCodigo" name="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="x@(ValorCatalogo_Grid.RowIndex)_nCodigo" value="@ValorCatalogo.nCodigo.FormValue">
+} @* nCodigo (end) *@
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nCodigo" name="o@(ValorCatalogo_Grid.RowIndex)_nCodigo" id="o@(ValorCatalogo_Grid.RowIndex)_nCodigo" value="@ValorCatalogo.nCodigo.OldValue">
+</td>
+	} @* nCodigo.Visible (end) *@
+	@if (ValorCatalogo.sDescripcion.Visible) { // sDescripcion.Visible (begin)
+		<td data-name="sDescripcion">
+@if (!ValorCatalogo.IsConfirm) { // sDescripcion (begin)
+<span id="el$rowindex$_ValorCatalogo_sDescripcion" class="form-group ValorCatalogo_sDescripcion">
+<input type="text" data-table="ValorCatalogo" data-field="x_sDescripcion" name="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" size="30" maxlength="50" placeholder="@ValorCatalogo.sDescripcion.PlaceHolder" value="@ValorCatalogo.sDescripcion.EditValue" @Html.Raw(ValorCatalogo.sDescripcion.EditAttributes)>
+</span>
+} else { // sDescripcion (confirm)
+<span id="el$rowindex$_ValorCatalogo_sDescripcion" class="form-group ValorCatalogo_sDescripcion">
+<span @Html.Raw(ValorCatalogo.sDescripcion.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(ValorCatalogo.sDescripcion.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="ValorCatalogo" data-field="x_sDescripcion" name="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="x@(ValorCatalogo_Grid.RowIndex)_sDescripcion" value="@ValorCatalogo.sDescripcion.FormValue">
+} @* sDescripcion (end) *@
+<input type="hidden" data-table="ValorCatalogo" data-field="x_sDescripcion" name="o@(ValorCatalogo_Grid.RowIndex)_sDescripcion" id="o@(ValorCatalogo_Grid.RowIndex)_sDescripcion" value="@ValorCatalogo.sDescripcion.OldValue">
+</td>
+	} @* sDescripcion.Visible (end) *@
+	@if (ValorCatalogo.nActivo.Visible) { // nActivo.Visible (begin)
+		<td data-name="nActivo">
+@if (!ValorCatalogo.IsConfirm) { // nActivo (begin)
+<span id="el$rowindex$_ValorCatalogo_nActivo" class="form-group ValorCatalogo_nActivo">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="ValorCatalogo" data-field="x_nActivo" data-value-separator="@ValorCatalogo.nActivo.DisplayValueSeparatorAttribute" id="x@(ValorCatalogo_Grid.RowIndex)_nActivo" name="x@(ValorCatalogo_Grid.RowIndex)_nActivo"@Html.Raw(ValorCatalogo.nActivo.EditAttributes)>
+		@ValorCatalogo.nActivo.SelectOptionListHtml("x@(ValorCatalogo_Grid.RowIndex)_nActivo")
+	</select>
+</div>
+</span>
+} else { // nActivo (confirm)
+<span id="el$rowindex$_ValorCatalogo_nActivo" class="form-group ValorCatalogo_nActivo">
+<span @Html.Raw(ValorCatalogo.nActivo.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(ValorCatalogo.nActivo.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nActivo" name="x@(ValorCatalogo_Grid.RowIndex)_nActivo" id="x@(ValorCatalogo_Grid.RowIndex)_nActivo" value="@ValorCatalogo.nActivo.FormValue">
+} @* nActivo (end) *@
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nActivo" name="o@(ValorCatalogo_Grid.RowIndex)_nActivo" id="o@(ValorCatalogo_Grid.RowIndex)_nActivo" value="@ValorCatalogo.nActivo.OldValue">
+</td>
+	} @* nActivo.Visible (end) *@
+	@* Render list options (body, right) *@
+	@ValorCatalogo_Grid.ListOptions.RenderBody("right", ValorCatalogo_Grid.RowCnt)
+<script>
+fValorCatalogogrid.updateLists(@ValorCatalogo_Grid.RowIndex);
+</script>
+	</tr>
+}
+</tbody>
+</table><!-- /.ew-table -->
+@if (ValorCatalogo_Grid.CurrentMode == "add" || ValorCatalogo_Grid.CurrentMode == "copy") {
+<input type="hidden" name="@ValorCatalogo_Grid.FormKeyCountName" id="@ValorCatalogo_Grid.FormKeyCountName" value="@ValorCatalogo_Grid.KeyCount">
+@Html.Raw(ValorCatalogo_Grid.MultiSelectKey)
+}
+@if (ValorCatalogo_Grid.CurrentMode == "edit") {
+<input type="hidden" name="@ValorCatalogo_Grid.FormKeyCountName" id="@ValorCatalogo_Grid.FormKeyCountName" value="@ValorCatalogo_Grid.KeyCount">
+@Html.Raw(ValorCatalogo_Grid.MultiSelectKey)
+}
+@if (Empty(ValorCatalogo_Grid.CurrentMode)) {
+<input type="hidden" name="action" id="action" value="">
+}
+<input type="hidden" name="detailpage" value="fValorCatalogogrid">
+</div><!-- /.ew-grid-middle-panel -->
+@{ ValorCatalogo_Grid.CloseRecordset(); }
+</div>
+@if (ValorCatalogo_Grid.ShowOtherOptions) {
+	<div class="card-footer ew-grid-lower-panel">
+	@ValorCatalogo_Grid.OtherOptions.RenderBody("bottom")
+	</div>
+	<div class="clearfix"></div>
+}
+</div><!-- /.ew-grid -->
+}
+@if (ValorCatalogo_Grid.TotalRecords <= 0 && ValorCatalogo_Grid.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@ValorCatalogo_Grid.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@{
+
+	// Clear CurrentGrid
+	CurrentGrid = null;
+}

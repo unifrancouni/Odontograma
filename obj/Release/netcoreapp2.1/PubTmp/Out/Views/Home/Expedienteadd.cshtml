@@ -1,0 +1,310 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Expediente_Add.Page_Render();
+
+	// Check action result
+	if (Expediente_Add.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "add";
+var fExpedienteadd = currentForm = new ew.Form("fExpedienteadd", "add");
+
+// Validate form
+fExpedienteadd.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (Expediente_Add.nPacienteID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nPacienteID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nPacienteID.RequiredErrorMessage.Replace("%s", Expediente.nPacienteID.Caption)))");
+		</text>
+	}
+	@if (Expediente_Add.nCodigoExpediente.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nCodigoExpediente");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nCodigoExpediente.RequiredErrorMessage.Replace("%s", Expediente.nCodigoExpediente.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_nCodigoExpediente");
+		if (elm && !ew.checkInteger(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nCodigoExpediente.ErrorMessage))");
+	@if (Expediente_Add.dFechaExpediente.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaExpediente");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.dFechaExpediente.RequiredErrorMessage.Replace("%s", Expediente.dFechaExpediente.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaExpediente");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.dFechaExpediente.ErrorMessage))");
+	@if (Expediente_Add.sACPPESA.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sACPPESA");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.sACPPESA.RequiredErrorMessage.Replace("%s", Expediente.sACPPESA.Caption)))");
+		</text>
+	}
+	@if (Expediente_Add.nGrupoSanguineoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nGrupoSanguineoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nGrupoSanguineoID.RequiredErrorMessage.Replace("%s", Expediente.nGrupoSanguineoID.Caption)))");
+		</text>
+	}
+	@if (Expediente_Add.nAAAMA.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nAAAMA");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nAAAMA.RequiredErrorMessage.Replace("%s", Expediente.nAAAMA.Caption)))");
+		</text>
+	}
+	@if (Expediente_Add.sAAAMA.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sAAAMA");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.sAAAMA.RequiredErrorMessage.Replace("%s", Expediente.sAAAMA.Caption)))");
+		</text>
+	}
+	@if (Expediente_Add.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Expediente.nEstadoID.RequiredErrorMessage.Replace("%s", Expediente.nEstadoID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fExpedienteadd.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExpedienteadd.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExpedienteadd.lists["x_nPacienteID"] = @Html.Raw(Expediente_Add.nPacienteID.Lookup.ToClientList());
+fExpedienteadd.lists["x_nPacienteID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nPacienteID.LookupOptions()));
+fExpedienteadd.lists["x_nGrupoSanguineoID"] = @Html.Raw(Expediente_Add.nGrupoSanguineoID.Lookup.ToClientList());
+fExpedienteadd.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nGrupoSanguineoID.LookupOptions()));
+fExpedienteadd.lists["x_nAAAMA"] = @Html.Raw(Expediente_Add.nAAAMA.Lookup.ToClientList());
+fExpedienteadd.lists["x_nAAAMA"].options = @Html.Raw(ConvertToJson(Expediente_Add.nAAAMA.Options(false))); // DN
+fExpedienteadd.lists["x_nEstadoID"] = @Html.Raw(Expediente_Add.nEstadoID.Lookup.ToClientList());
+fExpedienteadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Expediente_Add.ShowPageHeader()
+@Expediente_Add.ShowMessages()
+<form name="fExpedienteadd" id="fExpedienteadd" class="@Expediente_Add.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (Expediente_Add.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="t" value="Expediente">
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(Expediente_Add.IsModal)">
+@if (Expediente_Add.CurrentMasterTable == "Paciente") {
+<input type="hidden" name="@Config.TableShowMaster" value="Paciente">
+<input type="hidden" name="fk_nPacienteID" value="@Expediente_Add.nPacienteID.SessionValue">
+}
+<div class="ew-add-div"><!-- page* -->
+@if (Expediente.nPacienteID.Visible) { // nPacienteID.Visible (begin)
+	<div id="r_nPacienteID" class="form-group row">
+		<label id="elh_Expediente_nPacienteID" for="x_nPacienteID" class="@Expediente_Add.LeftColumnClass">@Html.Raw(Expediente.nPacienteID.Caption)@Html.Raw(Expediente.nPacienteID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.nPacienteID.CellAttributes)>
+@if (!Empty(Expediente.nPacienteID.SessionValue)) {
+<span id="el_Expediente_nPacienteID">
+<span @Html.Raw(Expediente.nPacienteID.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(Expediente.nPacienteID.ViewValue))"></span>
+</span>
+<input type="hidden" id="x_nPacienteID" name="x_nPacienteID" value="@Expediente.nPacienteID.CurrentValue">
+} else {
+<span id="el_Expediente_nPacienteID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nPacienteID">@(SameString(Expediente.nPacienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nPacienteID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nPacienteID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nPacienteID.ReadOnly || Expediente.nPacienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nPacienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nPacienteID.Lookup.GetParamTag("p_x_nPacienteID"))
+<input type="hidden" data-table="Expediente" data-field="x_nPacienteID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nPacienteID.DisplayValueSeparatorAttribute" name="x_nPacienteID" id="x_nPacienteID" value="@Expediente.nPacienteID.CurrentValue"@Html.Raw(Expediente.nPacienteID.EditAttributes)>
+</span>
+}
+@Html.Raw(Expediente.nPacienteID.CustomMessage)</div></div>
+	</div>
+} @* nPacienteID.Visible (end) *@
+@if (Expediente.nCodigoExpediente.Visible) { // nCodigoExpediente.Visible (begin)
+	<div id="r_nCodigoExpediente" class="form-group row">
+		<label id="elh_Expediente_nCodigoExpediente" for="x_nCodigoExpediente" class="@Expediente_Add.LeftColumnClass">@Html.Raw(Expediente.nCodigoExpediente.Caption)@Html.Raw(Expediente.nCodigoExpediente.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.nCodigoExpediente.CellAttributes)>
+<span id="el_Expediente_nCodigoExpediente">
+<input type="text" data-table="Expediente" data-field="x_nCodigoExpediente" name="x_nCodigoExpediente" id="x_nCodigoExpediente" size="30" placeholder="@Expediente.nCodigoExpediente.PlaceHolder" value="@Expediente.nCodigoExpediente.EditValue" @Html.Raw(Expediente.nCodigoExpediente.EditAttributes)>
+</span>
+@Html.Raw(Expediente.nCodigoExpediente.CustomMessage)</div></div>
+	</div>
+} @* nCodigoExpediente.Visible (end) *@
+@if (Expediente.dFechaExpediente.Visible) { // dFechaExpediente.Visible (begin)
+	<div id="r_dFechaExpediente" class="form-group row">
+		<label id="elh_Expediente_dFechaExpediente" for="x_dFechaExpediente" class="@Expediente_Add.LeftColumnClass">@Html.Raw(Expediente.dFechaExpediente.Caption)@Html.Raw(Expediente.dFechaExpediente.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.dFechaExpediente.CellAttributes)>
+<span id="el_Expediente_dFechaExpediente">
+<input type="text" data-table="Expediente" data-field="x_dFechaExpediente" name="x_dFechaExpediente" id="x_dFechaExpediente" placeholder="@Expediente.dFechaExpediente.PlaceHolder" value="@Expediente.dFechaExpediente.EditValue" @Html.Raw(Expediente.dFechaExpediente.EditAttributes)>
+@if (!Expediente.dFechaExpediente.ReadOnly && !Expediente.dFechaExpediente.Disabled && !Expediente.dFechaExpediente.EditAttrs.ContainsKey("readonly") && !Expediente.dFechaExpediente.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fExpedienteadd", "x_dFechaExpediente", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(Expediente.dFechaExpediente.CustomMessage)</div></div>
+	</div>
+} @* dFechaExpediente.Visible (end) *@
+@if (Expediente.sACPPESA.Visible) { // sACPPESA.Visible (begin)
+	<div id="r_sACPPESA" class="form-group row">
+		<label id="elh_Expediente_sACPPESA" for="x_sACPPESA" class="@Expediente_Add.LeftColumnClass">@Html.Raw(Expediente.sACPPESA.Caption)@Html.Raw(Expediente.sACPPESA.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.sACPPESA.CellAttributes)>
+<span id="el_Expediente_sACPPESA">
+<input type="text" data-table="Expediente" data-field="x_sACPPESA" name="x_sACPPESA" id="x_sACPPESA" size="30" maxlength="500" placeholder="@Expediente.sACPPESA.PlaceHolder" value="@Expediente.sACPPESA.EditValue" @Html.Raw(Expediente.sACPPESA.EditAttributes)>
+</span>
+@Html.Raw(Expediente.sACPPESA.CustomMessage)</div></div>
+	</div>
+} @* sACPPESA.Visible (end) *@
+@if (Expediente.nGrupoSanguineoID.Visible) { // nGrupoSanguineoID.Visible (begin)
+	<div id="r_nGrupoSanguineoID" class="form-group row">
+		<label id="elh_Expediente_nGrupoSanguineoID" for="x_nGrupoSanguineoID" class="@Expediente_Add.LeftColumnClass">@Html.Raw(Expediente.nGrupoSanguineoID.Caption)@Html.Raw(Expediente.nGrupoSanguineoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.nGrupoSanguineoID.CellAttributes)>
+<span id="el_Expediente_nGrupoSanguineoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nGrupoSanguineoID">@(SameString(Expediente.nGrupoSanguineoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nGrupoSanguineoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nGrupoSanguineoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nGrupoSanguineoID.ReadOnly || Expediente.nGrupoSanguineoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nGrupoSanguineoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nGrupoSanguineoID.Lookup.GetParamTag("p_x_nGrupoSanguineoID"))
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nGrupoSanguineoID.DisplayValueSeparatorAttribute" name="x_nGrupoSanguineoID" id="x_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.CurrentValue"@Html.Raw(Expediente.nGrupoSanguineoID.EditAttributes)>
+</span>
+@Html.Raw(Expediente.nGrupoSanguineoID.CustomMessage)</div></div>
+	</div>
+} @* nGrupoSanguineoID.Visible (end) *@
+@if (Expediente.nAAAMA.Visible) { // nAAAMA.Visible (begin)
+	<div id="r_nAAAMA" class="form-group row">
+		<label id="elh_Expediente_nAAAMA" for="x_nAAAMA" class="@Expediente_Add.LeftColumnClass">@Html.Raw(Expediente.nAAAMA.Caption)@Html.Raw(Expediente.nAAAMA.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.nAAAMA.CellAttributes)>
+<span id="el_Expediente_nAAAMA">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="Expediente" data-field="x_nAAAMA" data-value-separator="@Expediente.nAAAMA.DisplayValueSeparatorAttribute" id="x_nAAAMA" name="x_nAAAMA"@Html.Raw(Expediente.nAAAMA.EditAttributes)>
+		@Expediente.nAAAMA.SelectOptionListHtml("x_nAAAMA")
+	</select>
+</div>
+</span>
+@Html.Raw(Expediente.nAAAMA.CustomMessage)</div></div>
+	</div>
+} @* nAAAMA.Visible (end) *@
+@if (Expediente.sAAAMA.Visible) { // sAAAMA.Visible (begin)
+	<div id="r_sAAAMA" class="form-group row">
+		<label id="elh_Expediente_sAAAMA" for="x_sAAAMA" class="@Expediente_Add.LeftColumnClass">@Html.Raw(Expediente.sAAAMA.Caption)@Html.Raw(Expediente.sAAAMA.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.sAAAMA.CellAttributes)>
+<span id="el_Expediente_sAAAMA">
+<input type="text" data-table="Expediente" data-field="x_sAAAMA" name="x_sAAAMA" id="x_sAAAMA" size="30" maxlength="200" placeholder="@Expediente.sAAAMA.PlaceHolder" value="@Expediente.sAAAMA.EditValue" @Html.Raw(Expediente.sAAAMA.EditAttributes)>
+</span>
+@Html.Raw(Expediente.sAAAMA.CustomMessage)</div></div>
+	</div>
+} @* sAAAMA.Visible (end) *@
+@if (Expediente.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	<div id="r_nEstadoID" class="form-group row">
+		<label id="elh_Expediente_nEstadoID" for="x_nEstadoID" class="@Expediente_Add.LeftColumnClass">@Html.Raw(Expediente.nEstadoID.Caption)@Html.Raw(Expediente.nEstadoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.nEstadoID.CellAttributes)>
+<span id="el_Expediente_nEstadoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nEstadoID">@(SameString(Expediente.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nEstadoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nEstadoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nEstadoID.ReadOnly || Expediente.nEstadoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nEstadoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Expediente.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nEstadoID.DisplayValueSeparatorAttribute" name="x_nEstadoID" id="x_nEstadoID" value="@Expediente.nEstadoID.CurrentValue"@Html.Raw(Expediente.nEstadoID.EditAttributes)>
+</span>
+@Html.Raw(Expediente.nEstadoID.CustomMessage)</div></div>
+	</div>
+} @* nEstadoID.Visible (end) *@
+</div><!-- /page* -->
+@{ Expediente_Add.CloseRecordset(); }
+@if (!Expediente_Add.IsModal) {
+<div class="form-group row"><!-- buttons .form-group -->
+	<div class="@Expediente_Add.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("AddBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Expediente_Add.ReturnUrl)"> @Html.Raw(Language.Phrase("CancelBtn"))</button>
+	</div><!-- /buttons offset -->
+</div><!-- /buttons .form-group -->
+}
+</form>
+@Expediente_Add.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

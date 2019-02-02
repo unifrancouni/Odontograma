@@ -1,0 +1,252 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Paciente_View.Page_Render();
+
+	// Check action result
+	if (Paciente_View.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Paciente.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "view";
+var fPacienteview = currentForm = new ew.Form("fPacienteview", "view");
+
+// Form_CustomValidate event
+fPacienteview.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPacienteview.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPacienteview.lists["x_nGeneroID"] = @Html.Raw(Paciente_View.nGeneroID.Lookup.ToClientList());
+fPacienteview.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_View.nGeneroID.LookupOptions()));
+fPacienteview.lists["x_nActivo"] = @Html.Raw(Paciente_View.nActivo.Lookup.ToClientList());
+fPacienteview.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Paciente_View.nActivo.Options(false))); // DN
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!Paciente.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+	@Paciente_View.ExportOptions.RenderBody()
+	@Paciente_View.OtherOptions.RenderBody()
+	<div class="clearfix"></div>
+</div>
+}
+@Paciente_View.ShowPageHeader()
+@Paciente_View.ShowMessages()
+<form name="fPacienteview" id="fPacienteview" class="form-inline ew-form ew-view-form" method="post">
+@if (Paciente_View.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(Paciente_View.IsModal)">
+<table class="table table-striped table-sm ew-view-table">
+@if (Paciente.nCodigo.Visible) { @* Paciente.nCodigo.Visible (begin) *@
+	<tr id="r_nCodigo">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_nCodigo">@Html.Raw(Paciente.nCodigo.Caption)</span></td>
+		<td data-name="nCodigo" @Html.Raw(Paciente.nCodigo.CellAttributes)>
+<span id="el_Paciente_nCodigo">
+<span @Html.Raw(Paciente.nCodigo.ViewAttributes)>
+@Html.Raw(Paciente.nCodigo.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.nCodigo.Visible (end) *@
+@if (Paciente.sNombre.Visible) { @* Paciente.sNombre.Visible (begin) *@
+	<tr id="r_sNombre">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sNombre">@Html.Raw(Paciente.sNombre.Caption)</span></td>
+		<td data-name="sNombre" @Html.Raw(Paciente.sNombre.CellAttributes)>
+<span id="el_Paciente_sNombre">
+<span @Html.Raw(Paciente.sNombre.ViewAttributes)>
+@Html.Raw(Paciente.sNombre.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sNombre.Visible (end) *@
+@if (Paciente.sApellido1.Visible) { @* Paciente.sApellido1.Visible (begin) *@
+	<tr id="r_sApellido1">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sApellido1">@Html.Raw(Paciente.sApellido1.Caption)</span></td>
+		<td data-name="sApellido1" @Html.Raw(Paciente.sApellido1.CellAttributes)>
+<span id="el_Paciente_sApellido1">
+<span @Html.Raw(Paciente.sApellido1.ViewAttributes)>
+@Html.Raw(Paciente.sApellido1.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sApellido1.Visible (end) *@
+@if (Paciente.sApellido2.Visible) { @* Paciente.sApellido2.Visible (begin) *@
+	<tr id="r_sApellido2">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sApellido2">@Html.Raw(Paciente.sApellido2.Caption)</span></td>
+		<td data-name="sApellido2" @Html.Raw(Paciente.sApellido2.CellAttributes)>
+<span id="el_Paciente_sApellido2">
+<span @Html.Raw(Paciente.sApellido2.ViewAttributes)>
+@Html.Raw(Paciente.sApellido2.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sApellido2.Visible (end) *@
+@if (Paciente.nGeneroID.Visible) { @* Paciente.nGeneroID.Visible (begin) *@
+	<tr id="r_nGeneroID">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_nGeneroID">@Html.Raw(Paciente.nGeneroID.Caption)</span></td>
+		<td data-name="nGeneroID" @Html.Raw(Paciente.nGeneroID.CellAttributes)>
+<span id="el_Paciente_nGeneroID">
+<span @Html.Raw(Paciente.nGeneroID.ViewAttributes)>
+@Html.Raw(Paciente.nGeneroID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.nGeneroID.Visible (end) *@
+@if (Paciente.sLugarNacimiento.Visible) { @* Paciente.sLugarNacimiento.Visible (begin) *@
+	<tr id="r_sLugarNacimiento">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sLugarNacimiento">@Html.Raw(Paciente.sLugarNacimiento.Caption)</span></td>
+		<td data-name="sLugarNacimiento" @Html.Raw(Paciente.sLugarNacimiento.CellAttributes)>
+<span id="el_Paciente_sLugarNacimiento">
+<span @Html.Raw(Paciente.sLugarNacimiento.ViewAttributes)>
+@Html.Raw(Paciente.sLugarNacimiento.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sLugarNacimiento.Visible (end) *@
+@if (Paciente.dFechaNacimiento.Visible) { @* Paciente.dFechaNacimiento.Visible (begin) *@
+	<tr id="r_dFechaNacimiento">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_dFechaNacimiento">@Html.Raw(Paciente.dFechaNacimiento.Caption)</span></td>
+		<td data-name="dFechaNacimiento" @Html.Raw(Paciente.dFechaNacimiento.CellAttributes)>
+<span id="el_Paciente_dFechaNacimiento">
+<span @Html.Raw(Paciente.dFechaNacimiento.ViewAttributes)>
+@Html.Raw(Paciente.dFechaNacimiento.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.dFechaNacimiento.Visible (end) *@
+@if (Paciente.sDireccion.Visible) { @* Paciente.sDireccion.Visible (begin) *@
+	<tr id="r_sDireccion">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sDireccion">@Html.Raw(Paciente.sDireccion.Caption)</span></td>
+		<td data-name="sDireccion" @Html.Raw(Paciente.sDireccion.CellAttributes)>
+<span id="el_Paciente_sDireccion">
+<span @Html.Raw(Paciente.sDireccion.ViewAttributes)>
+@Html.Raw(Paciente.sDireccion.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sDireccion.Visible (end) *@
+@if (Paciente.sCedula.Visible) { @* Paciente.sCedula.Visible (begin) *@
+	<tr id="r_sCedula">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sCedula">@Html.Raw(Paciente.sCedula.Caption)</span></td>
+		<td data-name="sCedula" @Html.Raw(Paciente.sCedula.CellAttributes)>
+<span id="el_Paciente_sCedula">
+<span @Html.Raw(Paciente.sCedula.ViewAttributes)>
+@Html.Raw(Paciente.sCedula.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sCedula.Visible (end) *@
+@if (Paciente.sTelefono.Visible) { @* Paciente.sTelefono.Visible (begin) *@
+	<tr id="r_sTelefono">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sTelefono">@Html.Raw(Paciente.sTelefono.Caption)</span></td>
+		<td data-name="sTelefono" @Html.Raw(Paciente.sTelefono.CellAttributes)>
+<span id="el_Paciente_sTelefono">
+<span @Html.Raw(Paciente.sTelefono.ViewAttributes)>
+@Html.Raw(Paciente.sTelefono.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sTelefono.Visible (end) *@
+@if (Paciente.sEmergenciaNombre.Visible) { @* Paciente.sEmergenciaNombre.Visible (begin) *@
+	<tr id="r_sEmergenciaNombre">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sEmergenciaNombre">@Html.Raw(Paciente.sEmergenciaNombre.Caption)</span></td>
+		<td data-name="sEmergenciaNombre" @Html.Raw(Paciente.sEmergenciaNombre.CellAttributes)>
+<span id="el_Paciente_sEmergenciaNombre">
+<span @Html.Raw(Paciente.sEmergenciaNombre.ViewAttributes)>
+@Html.Raw(Paciente.sEmergenciaNombre.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sEmergenciaNombre.Visible (end) *@
+@if (Paciente.sEmergenciaParentesco.Visible) { @* Paciente.sEmergenciaParentesco.Visible (begin) *@
+	<tr id="r_sEmergenciaParentesco">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sEmergenciaParentesco">@Html.Raw(Paciente.sEmergenciaParentesco.Caption)</span></td>
+		<td data-name="sEmergenciaParentesco" @Html.Raw(Paciente.sEmergenciaParentesco.CellAttributes)>
+<span id="el_Paciente_sEmergenciaParentesco">
+<span @Html.Raw(Paciente.sEmergenciaParentesco.ViewAttributes)>
+@Html.Raw(Paciente.sEmergenciaParentesco.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sEmergenciaParentesco.Visible (end) *@
+@if (Paciente.sEmergenciaTelefono.Visible) { @* Paciente.sEmergenciaTelefono.Visible (begin) *@
+	<tr id="r_sEmergenciaTelefono">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_sEmergenciaTelefono">@Html.Raw(Paciente.sEmergenciaTelefono.Caption)</span></td>
+		<td data-name="sEmergenciaTelefono" @Html.Raw(Paciente.sEmergenciaTelefono.CellAttributes)>
+<span id="el_Paciente_sEmergenciaTelefono">
+<span @Html.Raw(Paciente.sEmergenciaTelefono.ViewAttributes)>
+@Html.Raw(Paciente.sEmergenciaTelefono.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Paciente.sEmergenciaTelefono.Visible (end) *@
+@if (Paciente.nActivo.Visible) { @* Paciente.nActivo.Visible (begin) *@
+	<tr id="r_nActivo">
+		<td class="@Paciente_View.TableLeftColumnClass"><span id="elh_Paciente_nActivo">@Html.Raw(Paciente.nActivo.Caption)</span></td>
+		<td data-name="nActivo" @Html.Raw(Paciente.nActivo.CellAttributes)>
+<span id="el_Paciente_nActivo">
+<span @Html.Raw(Paciente.nActivo.ViewAttributes)>
+<input type="checkbox" value="@Paciente.nActivo.GetViewValue()" disabled checked="@ConvertToBool(Paciente.nActivo.CurrentValue)"></span>
+</span>
+</td>
+	</tr>
+} @* Paciente.nActivo.Visible (end) *@
+</table>
+@{ Paciente_View.CloseRecordset(); }
+@if (Paciente_View.CurrentDetailTables.Contains("Expediente") && Expediente.DetailView) {
+	if (!Empty(Paciente_View.CurrentDetailTable)) {
+		<h4 class="ew-detail-caption">@Html.Raw(Language.TablePhrase("Expediente", "TblCaption"))</h4>
+	}
+		@await Html.PartialAsync("Expedientegrid")
+	View = this;
+}
+</form>
+@Paciente_View.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!Paciente.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

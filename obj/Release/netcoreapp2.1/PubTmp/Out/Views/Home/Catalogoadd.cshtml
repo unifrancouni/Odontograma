@@ -1,0 +1,185 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Catalogo_Add.Page_Render();
+
+	// Check action result
+	if (Catalogo_Add.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "add";
+var fCatalogoadd = currentForm = new ew.Form("fCatalogoadd", "add");
+
+// Validate form
+fCatalogoadd.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (Catalogo_Add.nCodigo.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nCodigo");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Catalogo.nCodigo.RequiredErrorMessage.Replace("%s", Catalogo.nCodigo.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_nCodigo");
+		if (elm && !ew.checkInteger(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Catalogo.nCodigo.ErrorMessage))");
+	@if (Catalogo_Add.sDescripcion.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sDescripcion");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Catalogo.sDescripcion.RequiredErrorMessage.Replace("%s", Catalogo.sDescripcion.Caption)))");
+		</text>
+	}
+	@if (Catalogo_Add.nActivo.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nActivo");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Catalogo.nActivo.RequiredErrorMessage.Replace("%s", Catalogo.nActivo.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fCatalogoadd.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fCatalogoadd.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fCatalogoadd.lists["x_nActivo"] = @Html.Raw(Catalogo_Add.nActivo.Lookup.ToClientList());
+fCatalogoadd.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Catalogo_Add.nActivo.Options(false))); // DN
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Catalogo_Add.ShowPageHeader()
+@Catalogo_Add.ShowMessages()
+<form name="fCatalogoadd" id="fCatalogoadd" class="@Catalogo_Add.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (Catalogo_Add.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="t" value="Catalogo">
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(Catalogo_Add.IsModal)">
+<div class="ew-add-div"><!-- page* -->
+@if (Catalogo.nCodigo.Visible) { // nCodigo.Visible (begin)
+	<div id="r_nCodigo" class="form-group row">
+		<label id="elh_Catalogo_nCodigo" for="x_nCodigo" class="@Catalogo_Add.LeftColumnClass">@Html.Raw(Catalogo.nCodigo.Caption)@Html.Raw(Catalogo.nCodigo.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Catalogo_Add.RightColumnClass"><div @Html.Raw(Catalogo.nCodigo.CellAttributes)>
+<span id="el_Catalogo_nCodigo">
+<input type="text" data-table="Catalogo" data-field="x_nCodigo" name="x_nCodigo" id="x_nCodigo" size="30" placeholder="@Catalogo.nCodigo.PlaceHolder" value="@Catalogo.nCodigo.EditValue" @Html.Raw(Catalogo.nCodigo.EditAttributes)>
+</span>
+@Html.Raw(Catalogo.nCodigo.CustomMessage)</div></div>
+	</div>
+} @* nCodigo.Visible (end) *@
+@if (Catalogo.sDescripcion.Visible) { // sDescripcion.Visible (begin)
+	<div id="r_sDescripcion" class="form-group row">
+		<label id="elh_Catalogo_sDescripcion" for="x_sDescripcion" class="@Catalogo_Add.LeftColumnClass">@Html.Raw(Catalogo.sDescripcion.Caption)@Html.Raw(Catalogo.sDescripcion.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Catalogo_Add.RightColumnClass"><div @Html.Raw(Catalogo.sDescripcion.CellAttributes)>
+<span id="el_Catalogo_sDescripcion">
+<input type="text" data-table="Catalogo" data-field="x_sDescripcion" name="x_sDescripcion" id="x_sDescripcion" size="30" maxlength="50" placeholder="@Catalogo.sDescripcion.PlaceHolder" value="@Catalogo.sDescripcion.EditValue" @Html.Raw(Catalogo.sDescripcion.EditAttributes)>
+</span>
+@Html.Raw(Catalogo.sDescripcion.CustomMessage)</div></div>
+	</div>
+} @* sDescripcion.Visible (end) *@
+@if (Catalogo.nActivo.Visible) { // nActivo.Visible (begin)
+	<div id="r_nActivo" class="form-group row">
+		<label id="elh_Catalogo_nActivo" for="x_nActivo" class="@Catalogo_Add.LeftColumnClass">@Html.Raw(Catalogo.nActivo.Caption)@Html.Raw(Catalogo.nActivo.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Catalogo_Add.RightColumnClass"><div @Html.Raw(Catalogo.nActivo.CellAttributes)>
+<span id="el_Catalogo_nActivo">
+<div class="input-group">
+	<select class="custom-select ew-custom-select" data-table="Catalogo" data-field="x_nActivo" data-value-separator="@Catalogo.nActivo.DisplayValueSeparatorAttribute" id="x_nActivo" name="x_nActivo"@Html.Raw(Catalogo.nActivo.EditAttributes)>
+		@Catalogo.nActivo.SelectOptionListHtml("x_nActivo")
+	</select>
+</div>
+</span>
+@Html.Raw(Catalogo.nActivo.CustomMessage)</div></div>
+	</div>
+} @* nActivo.Visible (end) *@
+</div><!-- /page* -->
+@{ Catalogo_Add.CloseRecordset(); }
+@if (Catalogo_Add.CurrentDetailTables.Contains("ValorCatalogo") && ValorCatalogo.DetailAdd) {
+	if (!Empty(Catalogo_Add.CurrentDetailTable)) {
+		<h4 class="ew-detail-caption">@Html.Raw(Language.TablePhrase("ValorCatalogo", "TblCaption"))</h4>
+	}
+		@await Html.PartialAsync("ValorCatalogogrid")
+	View = this;
+}
+@if (!Catalogo_Add.IsModal) {
+<div class="form-group row"><!-- buttons .form-group -->
+	<div class="@Catalogo_Add.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("AddBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Catalogo_Add.ReturnUrl)"> @Html.Raw(Language.Phrase("CancelBtn"))</button>
+	</div><!-- /buttons offset -->
+</div><!-- /buttons .form-group -->
+}
+</form>
+@Catalogo_Add.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

@@ -1,0 +1,357 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Catalogo_List.Page_Render();
+
+	// Check action result
+	if (Catalogo_List.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Catalogo.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "list";
+var fCatalogolist = currentForm = new ew.Form("fCatalogolist", "list");
+fCatalogolist.formKeyCountName = "@Catalogo_List.FormKeyCountName";
+
+// Form_CustomValidate event
+fCatalogolist.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fCatalogolist.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fCatalogolist.lists["x_nActivo"] = @Html.Raw(Catalogo_List.nActivo.Lookup.ToClientList());
+fCatalogolist.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Catalogo_List.nActivo.Options(false))); // DN
+
+// Form object for search
+var fCatalogolistsrch = currentSearchForm = new ew.Form("fCatalogolistsrch");
+
+// Filters
+fCatalogolistsrch.filterList = @Html.Raw(await Catalogo_List.GetFilterList());
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!Catalogo.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (Catalogo_List.TotalRecords > 0 && Catalogo_List.ExportOptions.Visible) {
+	Catalogo_List.ExportOptions.Render("body");
+}
+@if (Catalogo_List.ImportOptions.Visible) {
+	Catalogo_List.ImportOptions.Render("body");
+}
+@if (Catalogo_List.SearchOptions.Visible) {
+	Catalogo_List.SearchOptions.Render("body");
+}
+@if (Catalogo_List.FilterOptions.Visible) {
+	Catalogo_List.FilterOptions.Render("body");
+}
+<div class="clearfix"></div>
+</div>
+}
+@{ Catalogo_List.RenderOtherOptions(); }
+@{
+if (!Catalogo_List.IsExport() && Empty(Catalogo_List.CurrentAction)) { // Begin search form
+<form name="fCatalogolistsrch" id="fCatalogolistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
+<div id="fCatalogolistsrch-search-panel" class="ew-search-panel collapse@(!Empty(Catalogo_List.SearchWhere) ? " show" : " show")">
+<input type="hidden" name="cmd" value="search">
+<div class="ew-basic-search">
+<div id="xsr_1" class="ew-row d-sm-flex">
+	<div class="ew-quick-search input-group">
+	<input type="text" name="@Config.TableBasicSearch" id="@Config.TableBasicSearch" class="form-control" value="@Catalogo_List.BasicSearch.SessionKeyword" placeholder="@Language.Phrase("Search")">
+	<input type="hidden" name="@Config.TableBasicSearchType" id="@Config.TableBasicSearchType" value="@Catalogo_List.BasicSearch.SessionType">
+	<div class="input-group-append">
+		<button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+		<button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false"><span id="searchtype">@Html.Raw(Catalogo_List.BasicSearch.TypeNameShort)</span></button>
+		<div class="dropdown-menu dropdown-menu-right">
+			<a class="dropdown-item @((Catalogo_List.BasicSearch.SessionType == "") ? " active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this)">@Html.Raw(Language.Phrase("QuickSearchAuto"))</a>
+			<a class="dropdown-item @((Catalogo_List.BasicSearch.SessionType == "=") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'=')">@Html.Raw(Language.Phrase("QuickSearchExact"))</a>
+			<a class="dropdown-item @((Catalogo_List.BasicSearch.SessionType == "AND") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'AND')">@Html.Raw(Language.Phrase("QuickSearchAll"))</a>
+			<a class="dropdown-item @((Catalogo_List.BasicSearch.SessionType == "OR") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'OR')">@Html.Raw(Language.Phrase("QuickSearchAny"))</a>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+</form>
+} @* End search form *@
+}
+@Catalogo_List.ShowPageHeader()
+@Catalogo_List.ShowMessages()
+@if (Catalogo_List.TotalRecords > 0 || Catalogo_List.CurrentAction != "") {
+<div class="card ew-card ew-grid@(Catalogo_List.IsAddOrEdit ? " ew-grid-add-edit" : "") Catalogo">
+<form name="fCatalogolist" id="fCatalogolist" class="form-inline ew-form ew-list-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Catalogo_List.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<div id="gmp_Catalogo" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+@if (Catalogo_List.TotalRecords > 0 || Catalogo.IsGridEdit) { // Begin If TotalRecords > 0
+<table id="tbl_Catalogolist" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	Catalogo_List.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await Catalogo_List.RenderListOptions();
+
+	// Render list options (header, left)
+	Catalogo_List.ListOptions.Render("header", "left");
+}
+@if (Catalogo.nCodigo.Visible) { // nCodigo.Visible (begin)
+	if (Catalogo_List.SortUrl(Catalogo.nCodigo) == "") {
+		<th data-name="nCodigo" class="@Catalogo.nCodigo.HeaderCellClass"><div id="elh_Catalogo_nCodigo" class="Catalogo_nCodigo"><div class="ew-table-header-caption">@Html.Raw(Catalogo.nCodigo.Caption)</div></div></th>
+	} else {
+		<th data-name="nCodigo" class="@Catalogo.nCodigo.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Catalogo.SortUrl(Catalogo.nCodigo))',1);"><div id="elh_Catalogo_nCodigo" class="Catalogo_nCodigo">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Catalogo.nCodigo.Caption)</span><span class="ew-table-header-sort">@if (Catalogo.nCodigo.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Catalogo.nCodigo.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nCodigo.Visible (end) *@
+@if (Catalogo.sDescripcion.Visible) { // sDescripcion.Visible (begin)
+	if (Catalogo_List.SortUrl(Catalogo.sDescripcion) == "") {
+		<th data-name="sDescripcion" class="@Catalogo.sDescripcion.HeaderCellClass"><div id="elh_Catalogo_sDescripcion" class="Catalogo_sDescripcion"><div class="ew-table-header-caption">@Html.Raw(Catalogo.sDescripcion.Caption)</div></div></th>
+	} else {
+		<th data-name="sDescripcion" class="@Catalogo.sDescripcion.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Catalogo.SortUrl(Catalogo.sDescripcion))',1);"><div id="elh_Catalogo_sDescripcion" class="Catalogo_sDescripcion">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Catalogo.sDescripcion.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (Catalogo.sDescripcion.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Catalogo.sDescripcion.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sDescripcion.Visible (end) *@
+@if (Catalogo.nActivo.Visible) { // nActivo.Visible (begin)
+	if (Catalogo_List.SortUrl(Catalogo.nActivo) == "") {
+		<th data-name="nActivo" class="@Catalogo.nActivo.HeaderCellClass"><div id="elh_Catalogo_nActivo" class="Catalogo_nActivo"><div class="ew-table-header-caption">@Html.Raw(Catalogo.nActivo.Caption)</div></div></th>
+	} else {
+		<th data-name="nActivo" class="@Catalogo.nActivo.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Catalogo.SortUrl(Catalogo.nActivo))',1);"><div id="elh_Catalogo_nActivo" class="Catalogo_nActivo">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Catalogo.nActivo.Caption)</span><span class="ew-table-header-sort">@if (Catalogo.nActivo.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Catalogo.nActivo.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nActivo.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	Catalogo_List.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+if (Catalogo_List.ExportAll && Catalogo_List.IsExport()) {
+	Catalogo_List.StopRecord = Catalogo_List.TotalRecords;
+} else {
+
+	// Set the last record to display
+	if (Catalogo_List.TotalRecords > Catalogo_List.StartRecord + Catalogo_List.DisplayRecords - 1) {
+		Catalogo_List.StopRecord = Catalogo_List.StartRecord + Catalogo_List.DisplayRecords - 1;
+	} else {
+		Catalogo_List.StopRecord = Catalogo_List.TotalRecords;
+	}
+}
+if (Catalogo_List.Recordset != null && Catalogo_List.Recordset.HasRows) {
+	if (!Catalogo_List.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= Catalogo_List.StartRecord - 1; i++) { // Move to first record
+			if (await Catalogo_List.Recordset.ReadAsync()) {
+				Catalogo_List.RecordCount++;
+			}
+		}
+	} else {
+		Catalogo_List.RecordCount = Catalogo_List.StartRecord - 1;
+	}
+} else if (!Catalogo_List.AllowAddDeleteRow && Catalogo_List.StopRecord == 0) {
+	Catalogo_List.StopRecord = Catalogo_List.GridAddRowCount;
+}
+
+// Initialize aggregate
+Catalogo_List.RowType = Config.RowTypeAggregateInit;
+Catalogo_List.ResetAttributes();
+await Catalogo_List.RenderRow();
+
+// Output data rows
+bool eof = (Catalogo_List.Recordset == null); // DN
+while (Catalogo_List.RecordCount < Catalogo_List.StopRecord) { // Begin While
+	if (!Catalogo_List.IsGridAdd && !eof) { // DN
+		eof = !await Catalogo_List.Recordset.ReadAsync();
+	}
+	Catalogo_List.RecordCount++;
+	if (Catalogo_List.RecordCount >= Catalogo_List.StartRecord) {
+		Catalogo_List.RowCnt++;
+
+		// Set up key count
+		Catalogo_List.KeyCount = ConvertToInt(Catalogo_List.RowIndex);
+
+		// Init row class and style
+		Catalogo_List.ResetAttributes();
+		Catalogo_List.CssClass = "";
+		if (Catalogo_List.IsGridAdd) {
+		} else {
+			await Catalogo_List.LoadRowValues(Catalogo_List.Recordset); // Load row values
+		}
+		Catalogo_List.RowType = Config.RowTypeView; // Render view
+
+		// Set up row id / data-rowindex
+		Catalogo_List.RowAttrs.Add("data-rowindex", Convert.ToString(Catalogo_List.RowCnt));
+		Catalogo_List.RowAttrs.Add("id", "r" + Convert.ToString(Catalogo_List.RowCnt) + "_Catalogo");
+		Catalogo_List.RowAttrs.Add("data-rowtype", Convert.ToString(Catalogo_List.RowType));
+
+		// Render row
+		await Catalogo_List.RenderRow();
+
+		// Render list options
+		await Catalogo_List.RenderListOptions();
+	<tr @Html.Raw(Catalogo_List.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		Catalogo_List.ListOptions.Render("body", "left", Catalogo_List.RowCnt);
+	}
+	@if (Catalogo.nCodigo.Visible) { // nCodigo.Visible (begin)
+		<td data-name="nCodigo"@Html.Raw(Catalogo.nCodigo.CellAttributes)>
+<span id="el@(Catalogo_List.RowCnt)_Catalogo_nCodigo" class="Catalogo_nCodigo">
+<span @Html.Raw(Catalogo.nCodigo.ViewAttributes)>
+@Html.Raw(Catalogo.nCodigo.GetViewValue())</span>
+</span>
+</td>
+	} @* nCodigo.Visible (end) *@
+	@if (Catalogo.sDescripcion.Visible) { // sDescripcion.Visible (begin)
+		<td data-name="sDescripcion"@Html.Raw(Catalogo.sDescripcion.CellAttributes)>
+<span id="el@(Catalogo_List.RowCnt)_Catalogo_sDescripcion" class="Catalogo_sDescripcion">
+<span @Html.Raw(Catalogo.sDescripcion.ViewAttributes)>
+@Html.Raw(Catalogo.sDescripcion.GetViewValue())</span>
+</span>
+</td>
+	} @* sDescripcion.Visible (end) *@
+	@if (Catalogo.nActivo.Visible) { // nActivo.Visible (begin)
+		<td data-name="nActivo"@Html.Raw(Catalogo.nActivo.CellAttributes)>
+<span id="el@(Catalogo_List.RowCnt)_Catalogo_nActivo" class="Catalogo_nActivo">
+<span @Html.Raw(Catalogo.nActivo.ViewAttributes)>
+@Html.Raw(Catalogo.nActivo.GetViewValue())</span>
+</span>
+</td>
+	} @* nActivo.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		Catalogo_List.ListOptions.Render("body", "right", Catalogo_List.RowCnt);
+	}
+	</tr>
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+@if (Empty(Catalogo_List.CurrentAction)) {
+<input type="hidden" name="action" id="action" value="">
+}
+</div><!-- /.ew-grid-middle-panel -->
+</form><!-- /.ew-list-form -->
+@{ Catalogo_List.CloseRecordset(); }
+		@if (!Catalogo.IsExport()) {
+		<div class="card-footer ew-grid-lower-panel">
+		@if (!Catalogo_List.IsGridAdd) {
+			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
+@{ Catalogo_List.Pager = Catalogo_List.Pager ?? new PrevNextPager(Catalogo_List.StartRecord, Catalogo_List.DisplayRecords, Catalogo_List.TotalRecords, Catalogo_List.AutoHidePager); }
+@if (Catalogo_List.Pager.RecordCount > 0 && Catalogo_List.Pager.Visible) {
+<div class="ew-pager">
+<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
+<div class="ew-prev-next"><div class="input-group input-group-sm">
+<div class="input-group-prepend">
+<!--first page button-->
+	@if (Catalogo_List.Pager.FirstButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Catalogo_List.PageUrl)start=@Catalogo_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
+	}
+<!--previous page button-->
+	@if (Catalogo_List.Pager.PrevButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Catalogo_List.PageUrl)start=@Catalogo_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
+	}
+</div>
+<!--current page number-->
+	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Catalogo_List.Pager.CurrentPageNumber">
+<div class="input-group-append">
+<!--next page button-->
+	@if (Catalogo_List.Pager.NextButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Catalogo_List.PageUrl)start=@Catalogo_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
+	}
+<!--last page button-->
+	@if (Catalogo_List.Pager.LastButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Catalogo_List.PageUrl)start=@Catalogo_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
+	}
+</div>
+</div>
+</div>
+<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Catalogo_List.Pager.PageCount</span>
+<div class="clearfix"></div>
+</div>
+}
+@if (Catalogo_List.Pager.RecordCount > 0) {
+	<div class="ew-pager ew-rec">
+		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Catalogo_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Catalogo_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Catalogo_List.Pager.RecordCount)</span>
+	</div>
+}
+			</form>
+		}
+		<div class="ew-list-other-options">
+		@Catalogo_List.OtherOptions.RenderBody("bottom")
+		</div>
+		<div class="clearfix"></div>
+		</div>
+		}
+</div><!-- /.ew-grid -->
+}
+@if (Catalogo_List.TotalRecords <= 0 && Catalogo_List.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@Catalogo_List.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@Catalogo_List.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!Catalogo.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

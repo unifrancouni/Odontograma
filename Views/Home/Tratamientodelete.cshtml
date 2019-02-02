@@ -1,0 +1,158 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Tratamiento_Delete.Page_Render();
+
+	// Check action result
+	if (Tratamiento_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fTratamientodelete = currentForm = new ew.Form("fTratamientodelete", "delete");
+
+// Form_CustomValidate event
+fTratamientodelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fTratamientodelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fTratamientodelete.lists["x_nMonedaCostoID"] = @Html.Raw(Tratamiento_Delete.nMonedaCostoID.Lookup.ToClientList());
+fTratamientodelete.lists["x_nMonedaCostoID"].options = @Html.Raw(ConvertToJson(Tratamiento_Delete.nMonedaCostoID.LookupOptions()));
+fTratamientodelete.lists["x_nEstadoID"] = @Html.Raw(Tratamiento_Delete.nEstadoID.Lookup.ToClientList());
+fTratamientodelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Tratamiento_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Tratamiento_Delete.ShowPageHeader()
+@Tratamiento_Delete.ShowMessages()
+<form name="fTratamientodelete" id="fTratamientodelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Tratamiento_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in Tratamiento_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (Tratamiento.sDescripcion.Visible) { // sDescripcion (begin)
+		<th class="@Html.Raw(Tratamiento.sDescripcion.HeaderCellClass)"><span id="elh_Tratamiento_sDescripcion" class="Tratamiento_sDescripcion">@Html.Raw(Tratamiento.sDescripcion.Caption)</span></th>
+} @* sDescripcion.Visible (end) *@
+@if (Tratamiento.nCosto.Visible) { // nCosto (begin)
+		<th class="@Html.Raw(Tratamiento.nCosto.HeaderCellClass)"><span id="elh_Tratamiento_nCosto" class="Tratamiento_nCosto">@Html.Raw(Tratamiento.nCosto.Caption)</span></th>
+} @* nCosto.Visible (end) *@
+@if (Tratamiento.nMonedaCostoID.Visible) { // nMonedaCostoID (begin)
+		<th class="@Html.Raw(Tratamiento.nMonedaCostoID.HeaderCellClass)"><span id="elh_Tratamiento_nMonedaCostoID" class="Tratamiento_nMonedaCostoID">@Html.Raw(Tratamiento.nMonedaCostoID.Caption)</span></th>
+} @* nMonedaCostoID.Visible (end) *@
+@if (Tratamiento.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(Tratamiento.nEstadoID.HeaderCellClass)"><span id="elh_Tratamiento_nEstadoID" class="Tratamiento_nEstadoID">@Html.Raw(Tratamiento.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ Tratamiento_Delete.RecordCount = 0; }
+@while (Tratamiento_Delete.Recordset != null && await Tratamiento_Delete.Recordset.ReadAsync()) { // DN
+	Tratamiento_Delete.RecordCount++;
+	Tratamiento_Delete.RowCnt++;
+
+	// Set row properties
+	Tratamiento_Delete.ResetAttributes();
+	Tratamiento_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await Tratamiento_Delete.LoadRowValues(Tratamiento_Delete.Recordset);
+
+	// Render row
+	await Tratamiento_Delete.RenderRow();
+	<tr @Html.Raw(Tratamiento_Delete.RowAttributes)>
+@if (Tratamiento.sDescripcion.Visible) { // sDescripcion (begin)
+		<td @Html.Raw(Tratamiento.sDescripcion.CellAttributes)>
+<span id="el@(Tratamiento_Delete.RowCnt)_Tratamiento_sDescripcion" class="Tratamiento_sDescripcion">
+<span @Html.Raw(Tratamiento.sDescripcion.ViewAttributes)>
+@Html.Raw(Tratamiento.sDescripcion.GetViewValue())</span>
+</span>
+</td>
+} @* sDescripcion.Visible (end) *@
+@if (Tratamiento.nCosto.Visible) { // nCosto (begin)
+		<td @Html.Raw(Tratamiento.nCosto.CellAttributes)>
+<span id="el@(Tratamiento_Delete.RowCnt)_Tratamiento_nCosto" class="Tratamiento_nCosto">
+<span @Html.Raw(Tratamiento.nCosto.ViewAttributes)>
+@Html.Raw(Tratamiento.nCosto.GetViewValue())</span>
+</span>
+</td>
+} @* nCosto.Visible (end) *@
+@if (Tratamiento.nMonedaCostoID.Visible) { // nMonedaCostoID (begin)
+		<td @Html.Raw(Tratamiento.nMonedaCostoID.CellAttributes)>
+<span id="el@(Tratamiento_Delete.RowCnt)_Tratamiento_nMonedaCostoID" class="Tratamiento_nMonedaCostoID">
+<span @Html.Raw(Tratamiento.nMonedaCostoID.ViewAttributes)>
+@Html.Raw(Tratamiento.nMonedaCostoID.GetViewValue())</span>
+</span>
+</td>
+} @* nMonedaCostoID.Visible (end) *@
+@if (Tratamiento.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(Tratamiento.nEstadoID.CellAttributes)>
+<span id="el@(Tratamiento_Delete.RowCnt)_Tratamiento_nEstadoID" class="Tratamiento_nEstadoID">
+<span @Html.Raw(Tratamiento.nEstadoID.ViewAttributes)>
+@Html.Raw(Tratamiento.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ Tratamiento_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Tratamiento_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@Tratamiento_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

@@ -1,0 +1,283 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	AntecedenteDental_View.Page_Render();
+
+	// Check action result
+	if (AntecedenteDental_View.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!AntecedenteDental.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "view";
+var fAntecedenteDentalview = currentForm = new ew.Form("fAntecedenteDentalview", "view");
+
+// Form_CustomValidate event
+fAntecedenteDentalview.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fAntecedenteDentalview.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fAntecedenteDentalview.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteDental_View.nExpedienteID.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nExpedienteID.LookupOptions()));
+fAntecedenteDentalview.lists["x_nTratamientoQuirurgico"] = @Html.Raw(AntecedenteDental_View.nTratamientoQuirurgico.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nTratamientoQuirurgico"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nTratamientoQuirurgico.Options(false))); // DN
+fAntecedenteDentalview.lists["x_nTratamientoRestauracion"] = @Html.Raw(AntecedenteDental_View.nTratamientoRestauracion.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nTratamientoRestauracion"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nTratamientoRestauracion.Options(false))); // DN
+fAntecedenteDentalview.lists["x_nTratamientoPeridoncia"] = @Html.Raw(AntecedenteDental_View.nTratamientoPeridoncia.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nTratamientoPeridoncia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nTratamientoPeridoncia.Options(false))); // DN
+fAntecedenteDentalview.lists["x_nTratamientoEndodoncia"] = @Html.Raw(AntecedenteDental_View.nTratamientoEndodoncia.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nTratamientoEndodoncia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nTratamientoEndodoncia.Options(false))); // DN
+fAntecedenteDentalview.lists["x_nTratamientoOrtodoncia"] = @Html.Raw(AntecedenteDental_View.nTratamientoOrtodoncia.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nTratamientoOrtodoncia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nTratamientoOrtodoncia.Options(false))); // DN
+fAntecedenteDentalview.lists["x_nTratamientoProtesis"] = @Html.Raw(AntecedenteDental_View.nTratamientoProtesis.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nTratamientoProtesis"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nTratamientoProtesis.Options(false))); // DN
+fAntecedenteDentalview.lists["x_nColocadoAnestesia"] = @Html.Raw(AntecedenteDental_View.nColocadoAnestesia.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nColocadoAnestesia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nColocadoAnestesia.Options(false))); // DN
+fAntecedenteDentalview.lists["x_nReaccionAlergicaAnestesia"] = @Html.Raw(AntecedenteDental_View.nReaccionAlergicaAnestesia.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nReaccionAlergicaAnestesia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nReaccionAlergicaAnestesia.Options(false))); // DN
+fAntecedenteDentalview.lists["x_nEstadoID"] = @Html.Raw(AntecedenteDental_View.nEstadoID.Lookup.ToClientList());
+fAntecedenteDentalview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!AntecedenteDental.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+	@AntecedenteDental_View.ExportOptions.RenderBody()
+	@AntecedenteDental_View.OtherOptions.RenderBody()
+	<div class="clearfix"></div>
+</div>
+}
+@AntecedenteDental_View.ShowPageHeader()
+@AntecedenteDental_View.ShowMessages()
+<form name="fAntecedenteDentalview" id="fAntecedenteDentalview" class="form-inline ew-form ew-view-form" method="post">
+@if (AntecedenteDental_View.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(AntecedenteDental_View.IsModal)">
+<table class="table table-striped table-sm ew-view-table">
+@if (AntecedenteDental.nExpedienteID.Visible) { @* AntecedenteDental.nExpedienteID.Visible (begin) *@
+	<tr id="r_nExpedienteID">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nExpedienteID">@Html.Raw(AntecedenteDental.nExpedienteID.Caption)</span></td>
+		<td data-name="nExpedienteID" @Html.Raw(AntecedenteDental.nExpedienteID.CellAttributes)>
+<span id="el_AntecedenteDental_nExpedienteID">
+<span @Html.Raw(AntecedenteDental.nExpedienteID.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nExpedienteID.Visible (end) *@
+@if (AntecedenteDental.dFechaUltimaVisitaDentista.Visible) { @* AntecedenteDental.dFechaUltimaVisitaDentista.Visible (begin) *@
+	<tr id="r_dFechaUltimaVisitaDentista">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_dFechaUltimaVisitaDentista">@Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.Caption)</span></td>
+		<td data-name="dFechaUltimaVisitaDentista" @Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.CellAttributes)>
+<span id="el_AntecedenteDental_dFechaUltimaVisitaDentista">
+<span @Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.ViewAttributes)>
+@Html.Raw(AntecedenteDental.dFechaUltimaVisitaDentista.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.dFechaUltimaVisitaDentista.Visible (end) *@
+@if (AntecedenteDental.sMotivoVisita.Visible) { @* AntecedenteDental.sMotivoVisita.Visible (begin) *@
+	<tr id="r_sMotivoVisita">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_sMotivoVisita">@Html.Raw(AntecedenteDental.sMotivoVisita.Caption)</span></td>
+		<td data-name="sMotivoVisita" @Html.Raw(AntecedenteDental.sMotivoVisita.CellAttributes)>
+<span id="el_AntecedenteDental_sMotivoVisita">
+<span @Html.Raw(AntecedenteDental.sMotivoVisita.ViewAttributes)>
+@Html.Raw(AntecedenteDental.sMotivoVisita.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.sMotivoVisita.Visible (end) *@
+@if (AntecedenteDental.sExperienciaAsistencial.Visible) { @* AntecedenteDental.sExperienciaAsistencial.Visible (begin) *@
+	<tr id="r_sExperienciaAsistencial">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_sExperienciaAsistencial">@Html.Raw(AntecedenteDental.sExperienciaAsistencial.Caption)</span></td>
+		<td data-name="sExperienciaAsistencial" @Html.Raw(AntecedenteDental.sExperienciaAsistencial.CellAttributes)>
+<span id="el_AntecedenteDental_sExperienciaAsistencial">
+<span @Html.Raw(AntecedenteDental.sExperienciaAsistencial.ViewAttributes)>
+@Html.Raw(AntecedenteDental.sExperienciaAsistencial.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.sExperienciaAsistencial.Visible (end) *@
+@if (AntecedenteDental.nTratamientoQuirurgico.Visible) { @* AntecedenteDental.nTratamientoQuirurgico.Visible (begin) *@
+	<tr id="r_nTratamientoQuirurgico">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nTratamientoQuirurgico">@Html.Raw(AntecedenteDental.nTratamientoQuirurgico.Caption)</span></td>
+		<td data-name="nTratamientoQuirurgico" @Html.Raw(AntecedenteDental.nTratamientoQuirurgico.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoQuirurgico">
+<span @Html.Raw(AntecedenteDental.nTratamientoQuirurgico.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nTratamientoQuirurgico.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nTratamientoQuirurgico.Visible (end) *@
+@if (AntecedenteDental.nTratamientoRestauracion.Visible) { @* AntecedenteDental.nTratamientoRestauracion.Visible (begin) *@
+	<tr id="r_nTratamientoRestauracion">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nTratamientoRestauracion">@Html.Raw(AntecedenteDental.nTratamientoRestauracion.Caption)</span></td>
+		<td data-name="nTratamientoRestauracion" @Html.Raw(AntecedenteDental.nTratamientoRestauracion.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoRestauracion">
+<span @Html.Raw(AntecedenteDental.nTratamientoRestauracion.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nTratamientoRestauracion.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nTratamientoRestauracion.Visible (end) *@
+@if (AntecedenteDental.nTratamientoPeridoncia.Visible) { @* AntecedenteDental.nTratamientoPeridoncia.Visible (begin) *@
+	<tr id="r_nTratamientoPeridoncia">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nTratamientoPeridoncia">@Html.Raw(AntecedenteDental.nTratamientoPeridoncia.Caption)</span></td>
+		<td data-name="nTratamientoPeridoncia" @Html.Raw(AntecedenteDental.nTratamientoPeridoncia.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoPeridoncia">
+<span @Html.Raw(AntecedenteDental.nTratamientoPeridoncia.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nTratamientoPeridoncia.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nTratamientoPeridoncia.Visible (end) *@
+@if (AntecedenteDental.nTratamientoEndodoncia.Visible) { @* AntecedenteDental.nTratamientoEndodoncia.Visible (begin) *@
+	<tr id="r_nTratamientoEndodoncia">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nTratamientoEndodoncia">@Html.Raw(AntecedenteDental.nTratamientoEndodoncia.Caption)</span></td>
+		<td data-name="nTratamientoEndodoncia" @Html.Raw(AntecedenteDental.nTratamientoEndodoncia.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoEndodoncia">
+<span @Html.Raw(AntecedenteDental.nTratamientoEndodoncia.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nTratamientoEndodoncia.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nTratamientoEndodoncia.Visible (end) *@
+@if (AntecedenteDental.nTratamientoOrtodoncia.Visible) { @* AntecedenteDental.nTratamientoOrtodoncia.Visible (begin) *@
+	<tr id="r_nTratamientoOrtodoncia">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nTratamientoOrtodoncia">@Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.Caption)</span></td>
+		<td data-name="nTratamientoOrtodoncia" @Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoOrtodoncia">
+<span @Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nTratamientoOrtodoncia.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nTratamientoOrtodoncia.Visible (end) *@
+@if (AntecedenteDental.nTratamientoProtesis.Visible) { @* AntecedenteDental.nTratamientoProtesis.Visible (begin) *@
+	<tr id="r_nTratamientoProtesis">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nTratamientoProtesis">@Html.Raw(AntecedenteDental.nTratamientoProtesis.Caption)</span></td>
+		<td data-name="nTratamientoProtesis" @Html.Raw(AntecedenteDental.nTratamientoProtesis.CellAttributes)>
+<span id="el_AntecedenteDental_nTratamientoProtesis">
+<span @Html.Raw(AntecedenteDental.nTratamientoProtesis.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nTratamientoProtesis.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nTratamientoProtesis.Visible (end) *@
+@if (AntecedenteDental.nColocadoAnestesia.Visible) { @* AntecedenteDental.nColocadoAnestesia.Visible (begin) *@
+	<tr id="r_nColocadoAnestesia">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nColocadoAnestesia">@Html.Raw(AntecedenteDental.nColocadoAnestesia.Caption)</span></td>
+		<td data-name="nColocadoAnestesia" @Html.Raw(AntecedenteDental.nColocadoAnestesia.CellAttributes)>
+<span id="el_AntecedenteDental_nColocadoAnestesia">
+<span @Html.Raw(AntecedenteDental.nColocadoAnestesia.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nColocadoAnestesia.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nColocadoAnestesia.Visible (end) *@
+@if (AntecedenteDental.nReaccionAlergicaAnestesia.Visible) { @* AntecedenteDental.nReaccionAlergicaAnestesia.Visible (begin) *@
+	<tr id="r_nReaccionAlergicaAnestesia">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nReaccionAlergicaAnestesia">@Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.Caption)</span></td>
+		<td data-name="nReaccionAlergicaAnestesia" @Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.CellAttributes)>
+<span id="el_AntecedenteDental_nReaccionAlergicaAnestesia">
+<span @Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nReaccionAlergicaAnestesia.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nReaccionAlergicaAnestesia.Visible (end) *@
+@if (AntecedenteDental.sReaccionAlergicaAnestesia.Visible) { @* AntecedenteDental.sReaccionAlergicaAnestesia.Visible (begin) *@
+	<tr id="r_sReaccionAlergicaAnestesia">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_sReaccionAlergicaAnestesia">@Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.Caption)</span></td>
+		<td data-name="sReaccionAlergicaAnestesia" @Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.CellAttributes)>
+<span id="el_AntecedenteDental_sReaccionAlergicaAnestesia">
+<span @Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.ViewAttributes)>
+@Html.Raw(AntecedenteDental.sReaccionAlergicaAnestesia.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.sReaccionAlergicaAnestesia.Visible (end) *@
+@if (AntecedenteDental.sDescripcionTejidosBlandos.Visible) { @* AntecedenteDental.sDescripcionTejidosBlandos.Visible (begin) *@
+	<tr id="r_sDescripcionTejidosBlandos">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_sDescripcionTejidosBlandos">@Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.Caption)</span></td>
+		<td data-name="sDescripcionTejidosBlandos" @Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.CellAttributes)>
+<span id="el_AntecedenteDental_sDescripcionTejidosBlandos">
+<span @Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.ViewAttributes)>
+@Html.Raw(AntecedenteDental.sDescripcionTejidosBlandos.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.sDescripcionTejidosBlandos.Visible (end) *@
+@if (AntecedenteDental.sHistoriaEnfermedadActual.Visible) { @* AntecedenteDental.sHistoriaEnfermedadActual.Visible (begin) *@
+	<tr id="r_sHistoriaEnfermedadActual">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_sHistoriaEnfermedadActual">@Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.Caption)</span></td>
+		<td data-name="sHistoriaEnfermedadActual" @Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.CellAttributes)>
+<span id="el_AntecedenteDental_sHistoriaEnfermedadActual">
+<span @Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.ViewAttributes)>
+@Html.Raw(AntecedenteDental.sHistoriaEnfermedadActual.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.sHistoriaEnfermedadActual.Visible (end) *@
+@if (AntecedenteDental.nEstadoID.Visible) { @* AntecedenteDental.nEstadoID.Visible (begin) *@
+	<tr id="r_nEstadoID">
+		<td class="@AntecedenteDental_View.TableLeftColumnClass"><span id="elh_AntecedenteDental_nEstadoID">@Html.Raw(AntecedenteDental.nEstadoID.Caption)</span></td>
+		<td data-name="nEstadoID" @Html.Raw(AntecedenteDental.nEstadoID.CellAttributes)>
+<span id="el_AntecedenteDental_nEstadoID">
+<span @Html.Raw(AntecedenteDental.nEstadoID.ViewAttributes)>
+@Html.Raw(AntecedenteDental.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* AntecedenteDental.nEstadoID.Visible (end) *@
+</table>
+@{ AntecedenteDental_View.CloseRecordset(); }
+</form>
+@AntecedenteDental_View.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!AntecedenteDental.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

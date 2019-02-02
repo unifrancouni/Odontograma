@@ -1,0 +1,184 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	ExamenComplementario_Delete.Page_Render();
+
+	// Check action result
+	if (ExamenComplementario_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fExamenComplementariodelete = currentForm = new ew.Form("fExamenComplementariodelete", "delete");
+
+// Form_CustomValidate event
+fExamenComplementariodelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExamenComplementariodelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExamenComplementariodelete.lists["x_nExpedienteID"] = @Html.Raw(ExamenComplementario_Delete.nExpedienteID.Lookup.ToClientList());
+fExamenComplementariodelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nExpedienteID.LookupOptions()));
+fExamenComplementariodelete.lists["x_nEstudiosRadiologicos"] = @Html.Raw(ExamenComplementario_Delete.nEstudiosRadiologicos.Lookup.ToClientList());
+fExamenComplementariodelete.lists["x_nEstudiosRadiologicos"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nEstudiosRadiologicos.Options(false))); // DN
+fExamenComplementariodelete.lists["x_nEstudiosLaboratorio"] = @Html.Raw(ExamenComplementario_Delete.nEstudiosLaboratorio.Lookup.ToClientList());
+fExamenComplementariodelete.lists["x_nEstudiosLaboratorio"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nEstudiosLaboratorio.Options(false))); // DN
+fExamenComplementariodelete.lists["x_nEstadoID"] = @Html.Raw(ExamenComplementario_Delete.nEstadoID.Lookup.ToClientList());
+fExamenComplementariodelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@ExamenComplementario_Delete.ShowPageHeader()
+@ExamenComplementario_Delete.ShowMessages()
+<form name="fExamenComplementariodelete" id="fExamenComplementariodelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (ExamenComplementario_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in ExamenComplementario_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (ExamenComplementario.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<th class="@Html.Raw(ExamenComplementario.nExpedienteID.HeaderCellClass)"><span id="elh_ExamenComplementario_nExpedienteID" class="ExamenComplementario_nExpedienteID">@Html.Raw(ExamenComplementario.nExpedienteID.Caption)</span></th>
+} @* nExpedienteID.Visible (end) *@
+@if (ExamenComplementario.nEstudiosRadiologicos.Visible) { // nEstudiosRadiologicos (begin)
+		<th class="@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.HeaderCellClass)"><span id="elh_ExamenComplementario_nEstudiosRadiologicos" class="ExamenComplementario_nEstudiosRadiologicos">@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.Caption)</span></th>
+} @* nEstudiosRadiologicos.Visible (end) *@
+@if (ExamenComplementario.sDescripcionER.Visible) { // sDescripcionER (begin)
+		<th class="@Html.Raw(ExamenComplementario.sDescripcionER.HeaderCellClass)"><span id="elh_ExamenComplementario_sDescripcionER" class="ExamenComplementario_sDescripcionER">@Html.Raw(ExamenComplementario.sDescripcionER.Caption)</span></th>
+} @* sDescripcionER.Visible (end) *@
+@if (ExamenComplementario.nEstudiosLaboratorio.Visible) { // nEstudiosLaboratorio (begin)
+		<th class="@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.HeaderCellClass)"><span id="elh_ExamenComplementario_nEstudiosLaboratorio" class="ExamenComplementario_nEstudiosLaboratorio">@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.Caption)</span></th>
+} @* nEstudiosLaboratorio.Visible (end) *@
+@if (ExamenComplementario.sDescripcionEL.Visible) { // sDescripcionEL (begin)
+		<th class="@Html.Raw(ExamenComplementario.sDescripcionEL.HeaderCellClass)"><span id="elh_ExamenComplementario_sDescripcionEL" class="ExamenComplementario_sDescripcionEL">@Html.Raw(ExamenComplementario.sDescripcionEL.Caption)</span></th>
+} @* sDescripcionEL.Visible (end) *@
+@if (ExamenComplementario.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(ExamenComplementario.nEstadoID.HeaderCellClass)"><span id="elh_ExamenComplementario_nEstadoID" class="ExamenComplementario_nEstadoID">@Html.Raw(ExamenComplementario.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ ExamenComplementario_Delete.RecordCount = 0; }
+@while (ExamenComplementario_Delete.Recordset != null && await ExamenComplementario_Delete.Recordset.ReadAsync()) { // DN
+	ExamenComplementario_Delete.RecordCount++;
+	ExamenComplementario_Delete.RowCnt++;
+
+	// Set row properties
+	ExamenComplementario_Delete.ResetAttributes();
+	ExamenComplementario_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await ExamenComplementario_Delete.LoadRowValues(ExamenComplementario_Delete.Recordset);
+
+	// Render row
+	await ExamenComplementario_Delete.RenderRow();
+	<tr @Html.Raw(ExamenComplementario_Delete.RowAttributes)>
+@if (ExamenComplementario.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<td @Html.Raw(ExamenComplementario.nExpedienteID.CellAttributes)>
+<span id="el@(ExamenComplementario_Delete.RowCnt)_ExamenComplementario_nExpedienteID" class="ExamenComplementario_nExpedienteID">
+<span @Html.Raw(ExamenComplementario.nExpedienteID.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+} @* nExpedienteID.Visible (end) *@
+@if (ExamenComplementario.nEstudiosRadiologicos.Visible) { // nEstudiosRadiologicos (begin)
+		<td @Html.Raw(ExamenComplementario.nEstudiosRadiologicos.CellAttributes)>
+<span id="el@(ExamenComplementario_Delete.RowCnt)_ExamenComplementario_nEstudiosRadiologicos" class="ExamenComplementario_nEstudiosRadiologicos">
+<span @Html.Raw(ExamenComplementario.nEstudiosRadiologicos.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.GetViewValue())</span>
+</span>
+</td>
+} @* nEstudiosRadiologicos.Visible (end) *@
+@if (ExamenComplementario.sDescripcionER.Visible) { // sDescripcionER (begin)
+		<td @Html.Raw(ExamenComplementario.sDescripcionER.CellAttributes)>
+<span id="el@(ExamenComplementario_Delete.RowCnt)_ExamenComplementario_sDescripcionER" class="ExamenComplementario_sDescripcionER">
+<span @Html.Raw(ExamenComplementario.sDescripcionER.ViewAttributes)>
+@Html.Raw(ExamenComplementario.sDescripcionER.GetViewValue())</span>
+</span>
+</td>
+} @* sDescripcionER.Visible (end) *@
+@if (ExamenComplementario.nEstudiosLaboratorio.Visible) { // nEstudiosLaboratorio (begin)
+		<td @Html.Raw(ExamenComplementario.nEstudiosLaboratorio.CellAttributes)>
+<span id="el@(ExamenComplementario_Delete.RowCnt)_ExamenComplementario_nEstudiosLaboratorio" class="ExamenComplementario_nEstudiosLaboratorio">
+<span @Html.Raw(ExamenComplementario.nEstudiosLaboratorio.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.GetViewValue())</span>
+</span>
+</td>
+} @* nEstudiosLaboratorio.Visible (end) *@
+@if (ExamenComplementario.sDescripcionEL.Visible) { // sDescripcionEL (begin)
+		<td @Html.Raw(ExamenComplementario.sDescripcionEL.CellAttributes)>
+<span id="el@(ExamenComplementario_Delete.RowCnt)_ExamenComplementario_sDescripcionEL" class="ExamenComplementario_sDescripcionEL">
+<span @Html.Raw(ExamenComplementario.sDescripcionEL.ViewAttributes)>
+@Html.Raw(ExamenComplementario.sDescripcionEL.GetViewValue())</span>
+</span>
+</td>
+} @* sDescripcionEL.Visible (end) *@
+@if (ExamenComplementario.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(ExamenComplementario.nEstadoID.CellAttributes)>
+<span id="el@(ExamenComplementario_Delete.RowCnt)_ExamenComplementario_nEstadoID" class="ExamenComplementario_nEstadoID">
+<span @Html.Raw(ExamenComplementario.nEstadoID.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ ExamenComplementario_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(ExamenComplementario_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@ExamenComplementario_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

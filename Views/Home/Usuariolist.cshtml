@@ -1,0 +1,338 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Usuario_List.Page_Render();
+
+	// Check action result
+	if (Usuario_List.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Usuario.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "list";
+var fUsuariolist = currentForm = new ew.Form("fUsuariolist", "list");
+fUsuariolist.formKeyCountName = "@Usuario_List.FormKeyCountName";
+
+// Form_CustomValidate event
+fUsuariolist.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fUsuariolist.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+// Form object for search
+
+var fUsuariolistsrch = currentSearchForm = new ew.Form("fUsuariolistsrch");
+
+// Filters
+fUsuariolistsrch.filterList = @Html.Raw(await Usuario_List.GetFilterList());
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!Usuario.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (Usuario_List.TotalRecords > 0 && Usuario_List.ExportOptions.Visible) {
+	Usuario_List.ExportOptions.Render("body");
+}
+@if (Usuario_List.ImportOptions.Visible) {
+	Usuario_List.ImportOptions.Render("body");
+}
+@if (Usuario_List.SearchOptions.Visible) {
+	Usuario_List.SearchOptions.Render("body");
+}
+@if (Usuario_List.FilterOptions.Visible) {
+	Usuario_List.FilterOptions.Render("body");
+}
+<div class="clearfix"></div>
+</div>
+}
+@{ Usuario_List.RenderOtherOptions(); }
+@{
+if (!Usuario_List.IsExport() && Empty(Usuario_List.CurrentAction)) { // Begin search form
+<form name="fUsuariolistsrch" id="fUsuariolistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
+<div id="fUsuariolistsrch-search-panel" class="ew-search-panel collapse@(!Empty(Usuario_List.SearchWhere) ? " show" : " show")">
+<input type="hidden" name="cmd" value="search">
+<div class="ew-basic-search">
+<div id="xsr_1" class="ew-row d-sm-flex">
+	<div class="ew-quick-search input-group">
+	<input type="text" name="@Config.TableBasicSearch" id="@Config.TableBasicSearch" class="form-control" value="@Usuario_List.BasicSearch.SessionKeyword" placeholder="@Language.Phrase("Search")">
+	<input type="hidden" name="@Config.TableBasicSearchType" id="@Config.TableBasicSearchType" value="@Usuario_List.BasicSearch.SessionType">
+	<div class="input-group-append">
+		<button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+		<button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false"><span id="searchtype">@Html.Raw(Usuario_List.BasicSearch.TypeNameShort)</span></button>
+		<div class="dropdown-menu dropdown-menu-right">
+			<a class="dropdown-item @((Usuario_List.BasicSearch.SessionType == "") ? " active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this)">@Html.Raw(Language.Phrase("QuickSearchAuto"))</a>
+			<a class="dropdown-item @((Usuario_List.BasicSearch.SessionType == "=") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'=')">@Html.Raw(Language.Phrase("QuickSearchExact"))</a>
+			<a class="dropdown-item @((Usuario_List.BasicSearch.SessionType == "AND") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'AND')">@Html.Raw(Language.Phrase("QuickSearchAll"))</a>
+			<a class="dropdown-item @((Usuario_List.BasicSearch.SessionType == "OR") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'OR')">@Html.Raw(Language.Phrase("QuickSearchAny"))</a>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+</form>
+} @* End search form *@
+}
+@Usuario_List.ShowPageHeader()
+@Usuario_List.ShowMessages()
+@if (Usuario_List.TotalRecords > 0 || Usuario_List.CurrentAction != "") {
+<div class="card ew-card ew-grid@(Usuario_List.IsAddOrEdit ? " ew-grid-add-edit" : "") Usuario">
+<form name="fUsuariolist" id="fUsuariolist" class="form-inline ew-form ew-list-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Usuario_List.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<div id="gmp_Usuario" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+@if (Usuario_List.TotalRecords > 0 || Usuario.IsGridEdit) { // Begin If TotalRecords > 0
+<table id="tbl_Usuariolist" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	Usuario_List.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await Usuario_List.RenderListOptions();
+
+	// Render list options (header, left)
+	Usuario_List.ListOptions.Render("header", "left");
+}
+@if (Usuario.nUsuarioId.Visible) { // nUsuarioId.Visible (begin)
+	if (Usuario_List.SortUrl(Usuario.nUsuarioId) == "") {
+		<th data-name="nUsuarioId" class="@Usuario.nUsuarioId.HeaderCellClass"><div id="elh_Usuario_nUsuarioId" class="Usuario_nUsuarioId"><div class="ew-table-header-caption">@Html.Raw(Usuario.nUsuarioId.Caption)</div></div></th>
+	} else {
+		<th data-name="nUsuarioId" class="@Usuario.nUsuarioId.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Usuario.SortUrl(Usuario.nUsuarioId))',1);"><div id="elh_Usuario_nUsuarioId" class="Usuario_nUsuarioId">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Usuario.nUsuarioId.Caption)</span><span class="ew-table-header-sort">@if (Usuario.nUsuarioId.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Usuario.nUsuarioId.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nUsuarioId.Visible (end) *@
+@if (Usuario.sEmail.Visible) { // sEmail.Visible (begin)
+	if (Usuario_List.SortUrl(Usuario.sEmail) == "") {
+		<th data-name="sEmail" class="@Usuario.sEmail.HeaderCellClass"><div id="elh_Usuario_sEmail" class="Usuario_sEmail"><div class="ew-table-header-caption">@Html.Raw(Usuario.sEmail.Caption)</div></div></th>
+	} else {
+		<th data-name="sEmail" class="@Usuario.sEmail.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Usuario.SortUrl(Usuario.sEmail))',1);"><div id="elh_Usuario_sEmail" class="Usuario_sEmail">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Usuario.sEmail.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (Usuario.sEmail.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Usuario.sEmail.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sEmail.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	Usuario_List.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+if (Usuario_List.ExportAll && Usuario_List.IsExport()) {
+	Usuario_List.StopRecord = Usuario_List.TotalRecords;
+} else {
+
+	// Set the last record to display
+	if (Usuario_List.TotalRecords > Usuario_List.StartRecord + Usuario_List.DisplayRecords - 1) {
+		Usuario_List.StopRecord = Usuario_List.StartRecord + Usuario_List.DisplayRecords - 1;
+	} else {
+		Usuario_List.StopRecord = Usuario_List.TotalRecords;
+	}
+}
+if (Usuario_List.Recordset != null && Usuario_List.Recordset.HasRows) {
+	if (!Usuario_List.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= Usuario_List.StartRecord - 1; i++) { // Move to first record
+			if (await Usuario_List.Recordset.ReadAsync()) {
+				Usuario_List.RecordCount++;
+			}
+		}
+	} else {
+		Usuario_List.RecordCount = Usuario_List.StartRecord - 1;
+	}
+} else if (!Usuario_List.AllowAddDeleteRow && Usuario_List.StopRecord == 0) {
+	Usuario_List.StopRecord = Usuario_List.GridAddRowCount;
+}
+
+// Initialize aggregate
+Usuario_List.RowType = Config.RowTypeAggregateInit;
+Usuario_List.ResetAttributes();
+await Usuario_List.RenderRow();
+
+// Output data rows
+bool eof = (Usuario_List.Recordset == null); // DN
+while (Usuario_List.RecordCount < Usuario_List.StopRecord) { // Begin While
+	if (!Usuario_List.IsGridAdd && !eof) { // DN
+		eof = !await Usuario_List.Recordset.ReadAsync();
+	}
+	Usuario_List.RecordCount++;
+	if (Usuario_List.RecordCount >= Usuario_List.StartRecord) {
+		Usuario_List.RowCnt++;
+
+		// Set up key count
+		Usuario_List.KeyCount = ConvertToInt(Usuario_List.RowIndex);
+
+		// Init row class and style
+		Usuario_List.ResetAttributes();
+		Usuario_List.CssClass = "";
+		if (Usuario_List.IsGridAdd) {
+		} else {
+			await Usuario_List.LoadRowValues(Usuario_List.Recordset); // Load row values
+		}
+		Usuario_List.RowType = Config.RowTypeView; // Render view
+
+		// Set up row id / data-rowindex
+		Usuario_List.RowAttrs.Add("data-rowindex", Convert.ToString(Usuario_List.RowCnt));
+		Usuario_List.RowAttrs.Add("id", "r" + Convert.ToString(Usuario_List.RowCnt) + "_Usuario");
+		Usuario_List.RowAttrs.Add("data-rowtype", Convert.ToString(Usuario_List.RowType));
+
+		// Render row
+		await Usuario_List.RenderRow();
+
+		// Render list options
+		await Usuario_List.RenderListOptions();
+	<tr @Html.Raw(Usuario_List.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		Usuario_List.ListOptions.Render("body", "left", Usuario_List.RowCnt);
+	}
+	@if (Usuario.nUsuarioId.Visible) { // nUsuarioId.Visible (begin)
+		<td data-name="nUsuarioId"@Html.Raw(Usuario.nUsuarioId.CellAttributes)>
+<span id="el@(Usuario_List.RowCnt)_Usuario_nUsuarioId" class="Usuario_nUsuarioId">
+<span @Html.Raw(Usuario.nUsuarioId.ViewAttributes)>
+@Html.Raw(Usuario.nUsuarioId.GetViewValue())</span>
+</span>
+</td>
+	} @* nUsuarioId.Visible (end) *@
+	@if (Usuario.sEmail.Visible) { // sEmail.Visible (begin)
+		<td data-name="sEmail"@Html.Raw(Usuario.sEmail.CellAttributes)>
+<span id="el@(Usuario_List.RowCnt)_Usuario_sEmail" class="Usuario_sEmail">
+<span @Html.Raw(Usuario.sEmail.ViewAttributes)>
+@Html.Raw(Usuario.sEmail.GetViewValue())</span>
+</span>
+</td>
+	} @* sEmail.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		Usuario_List.ListOptions.Render("body", "right", Usuario_List.RowCnt);
+	}
+	</tr>
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+@if (Empty(Usuario_List.CurrentAction)) {
+<input type="hidden" name="action" id="action" value="">
+}
+</div><!-- /.ew-grid-middle-panel -->
+</form><!-- /.ew-list-form -->
+@{ Usuario_List.CloseRecordset(); }
+		@if (!Usuario.IsExport()) {
+		<div class="card-footer ew-grid-lower-panel">
+		@if (!Usuario_List.IsGridAdd) {
+			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
+@{ Usuario_List.Pager = Usuario_List.Pager ?? new PrevNextPager(Usuario_List.StartRecord, Usuario_List.DisplayRecords, Usuario_List.TotalRecords, Usuario_List.AutoHidePager); }
+@if (Usuario_List.Pager.RecordCount > 0 && Usuario_List.Pager.Visible) {
+<div class="ew-pager">
+<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
+<div class="ew-prev-next"><div class="input-group input-group-sm">
+<div class="input-group-prepend">
+<!--first page button-->
+	@if (Usuario_List.Pager.FirstButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Usuario_List.PageUrl)start=@Usuario_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
+	}
+<!--previous page button-->
+	@if (Usuario_List.Pager.PrevButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Usuario_List.PageUrl)start=@Usuario_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
+	}
+</div>
+<!--current page number-->
+	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Usuario_List.Pager.CurrentPageNumber">
+<div class="input-group-append">
+<!--next page button-->
+	@if (Usuario_List.Pager.NextButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Usuario_List.PageUrl)start=@Usuario_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
+	}
+<!--last page button-->
+	@if (Usuario_List.Pager.LastButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Usuario_List.PageUrl)start=@Usuario_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
+	}
+</div>
+</div>
+</div>
+<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Usuario_List.Pager.PageCount</span>
+<div class="clearfix"></div>
+</div>
+}
+@if (Usuario_List.Pager.RecordCount > 0) {
+	<div class="ew-pager ew-rec">
+		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Usuario_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Usuario_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Usuario_List.Pager.RecordCount)</span>
+	</div>
+}
+			</form>
+		}
+		<div class="ew-list-other-options">
+		@Usuario_List.OtherOptions.RenderBody("bottom")
+		</div>
+		<div class="clearfix"></div>
+		</div>
+		}
+</div><!-- /.ew-grid -->
+}
+@if (Usuario_List.TotalRecords <= 0 && Usuario_List.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@Usuario_List.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@Usuario_List.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!Usuario.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

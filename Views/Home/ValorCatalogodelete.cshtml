@@ -1,0 +1,145 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	ValorCatalogo_Delete.Page_Render();
+
+	// Check action result
+	if (ValorCatalogo_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fValorCatalogodelete = currentForm = new ew.Form("fValorCatalogodelete", "delete");
+
+// Form_CustomValidate event
+fValorCatalogodelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fValorCatalogodelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fValorCatalogodelete.lists["x_nActivo"] = @Html.Raw(ValorCatalogo_Delete.nActivo.Lookup.ToClientList());
+fValorCatalogodelete.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(ValorCatalogo_Delete.nActivo.Options(false))); // DN
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@ValorCatalogo_Delete.ShowPageHeader()
+@ValorCatalogo_Delete.ShowMessages()
+<form name="fValorCatalogodelete" id="fValorCatalogodelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (ValorCatalogo_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in ValorCatalogo_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (ValorCatalogo.nCodigo.Visible) { // nCodigo (begin)
+		<th class="@Html.Raw(ValorCatalogo.nCodigo.HeaderCellClass)"><span id="elh_ValorCatalogo_nCodigo" class="ValorCatalogo_nCodigo">@Html.Raw(ValorCatalogo.nCodigo.Caption)</span></th>
+} @* nCodigo.Visible (end) *@
+@if (ValorCatalogo.sDescripcion.Visible) { // sDescripcion (begin)
+		<th class="@Html.Raw(ValorCatalogo.sDescripcion.HeaderCellClass)"><span id="elh_ValorCatalogo_sDescripcion" class="ValorCatalogo_sDescripcion">@Html.Raw(ValorCatalogo.sDescripcion.Caption)</span></th>
+} @* sDescripcion.Visible (end) *@
+@if (ValorCatalogo.nActivo.Visible) { // nActivo (begin)
+		<th class="@Html.Raw(ValorCatalogo.nActivo.HeaderCellClass)"><span id="elh_ValorCatalogo_nActivo" class="ValorCatalogo_nActivo">@Html.Raw(ValorCatalogo.nActivo.Caption)</span></th>
+} @* nActivo.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ ValorCatalogo_Delete.RecordCount = 0; }
+@while (ValorCatalogo_Delete.Recordset != null && await ValorCatalogo_Delete.Recordset.ReadAsync()) { // DN
+	ValorCatalogo_Delete.RecordCount++;
+	ValorCatalogo_Delete.RowCnt++;
+
+	// Set row properties
+	ValorCatalogo_Delete.ResetAttributes();
+	ValorCatalogo_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await ValorCatalogo_Delete.LoadRowValues(ValorCatalogo_Delete.Recordset);
+
+	// Render row
+	await ValorCatalogo_Delete.RenderRow();
+	<tr @Html.Raw(ValorCatalogo_Delete.RowAttributes)>
+@if (ValorCatalogo.nCodigo.Visible) { // nCodigo (begin)
+		<td @Html.Raw(ValorCatalogo.nCodigo.CellAttributes)>
+<span id="el@(ValorCatalogo_Delete.RowCnt)_ValorCatalogo_nCodigo" class="ValorCatalogo_nCodigo">
+<span @Html.Raw(ValorCatalogo.nCodigo.ViewAttributes)>
+@Html.Raw(ValorCatalogo.nCodigo.GetViewValue())</span>
+</span>
+</td>
+} @* nCodigo.Visible (end) *@
+@if (ValorCatalogo.sDescripcion.Visible) { // sDescripcion (begin)
+		<td @Html.Raw(ValorCatalogo.sDescripcion.CellAttributes)>
+<span id="el@(ValorCatalogo_Delete.RowCnt)_ValorCatalogo_sDescripcion" class="ValorCatalogo_sDescripcion">
+<span @Html.Raw(ValorCatalogo.sDescripcion.ViewAttributes)>
+@Html.Raw(ValorCatalogo.sDescripcion.GetViewValue())</span>
+</span>
+</td>
+} @* sDescripcion.Visible (end) *@
+@if (ValorCatalogo.nActivo.Visible) { // nActivo (begin)
+		<td @Html.Raw(ValorCatalogo.nActivo.CellAttributes)>
+<span id="el@(ValorCatalogo_Delete.RowCnt)_ValorCatalogo_nActivo" class="ValorCatalogo_nActivo">
+<span @Html.Raw(ValorCatalogo.nActivo.ViewAttributes)>
+@Html.Raw(ValorCatalogo.nActivo.GetViewValue())</span>
+</span>
+</td>
+} @* nActivo.Visible (end) *@
+	</tr>
+}
+@{ ValorCatalogo_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(ValorCatalogo_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@ValorCatalogo_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

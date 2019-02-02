@@ -1,0 +1,404 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Expediente_List.Page_Render();
+
+	// Check action result
+	if (Expediente_List.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Expediente.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "list";
+var fExpedientelist = currentForm = new ew.Form("fExpedientelist", "list");
+fExpedientelist.formKeyCountName = "@Expediente_List.FormKeyCountName";
+
+// Form_CustomValidate event
+fExpedientelist.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExpedientelist.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExpedientelist.lists["x_nGrupoSanguineoID"] = @Html.Raw(Expediente_List.nGrupoSanguineoID.Lookup.ToClientList());
+fExpedientelist.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_List.nGrupoSanguineoID.LookupOptions()));
+fExpedientelist.lists["x_nEstadoID"] = @Html.Raw(Expediente_List.nEstadoID.Lookup.ToClientList());
+fExpedientelist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_List.nEstadoID.LookupOptions()));
+
+// Form object for search
+var fExpedientelistsrch = currentSearchForm = new ew.Form("fExpedientelistsrch");
+
+// Filters
+fExpedientelistsrch.filterList = @Html.Raw(await Expediente_List.GetFilterList());
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!Expediente.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (Expediente_List.TotalRecords > 0 && Expediente_List.ExportOptions.Visible) {
+	Expediente_List.ExportOptions.Render("body");
+}
+@if (Expediente_List.ImportOptions.Visible) {
+	Expediente_List.ImportOptions.Render("body");
+}
+@if (Expediente_List.SearchOptions.Visible) {
+	Expediente_List.SearchOptions.Render("body");
+}
+@if (Expediente_List.FilterOptions.Visible) {
+	Expediente_List.FilterOptions.Render("body");
+}
+<div class="clearfix"></div>
+</div>
+}
+@if (!Expediente.IsExport() || Config.ExportMasterRecord && Expediente.IsExport("print")) {
+if (!Empty(Expediente_List.DbMasterFilter) && Expediente_List.CurrentMasterTable == "Paciente") {
+	if (Expediente_List.MasterRecordExists) {
+		@await Html.PartialAsync("Pacientemaster")
+	}
+}
+}
+@{ Expediente_List.RenderOtherOptions(); }
+@{
+if (!Expediente_List.IsExport() && Empty(Expediente_List.CurrentAction)) { // Begin search form
+<form name="fExpedientelistsrch" id="fExpedientelistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
+<div id="fExpedientelistsrch-search-panel" class="ew-search-panel collapse@(!Empty(Expediente_List.SearchWhere) ? " show" : " show")">
+<input type="hidden" name="cmd" value="search">
+<div class="ew-basic-search">
+<div id="xsr_1" class="ew-row d-sm-flex">
+	<div class="ew-quick-search input-group">
+	<input type="text" name="@Config.TableBasicSearch" id="@Config.TableBasicSearch" class="form-control" value="@Expediente_List.BasicSearch.SessionKeyword" placeholder="@Language.Phrase("Search")">
+	<input type="hidden" name="@Config.TableBasicSearchType" id="@Config.TableBasicSearchType" value="@Expediente_List.BasicSearch.SessionType">
+	<div class="input-group-append">
+		<button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+		<button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false"><span id="searchtype">@Html.Raw(Expediente_List.BasicSearch.TypeNameShort)</span></button>
+		<div class="dropdown-menu dropdown-menu-right">
+			<a class="dropdown-item @((Expediente_List.BasicSearch.SessionType == "") ? " active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this)">@Html.Raw(Language.Phrase("QuickSearchAuto"))</a>
+			<a class="dropdown-item @((Expediente_List.BasicSearch.SessionType == "=") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'=')">@Html.Raw(Language.Phrase("QuickSearchExact"))</a>
+			<a class="dropdown-item @((Expediente_List.BasicSearch.SessionType == "AND") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'AND')">@Html.Raw(Language.Phrase("QuickSearchAll"))</a>
+			<a class="dropdown-item @((Expediente_List.BasicSearch.SessionType == "OR") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'OR')">@Html.Raw(Language.Phrase("QuickSearchAny"))</a>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+</form>
+} @* End search form *@
+}
+@Expediente_List.ShowPageHeader()
+@Expediente_List.ShowMessages()
+@if (Expediente_List.TotalRecords > 0 || Expediente_List.CurrentAction != "") {
+<div class="card ew-card ew-grid@(Expediente_List.IsAddOrEdit ? " ew-grid-add-edit" : "") Expediente">
+<form name="fExpedientelist" id="fExpedientelist" class="form-inline ew-form ew-list-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Expediente_List.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+@if (Expediente_List.CurrentMasterTable == "Paciente" && Expediente_List.CurrentAction != "") {
+<input type="hidden" name="@Config.TableShowMaster" value="Paciente">
+<input type="hidden" name="fk_nPacienteID" value="@Expediente_List.nPacienteID.SessionValue">
+}
+<div id="gmp_Expediente" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+@if (Expediente_List.TotalRecords > 0 || Expediente.IsGridEdit) { // Begin If TotalRecords > 0
+<table id="tbl_Expedientelist" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	Expediente_List.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await Expediente_List.RenderListOptions();
+
+	// Render list options (header, left)
+	Expediente_List.ListOptions.Render("header", "left");
+}
+@if (Expediente.nCodigoExpediente.Visible) { // nCodigoExpediente.Visible (begin)
+	if (Expediente_List.SortUrl(Expediente.nCodigoExpediente) == "") {
+		<th data-name="nCodigoExpediente" class="@Expediente.nCodigoExpediente.HeaderCellClass"><div id="elh_Expediente_nCodigoExpediente" class="Expediente_nCodigoExpediente"><div class="ew-table-header-caption">@Html.Raw(Expediente.nCodigoExpediente.Caption)</div></div></th>
+	} else {
+		<th data-name="nCodigoExpediente" class="@Expediente.nCodigoExpediente.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Expediente.SortUrl(Expediente.nCodigoExpediente))',1);"><div id="elh_Expediente_nCodigoExpediente" class="Expediente_nCodigoExpediente">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.nCodigoExpediente.Caption)</span><span class="ew-table-header-sort">@if (Expediente.nCodigoExpediente.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.nCodigoExpediente.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nCodigoExpediente.Visible (end) *@
+@if (Expediente.dFechaExpediente.Visible) { // dFechaExpediente.Visible (begin)
+	if (Expediente_List.SortUrl(Expediente.dFechaExpediente) == "") {
+		<th data-name="dFechaExpediente" class="@Expediente.dFechaExpediente.HeaderCellClass"><div id="elh_Expediente_dFechaExpediente" class="Expediente_dFechaExpediente"><div class="ew-table-header-caption">@Html.Raw(Expediente.dFechaExpediente.Caption)</div></div></th>
+	} else {
+		<th data-name="dFechaExpediente" class="@Expediente.dFechaExpediente.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Expediente.SortUrl(Expediente.dFechaExpediente))',1);"><div id="elh_Expediente_dFechaExpediente" class="Expediente_dFechaExpediente">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.dFechaExpediente.Caption)</span><span class="ew-table-header-sort">@if (Expediente.dFechaExpediente.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.dFechaExpediente.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* dFechaExpediente.Visible (end) *@
+@if (Expediente.sACPPESA.Visible) { // sACPPESA.Visible (begin)
+	if (Expediente_List.SortUrl(Expediente.sACPPESA) == "") {
+		<th data-name="sACPPESA" class="@Expediente.sACPPESA.HeaderCellClass"><div id="elh_Expediente_sACPPESA" class="Expediente_sACPPESA"><div class="ew-table-header-caption">@Html.Raw(Expediente.sACPPESA.Caption)</div></div></th>
+	} else {
+		<th data-name="sACPPESA" class="@Expediente.sACPPESA.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Expediente.SortUrl(Expediente.sACPPESA))',1);"><div id="elh_Expediente_sACPPESA" class="Expediente_sACPPESA">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.sACPPESA.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (Expediente.sACPPESA.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.sACPPESA.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sACPPESA.Visible (end) *@
+@if (Expediente.nGrupoSanguineoID.Visible) { // nGrupoSanguineoID.Visible (begin)
+	if (Expediente_List.SortUrl(Expediente.nGrupoSanguineoID) == "") {
+		<th data-name="nGrupoSanguineoID" class="@Expediente.nGrupoSanguineoID.HeaderCellClass"><div id="elh_Expediente_nGrupoSanguineoID" class="Expediente_nGrupoSanguineoID"><div class="ew-table-header-caption">@Html.Raw(Expediente.nGrupoSanguineoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nGrupoSanguineoID" class="@Expediente.nGrupoSanguineoID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Expediente.SortUrl(Expediente.nGrupoSanguineoID))',1);"><div id="elh_Expediente_nGrupoSanguineoID" class="Expediente_nGrupoSanguineoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.nGrupoSanguineoID.Caption)</span><span class="ew-table-header-sort">@if (Expediente.nGrupoSanguineoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.nGrupoSanguineoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nGrupoSanguineoID.Visible (end) *@
+@if (Expediente.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	if (Expediente_List.SortUrl(Expediente.nEstadoID) == "") {
+		<th data-name="nEstadoID" class="@Expediente.nEstadoID.HeaderCellClass"><div id="elh_Expediente_nEstadoID" class="Expediente_nEstadoID"><div class="ew-table-header-caption">@Html.Raw(Expediente.nEstadoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nEstadoID" class="@Expediente.nEstadoID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Expediente.SortUrl(Expediente.nEstadoID))',1);"><div id="elh_Expediente_nEstadoID" class="Expediente_nEstadoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Expediente.nEstadoID.Caption)</span><span class="ew-table-header-sort">@if (Expediente.nEstadoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Expediente.nEstadoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nEstadoID.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	Expediente_List.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+if (Expediente_List.ExportAll && Expediente_List.IsExport()) {
+	Expediente_List.StopRecord = Expediente_List.TotalRecords;
+} else {
+
+	// Set the last record to display
+	if (Expediente_List.TotalRecords > Expediente_List.StartRecord + Expediente_List.DisplayRecords - 1) {
+		Expediente_List.StopRecord = Expediente_List.StartRecord + Expediente_List.DisplayRecords - 1;
+	} else {
+		Expediente_List.StopRecord = Expediente_List.TotalRecords;
+	}
+}
+if (Expediente_List.Recordset != null && Expediente_List.Recordset.HasRows) {
+	if (!Expediente_List.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= Expediente_List.StartRecord - 1; i++) { // Move to first record
+			if (await Expediente_List.Recordset.ReadAsync()) {
+				Expediente_List.RecordCount++;
+			}
+		}
+	} else {
+		Expediente_List.RecordCount = Expediente_List.StartRecord - 1;
+	}
+} else if (!Expediente_List.AllowAddDeleteRow && Expediente_List.StopRecord == 0) {
+	Expediente_List.StopRecord = Expediente_List.GridAddRowCount;
+}
+
+// Initialize aggregate
+Expediente_List.RowType = Config.RowTypeAggregateInit;
+Expediente_List.ResetAttributes();
+await Expediente_List.RenderRow();
+
+// Output data rows
+bool eof = (Expediente_List.Recordset == null); // DN
+while (Expediente_List.RecordCount < Expediente_List.StopRecord) { // Begin While
+	if (!Expediente_List.IsGridAdd && !eof) { // DN
+		eof = !await Expediente_List.Recordset.ReadAsync();
+	}
+	Expediente_List.RecordCount++;
+	if (Expediente_List.RecordCount >= Expediente_List.StartRecord) {
+		Expediente_List.RowCnt++;
+
+		// Set up key count
+		Expediente_List.KeyCount = ConvertToInt(Expediente_List.RowIndex);
+
+		// Init row class and style
+		Expediente_List.ResetAttributes();
+		Expediente_List.CssClass = "";
+		if (Expediente_List.IsGridAdd) {
+		} else {
+			await Expediente_List.LoadRowValues(Expediente_List.Recordset); // Load row values
+		}
+		Expediente_List.RowType = Config.RowTypeView; // Render view
+
+		// Set up row id / data-rowindex
+		Expediente_List.RowAttrs.Add("data-rowindex", Convert.ToString(Expediente_List.RowCnt));
+		Expediente_List.RowAttrs.Add("id", "r" + Convert.ToString(Expediente_List.RowCnt) + "_Expediente");
+		Expediente_List.RowAttrs.Add("data-rowtype", Convert.ToString(Expediente_List.RowType));
+
+		// Render row
+		await Expediente_List.RenderRow();
+
+		// Render list options
+		await Expediente_List.RenderListOptions();
+	<tr @Html.Raw(Expediente_List.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		Expediente_List.ListOptions.Render("body", "left", Expediente_List.RowCnt);
+	}
+	@if (Expediente.nCodigoExpediente.Visible) { // nCodigoExpediente.Visible (begin)
+		<td data-name="nCodigoExpediente"@Html.Raw(Expediente.nCodigoExpediente.CellAttributes)>
+<span id="el@(Expediente_List.RowCnt)_Expediente_nCodigoExpediente" class="Expediente_nCodigoExpediente">
+<span @Html.Raw(Expediente.nCodigoExpediente.ViewAttributes)>
+@Html.Raw(Expediente.nCodigoExpediente.GetViewValue())</span>
+</span>
+</td>
+	} @* nCodigoExpediente.Visible (end) *@
+	@if (Expediente.dFechaExpediente.Visible) { // dFechaExpediente.Visible (begin)
+		<td data-name="dFechaExpediente"@Html.Raw(Expediente.dFechaExpediente.CellAttributes)>
+<span id="el@(Expediente_List.RowCnt)_Expediente_dFechaExpediente" class="Expediente_dFechaExpediente">
+<span @Html.Raw(Expediente.dFechaExpediente.ViewAttributes)>
+@Html.Raw(Expediente.dFechaExpediente.GetViewValue())</span>
+</span>
+</td>
+	} @* dFechaExpediente.Visible (end) *@
+	@if (Expediente.sACPPESA.Visible) { // sACPPESA.Visible (begin)
+		<td data-name="sACPPESA"@Html.Raw(Expediente.sACPPESA.CellAttributes)>
+<span id="el@(Expediente_List.RowCnt)_Expediente_sACPPESA" class="Expediente_sACPPESA">
+<span @Html.Raw(Expediente.sACPPESA.ViewAttributes)>
+@Html.Raw(Expediente.sACPPESA.GetViewValue())</span>
+</span>
+</td>
+	} @* sACPPESA.Visible (end) *@
+	@if (Expediente.nGrupoSanguineoID.Visible) { // nGrupoSanguineoID.Visible (begin)
+		<td data-name="nGrupoSanguineoID"@Html.Raw(Expediente.nGrupoSanguineoID.CellAttributes)>
+<span id="el@(Expediente_List.RowCnt)_Expediente_nGrupoSanguineoID" class="Expediente_nGrupoSanguineoID">
+<span @Html.Raw(Expediente.nGrupoSanguineoID.ViewAttributes)>
+@Html.Raw(Expediente.nGrupoSanguineoID.GetViewValue())</span>
+</span>
+</td>
+	} @* nGrupoSanguineoID.Visible (end) *@
+	@if (Expediente.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+		<td data-name="nEstadoID"@Html.Raw(Expediente.nEstadoID.CellAttributes)>
+<span id="el@(Expediente_List.RowCnt)_Expediente_nEstadoID" class="Expediente_nEstadoID">
+<span @Html.Raw(Expediente.nEstadoID.ViewAttributes)>
+@Html.Raw(Expediente.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	} @* nEstadoID.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		Expediente_List.ListOptions.Render("body", "right", Expediente_List.RowCnt);
+	}
+	</tr>
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+@if (Empty(Expediente_List.CurrentAction)) {
+<input type="hidden" name="action" id="action" value="">
+}
+</div><!-- /.ew-grid-middle-panel -->
+</form><!-- /.ew-list-form -->
+@{ Expediente_List.CloseRecordset(); }
+		@if (!Expediente.IsExport()) {
+		<div class="card-footer ew-grid-lower-panel">
+		@if (!Expediente_List.IsGridAdd) {
+			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
+@{ Expediente_List.Pager = Expediente_List.Pager ?? new PrevNextPager(Expediente_List.StartRecord, Expediente_List.DisplayRecords, Expediente_List.TotalRecords, Expediente_List.AutoHidePager); }
+@if (Expediente_List.Pager.RecordCount > 0 && Expediente_List.Pager.Visible) {
+<div class="ew-pager">
+<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
+<div class="ew-prev-next"><div class="input-group input-group-sm">
+<div class="input-group-prepend">
+<!--first page button-->
+	@if (Expediente_List.Pager.FirstButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Expediente_List.PageUrl)start=@Expediente_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
+	}
+<!--previous page button-->
+	@if (Expediente_List.Pager.PrevButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Expediente_List.PageUrl)start=@Expediente_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
+	}
+</div>
+<!--current page number-->
+	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Expediente_List.Pager.CurrentPageNumber">
+<div class="input-group-append">
+<!--next page button-->
+	@if (Expediente_List.Pager.NextButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Expediente_List.PageUrl)start=@Expediente_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
+	}
+<!--last page button-->
+	@if (Expediente_List.Pager.LastButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Expediente_List.PageUrl)start=@Expediente_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
+	}
+</div>
+</div>
+</div>
+<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Expediente_List.Pager.PageCount</span>
+<div class="clearfix"></div>
+</div>
+}
+@if (Expediente_List.Pager.RecordCount > 0) {
+	<div class="ew-pager ew-rec">
+		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Expediente_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Expediente_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Expediente_List.Pager.RecordCount)</span>
+	</div>
+}
+			</form>
+		}
+		<div class="ew-list-other-options">
+		@Expediente_List.OtherOptions.RenderBody("bottom")
+		</div>
+		<div class="clearfix"></div>
+		</div>
+		}
+</div><!-- /.ew-grid -->
+}
+@if (Expediente_List.TotalRecords <= 0 && Expediente_List.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@Expediente_List.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@Expediente_List.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!Expediente.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

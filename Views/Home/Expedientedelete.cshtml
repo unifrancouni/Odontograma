@@ -1,0 +1,169 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Expediente_Delete.Page_Render();
+
+	// Check action result
+	if (Expediente_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fExpedientedelete = currentForm = new ew.Form("fExpedientedelete", "delete");
+
+// Form_CustomValidate event
+fExpedientedelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExpedientedelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExpedientedelete.lists["x_nGrupoSanguineoID"] = @Html.Raw(Expediente_Delete.nGrupoSanguineoID.Lookup.ToClientList());
+fExpedientedelete.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_Delete.nGrupoSanguineoID.LookupOptions()));
+fExpedientedelete.lists["x_nEstadoID"] = @Html.Raw(Expediente_Delete.nEstadoID.Lookup.ToClientList());
+fExpedientedelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Expediente_Delete.ShowPageHeader()
+@Expediente_Delete.ShowMessages()
+<form name="fExpedientedelete" id="fExpedientedelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Expediente_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in Expediente_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (Expediente.nCodigoExpediente.Visible) { // nCodigoExpediente (begin)
+		<th class="@Html.Raw(Expediente.nCodigoExpediente.HeaderCellClass)"><span id="elh_Expediente_nCodigoExpediente" class="Expediente_nCodigoExpediente">@Html.Raw(Expediente.nCodigoExpediente.Caption)</span></th>
+} @* nCodigoExpediente.Visible (end) *@
+@if (Expediente.dFechaExpediente.Visible) { // dFechaExpediente (begin)
+		<th class="@Html.Raw(Expediente.dFechaExpediente.HeaderCellClass)"><span id="elh_Expediente_dFechaExpediente" class="Expediente_dFechaExpediente">@Html.Raw(Expediente.dFechaExpediente.Caption)</span></th>
+} @* dFechaExpediente.Visible (end) *@
+@if (Expediente.sACPPESA.Visible) { // sACPPESA (begin)
+		<th class="@Html.Raw(Expediente.sACPPESA.HeaderCellClass)"><span id="elh_Expediente_sACPPESA" class="Expediente_sACPPESA">@Html.Raw(Expediente.sACPPESA.Caption)</span></th>
+} @* sACPPESA.Visible (end) *@
+@if (Expediente.nGrupoSanguineoID.Visible) { // nGrupoSanguineoID (begin)
+		<th class="@Html.Raw(Expediente.nGrupoSanguineoID.HeaderCellClass)"><span id="elh_Expediente_nGrupoSanguineoID" class="Expediente_nGrupoSanguineoID">@Html.Raw(Expediente.nGrupoSanguineoID.Caption)</span></th>
+} @* nGrupoSanguineoID.Visible (end) *@
+@if (Expediente.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(Expediente.nEstadoID.HeaderCellClass)"><span id="elh_Expediente_nEstadoID" class="Expediente_nEstadoID">@Html.Raw(Expediente.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ Expediente_Delete.RecordCount = 0; }
+@while (Expediente_Delete.Recordset != null && await Expediente_Delete.Recordset.ReadAsync()) { // DN
+	Expediente_Delete.RecordCount++;
+	Expediente_Delete.RowCnt++;
+
+	// Set row properties
+	Expediente_Delete.ResetAttributes();
+	Expediente_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await Expediente_Delete.LoadRowValues(Expediente_Delete.Recordset);
+
+	// Render row
+	await Expediente_Delete.RenderRow();
+	<tr @Html.Raw(Expediente_Delete.RowAttributes)>
+@if (Expediente.nCodigoExpediente.Visible) { // nCodigoExpediente (begin)
+		<td @Html.Raw(Expediente.nCodigoExpediente.CellAttributes)>
+<span id="el@(Expediente_Delete.RowCnt)_Expediente_nCodigoExpediente" class="Expediente_nCodigoExpediente">
+<span @Html.Raw(Expediente.nCodigoExpediente.ViewAttributes)>
+@Html.Raw(Expediente.nCodigoExpediente.GetViewValue())</span>
+</span>
+</td>
+} @* nCodigoExpediente.Visible (end) *@
+@if (Expediente.dFechaExpediente.Visible) { // dFechaExpediente (begin)
+		<td @Html.Raw(Expediente.dFechaExpediente.CellAttributes)>
+<span id="el@(Expediente_Delete.RowCnt)_Expediente_dFechaExpediente" class="Expediente_dFechaExpediente">
+<span @Html.Raw(Expediente.dFechaExpediente.ViewAttributes)>
+@Html.Raw(Expediente.dFechaExpediente.GetViewValue())</span>
+</span>
+</td>
+} @* dFechaExpediente.Visible (end) *@
+@if (Expediente.sACPPESA.Visible) { // sACPPESA (begin)
+		<td @Html.Raw(Expediente.sACPPESA.CellAttributes)>
+<span id="el@(Expediente_Delete.RowCnt)_Expediente_sACPPESA" class="Expediente_sACPPESA">
+<span @Html.Raw(Expediente.sACPPESA.ViewAttributes)>
+@Html.Raw(Expediente.sACPPESA.GetViewValue())</span>
+</span>
+</td>
+} @* sACPPESA.Visible (end) *@
+@if (Expediente.nGrupoSanguineoID.Visible) { // nGrupoSanguineoID (begin)
+		<td @Html.Raw(Expediente.nGrupoSanguineoID.CellAttributes)>
+<span id="el@(Expediente_Delete.RowCnt)_Expediente_nGrupoSanguineoID" class="Expediente_nGrupoSanguineoID">
+<span @Html.Raw(Expediente.nGrupoSanguineoID.ViewAttributes)>
+@Html.Raw(Expediente.nGrupoSanguineoID.GetViewValue())</span>
+</span>
+</td>
+} @* nGrupoSanguineoID.Visible (end) *@
+@if (Expediente.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(Expediente.nEstadoID.CellAttributes)>
+<span id="el@(Expediente_Delete.RowCnt)_Expediente_nEstadoID" class="Expediente_nEstadoID">
+<span @Html.Raw(Expediente.nEstadoID.ViewAttributes)>
+@Html.Raw(Expediente.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ Expediente_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Expediente_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@Expediente_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

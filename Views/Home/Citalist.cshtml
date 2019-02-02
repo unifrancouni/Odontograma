@@ -1,0 +1,393 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Cita_List.Page_Render();
+
+	// Check action result
+	if (Cita_List.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Cita.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "list";
+var fCitalist = currentForm = new ew.Form("fCitalist", "list");
+fCitalist.formKeyCountName = "@Cita_List.FormKeyCountName";
+
+// Form_CustomValidate event
+fCitalist.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fCitalist.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fCitalist.lists["x_nExpedienteID"] = @Html.Raw(Cita_List.nExpedienteID.Lookup.ToClientList());
+fCitalist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Cita_List.nExpedienteID.LookupOptions()));
+fCitalist.lists["x_nEstadoID"] = @Html.Raw(Cita_List.nEstadoID.Lookup.ToClientList());
+fCitalist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_List.nEstadoID.LookupOptions()));
+
+// Form object for search
+var fCitalistsrch = currentSearchForm = new ew.Form("fCitalistsrch");
+
+// Filters
+fCitalistsrch.filterList = @Html.Raw(await Cita_List.GetFilterList());
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!Cita.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (Cita_List.TotalRecords > 0 && Cita_List.ExportOptions.Visible) {
+	Cita_List.ExportOptions.Render("body");
+}
+@if (Cita_List.ImportOptions.Visible) {
+	Cita_List.ImportOptions.Render("body");
+}
+@if (Cita_List.SearchOptions.Visible) {
+	Cita_List.SearchOptions.Render("body");
+}
+@if (Cita_List.FilterOptions.Visible) {
+	Cita_List.FilterOptions.Render("body");
+}
+<div class="clearfix"></div>
+</div>
+}
+@{ Cita_List.RenderOtherOptions(); }
+@{
+if (!Cita_List.IsExport() && Empty(Cita_List.CurrentAction)) { // Begin search form
+<form name="fCitalistsrch" id="fCitalistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
+<div id="fCitalistsrch-search-panel" class="ew-search-panel collapse@(!Empty(Cita_List.SearchWhere) ? " show" : " show")">
+<input type="hidden" name="cmd" value="search">
+<div class="ew-basic-search">
+<div id="xsr_1" class="ew-row d-sm-flex">
+	<div class="ew-quick-search input-group">
+	<input type="text" name="@Config.TableBasicSearch" id="@Config.TableBasicSearch" class="form-control" value="@Cita_List.BasicSearch.SessionKeyword" placeholder="@Language.Phrase("Search")">
+	<input type="hidden" name="@Config.TableBasicSearchType" id="@Config.TableBasicSearchType" value="@Cita_List.BasicSearch.SessionType">
+	<div class="input-group-append">
+		<button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+		<button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false"><span id="searchtype">@Html.Raw(Cita_List.BasicSearch.TypeNameShort)</span></button>
+		<div class="dropdown-menu dropdown-menu-right">
+			<a class="dropdown-item @((Cita_List.BasicSearch.SessionType == "") ? " active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this)">@Html.Raw(Language.Phrase("QuickSearchAuto"))</a>
+			<a class="dropdown-item @((Cita_List.BasicSearch.SessionType == "=") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'=')">@Html.Raw(Language.Phrase("QuickSearchExact"))</a>
+			<a class="dropdown-item @((Cita_List.BasicSearch.SessionType == "AND") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'AND')">@Html.Raw(Language.Phrase("QuickSearchAll"))</a>
+			<a class="dropdown-item @((Cita_List.BasicSearch.SessionType == "OR") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'OR')">@Html.Raw(Language.Phrase("QuickSearchAny"))</a>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+</form>
+} @* End search form *@
+}
+@Cita_List.ShowPageHeader()
+@Cita_List.ShowMessages()
+@if (Cita_List.TotalRecords > 0 || Cita_List.CurrentAction != "") {
+<div class="card ew-card ew-grid@(Cita_List.IsAddOrEdit ? " ew-grid-add-edit" : "") Cita">
+<form name="fCitalist" id="fCitalist" class="form-inline ew-form ew-list-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Cita_List.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<div id="gmp_Cita" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+@if (Cita_List.TotalRecords > 0 || Cita.IsGridEdit) { // Begin If TotalRecords > 0
+<table id="tbl_Citalist" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	Cita_List.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await Cita_List.RenderListOptions();
+
+	// Render list options (header, left)
+	Cita_List.ListOptions.Render("header", "left");
+}
+@if (Cita.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	if (Cita_List.SortUrl(Cita.nExpedienteID) == "") {
+		<th data-name="nExpedienteID" class="@Cita.nExpedienteID.HeaderCellClass"><div id="elh_Cita_nExpedienteID" class="Cita_nExpedienteID"><div class="ew-table-header-caption">@Html.Raw(Cita.nExpedienteID.Caption)</div></div></th>
+	} else {
+		<th data-name="nExpedienteID" class="@Cita.nExpedienteID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Cita.SortUrl(Cita.nExpedienteID))',1);"><div id="elh_Cita_nExpedienteID" class="Cita_nExpedienteID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Cita.nExpedienteID.Caption)</span><span class="ew-table-header-sort">@if (Cita.nExpedienteID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Cita.nExpedienteID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nExpedienteID.Visible (end) *@
+@if (Cita.sMotivoCita.Visible) { // sMotivoCita.Visible (begin)
+	if (Cita_List.SortUrl(Cita.sMotivoCita) == "") {
+		<th data-name="sMotivoCita" class="@Cita.sMotivoCita.HeaderCellClass"><div id="elh_Cita_sMotivoCita" class="Cita_sMotivoCita"><div class="ew-table-header-caption">@Html.Raw(Cita.sMotivoCita.Caption)</div></div></th>
+	} else {
+		<th data-name="sMotivoCita" class="@Cita.sMotivoCita.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Cita.SortUrl(Cita.sMotivoCita))',1);"><div id="elh_Cita_sMotivoCita" class="Cita_sMotivoCita">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Cita.sMotivoCita.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (Cita.sMotivoCita.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Cita.sMotivoCita.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sMotivoCita.Visible (end) *@
+@if (Cita.dFechaHoraCita.Visible) { // dFechaHoraCita.Visible (begin)
+	if (Cita_List.SortUrl(Cita.dFechaHoraCita) == "") {
+		<th data-name="dFechaHoraCita" class="@Cita.dFechaHoraCita.HeaderCellClass"><div id="elh_Cita_dFechaHoraCita" class="Cita_dFechaHoraCita"><div class="ew-table-header-caption">@Html.Raw(Cita.dFechaHoraCita.Caption)</div></div></th>
+	} else {
+		<th data-name="dFechaHoraCita" class="@Cita.dFechaHoraCita.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Cita.SortUrl(Cita.dFechaHoraCita))',1);"><div id="elh_Cita_dFechaHoraCita" class="Cita_dFechaHoraCita">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Cita.dFechaHoraCita.Caption)</span><span class="ew-table-header-sort">@if (Cita.dFechaHoraCita.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Cita.dFechaHoraCita.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* dFechaHoraCita.Visible (end) *@
+@if (Cita.dHora.Visible) { // dHora.Visible (begin)
+	if (Cita_List.SortUrl(Cita.dHora) == "") {
+		<th data-name="dHora" class="@Cita.dHora.HeaderCellClass"><div id="elh_Cita_dHora" class="Cita_dHora"><div class="ew-table-header-caption">@Html.Raw(Cita.dHora.Caption)</div></div></th>
+	} else {
+		<th data-name="dHora" class="@Cita.dHora.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Cita.SortUrl(Cita.dHora))',1);"><div id="elh_Cita_dHora" class="Cita_dHora">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Cita.dHora.Caption)</span><span class="ew-table-header-sort">@if (Cita.dHora.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Cita.dHora.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* dHora.Visible (end) *@
+@if (Cita.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	if (Cita_List.SortUrl(Cita.nEstadoID) == "") {
+		<th data-name="nEstadoID" class="@Cita.nEstadoID.HeaderCellClass"><div id="elh_Cita_nEstadoID" class="Cita_nEstadoID"><div class="ew-table-header-caption">@Html.Raw(Cita.nEstadoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nEstadoID" class="@Cita.nEstadoID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Cita.SortUrl(Cita.nEstadoID))',1);"><div id="elh_Cita_nEstadoID" class="Cita_nEstadoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Cita.nEstadoID.Caption)</span><span class="ew-table-header-sort">@if (Cita.nEstadoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Cita.nEstadoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nEstadoID.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	Cita_List.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+if (Cita_List.ExportAll && Cita_List.IsExport()) {
+	Cita_List.StopRecord = Cita_List.TotalRecords;
+} else {
+
+	// Set the last record to display
+	if (Cita_List.TotalRecords > Cita_List.StartRecord + Cita_List.DisplayRecords - 1) {
+		Cita_List.StopRecord = Cita_List.StartRecord + Cita_List.DisplayRecords - 1;
+	} else {
+		Cita_List.StopRecord = Cita_List.TotalRecords;
+	}
+}
+if (Cita_List.Recordset != null && Cita_List.Recordset.HasRows) {
+	if (!Cita_List.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= Cita_List.StartRecord - 1; i++) { // Move to first record
+			if (await Cita_List.Recordset.ReadAsync()) {
+				Cita_List.RecordCount++;
+			}
+		}
+	} else {
+		Cita_List.RecordCount = Cita_List.StartRecord - 1;
+	}
+} else if (!Cita_List.AllowAddDeleteRow && Cita_List.StopRecord == 0) {
+	Cita_List.StopRecord = Cita_List.GridAddRowCount;
+}
+
+// Initialize aggregate
+Cita_List.RowType = Config.RowTypeAggregateInit;
+Cita_List.ResetAttributes();
+await Cita_List.RenderRow();
+
+// Output data rows
+bool eof = (Cita_List.Recordset == null); // DN
+while (Cita_List.RecordCount < Cita_List.StopRecord) { // Begin While
+	if (!Cita_List.IsGridAdd && !eof) { // DN
+		eof = !await Cita_List.Recordset.ReadAsync();
+	}
+	Cita_List.RecordCount++;
+	if (Cita_List.RecordCount >= Cita_List.StartRecord) {
+		Cita_List.RowCnt++;
+
+		// Set up key count
+		Cita_List.KeyCount = ConvertToInt(Cita_List.RowIndex);
+
+		// Init row class and style
+		Cita_List.ResetAttributes();
+		Cita_List.CssClass = "";
+		if (Cita_List.IsGridAdd) {
+		} else {
+			await Cita_List.LoadRowValues(Cita_List.Recordset); // Load row values
+		}
+		Cita_List.RowType = Config.RowTypeView; // Render view
+
+		// Set up row id / data-rowindex
+		Cita_List.RowAttrs.Add("data-rowindex", Convert.ToString(Cita_List.RowCnt));
+		Cita_List.RowAttrs.Add("id", "r" + Convert.ToString(Cita_List.RowCnt) + "_Cita");
+		Cita_List.RowAttrs.Add("data-rowtype", Convert.ToString(Cita_List.RowType));
+
+		// Render row
+		await Cita_List.RenderRow();
+
+		// Render list options
+		await Cita_List.RenderListOptions();
+	<tr @Html.Raw(Cita_List.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		Cita_List.ListOptions.Render("body", "left", Cita_List.RowCnt);
+	}
+	@if (Cita.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+		<td data-name="nExpedienteID"@Html.Raw(Cita.nExpedienteID.CellAttributes)>
+<span id="el@(Cita_List.RowCnt)_Cita_nExpedienteID" class="Cita_nExpedienteID">
+<span @Html.Raw(Cita.nExpedienteID.ViewAttributes)>
+@Html.Raw(Cita.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	} @* nExpedienteID.Visible (end) *@
+	@if (Cita.sMotivoCita.Visible) { // sMotivoCita.Visible (begin)
+		<td data-name="sMotivoCita"@Html.Raw(Cita.sMotivoCita.CellAttributes)>
+<span id="el@(Cita_List.RowCnt)_Cita_sMotivoCita" class="Cita_sMotivoCita">
+<span @Html.Raw(Cita.sMotivoCita.ViewAttributes)>
+@Html.Raw(Cita.sMotivoCita.GetViewValue())</span>
+</span>
+</td>
+	} @* sMotivoCita.Visible (end) *@
+	@if (Cita.dFechaHoraCita.Visible) { // dFechaHoraCita.Visible (begin)
+		<td data-name="dFechaHoraCita"@Html.Raw(Cita.dFechaHoraCita.CellAttributes)>
+<span id="el@(Cita_List.RowCnt)_Cita_dFechaHoraCita" class="Cita_dFechaHoraCita">
+<span @Html.Raw(Cita.dFechaHoraCita.ViewAttributes)>
+@Html.Raw(Cita.dFechaHoraCita.GetViewValue())</span>
+</span>
+</td>
+	} @* dFechaHoraCita.Visible (end) *@
+	@if (Cita.dHora.Visible) { // dHora.Visible (begin)
+		<td data-name="dHora"@Html.Raw(Cita.dHora.CellAttributes)>
+<span id="el@(Cita_List.RowCnt)_Cita_dHora" class="Cita_dHora">
+<span @Html.Raw(Cita.dHora.ViewAttributes)>
+@Html.Raw(Cita.dHora.GetViewValue())</span>
+</span>
+</td>
+	} @* dHora.Visible (end) *@
+	@if (Cita.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+		<td data-name="nEstadoID"@Html.Raw(Cita.nEstadoID.CellAttributes)>
+<span id="el@(Cita_List.RowCnt)_Cita_nEstadoID" class="Cita_nEstadoID">
+<span @Html.Raw(Cita.nEstadoID.ViewAttributes)>
+@Html.Raw(Cita.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	} @* nEstadoID.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		Cita_List.ListOptions.Render("body", "right", Cita_List.RowCnt);
+	}
+	</tr>
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+@if (Empty(Cita_List.CurrentAction)) {
+<input type="hidden" name="action" id="action" value="">
+}
+</div><!-- /.ew-grid-middle-panel -->
+</form><!-- /.ew-list-form -->
+@{ Cita_List.CloseRecordset(); }
+		@if (!Cita.IsExport()) {
+		<div class="card-footer ew-grid-lower-panel">
+		@if (!Cita_List.IsGridAdd) {
+			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
+@{ Cita_List.Pager = Cita_List.Pager ?? new PrevNextPager(Cita_List.StartRecord, Cita_List.DisplayRecords, Cita_List.TotalRecords, Cita_List.AutoHidePager); }
+@if (Cita_List.Pager.RecordCount > 0 && Cita_List.Pager.Visible) {
+<div class="ew-pager">
+<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
+<div class="ew-prev-next"><div class="input-group input-group-sm">
+<div class="input-group-prepend">
+<!--first page button-->
+	@if (Cita_List.Pager.FirstButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Cita_List.PageUrl)start=@Cita_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
+	}
+<!--previous page button-->
+	@if (Cita_List.Pager.PrevButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Cita_List.PageUrl)start=@Cita_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
+	}
+</div>
+<!--current page number-->
+	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Cita_List.Pager.CurrentPageNumber">
+<div class="input-group-append">
+<!--next page button-->
+	@if (Cita_List.Pager.NextButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Cita_List.PageUrl)start=@Cita_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
+	}
+<!--last page button-->
+	@if (Cita_List.Pager.LastButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Cita_List.PageUrl)start=@Cita_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
+	}
+</div>
+</div>
+</div>
+<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Cita_List.Pager.PageCount</span>
+<div class="clearfix"></div>
+</div>
+}
+@if (Cita_List.Pager.RecordCount > 0) {
+	<div class="ew-pager ew-rec">
+		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Cita_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Cita_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Cita_List.Pager.RecordCount)</span>
+	</div>
+}
+			</form>
+		}
+		<div class="ew-list-other-options">
+		@Cita_List.OtherOptions.RenderBody("bottom")
+		</div>
+		<div class="clearfix"></div>
+		</div>
+		}
+</div><!-- /.ew-grid -->
+}
+@if (Cita_List.TotalRecords <= 0 && Cita_List.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@Cita_List.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@Cita_List.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!Cita.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

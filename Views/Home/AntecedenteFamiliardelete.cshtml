@@ -1,0 +1,160 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	AntecedenteFamiliar_Delete.Page_Render();
+
+	// Check action result
+	if (AntecedenteFamiliar_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fAntecedenteFamiliardelete = currentForm = new ew.Form("fAntecedenteFamiliardelete", "delete");
+
+// Form_CustomValidate event
+fAntecedenteFamiliardelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fAntecedenteFamiliardelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fAntecedenteFamiliardelete.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteFamiliar_Delete.nExpedienteID.Lookup.ToClientList());
+fAntecedenteFamiliardelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nExpedienteID.LookupOptions()));
+fAntecedenteFamiliardelete.lists["x_nParentescoID"] = @Html.Raw(AntecedenteFamiliar_Delete.nParentescoID.Lookup.ToClientList());
+fAntecedenteFamiliardelete.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nParentescoID.LookupOptions()));
+fAntecedenteFamiliardelete.lists["x_nEstadoID"] = @Html.Raw(AntecedenteFamiliar_Delete.nEstadoID.Lookup.ToClientList());
+fAntecedenteFamiliardelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@AntecedenteFamiliar_Delete.ShowPageHeader()
+@AntecedenteFamiliar_Delete.ShowMessages()
+<form name="fAntecedenteFamiliardelete" id="fAntecedenteFamiliardelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (AntecedenteFamiliar_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in AntecedenteFamiliar_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (AntecedenteFamiliar.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<th class="@Html.Raw(AntecedenteFamiliar.nExpedienteID.HeaderCellClass)"><span id="elh_AntecedenteFamiliar_nExpedienteID" class="AntecedenteFamiliar_nExpedienteID">@Html.Raw(AntecedenteFamiliar.nExpedienteID.Caption)</span></th>
+} @* nExpedienteID.Visible (end) *@
+@if (AntecedenteFamiliar.nParentescoID.Visible) { // nParentescoID (begin)
+		<th class="@Html.Raw(AntecedenteFamiliar.nParentescoID.HeaderCellClass)"><span id="elh_AntecedenteFamiliar_nParentescoID" class="AntecedenteFamiliar_nParentescoID">@Html.Raw(AntecedenteFamiliar.nParentescoID.Caption)</span></th>
+} @* nParentescoID.Visible (end) *@
+@if (AntecedenteFamiliar.sAntecedente.Visible) { // sAntecedente (begin)
+		<th class="@Html.Raw(AntecedenteFamiliar.sAntecedente.HeaderCellClass)"><span id="elh_AntecedenteFamiliar_sAntecedente" class="AntecedenteFamiliar_sAntecedente">@Html.Raw(AntecedenteFamiliar.sAntecedente.Caption)</span></th>
+} @* sAntecedente.Visible (end) *@
+@if (AntecedenteFamiliar.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(AntecedenteFamiliar.nEstadoID.HeaderCellClass)"><span id="elh_AntecedenteFamiliar_nEstadoID" class="AntecedenteFamiliar_nEstadoID">@Html.Raw(AntecedenteFamiliar.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ AntecedenteFamiliar_Delete.RecordCount = 0; }
+@while (AntecedenteFamiliar_Delete.Recordset != null && await AntecedenteFamiliar_Delete.Recordset.ReadAsync()) { // DN
+	AntecedenteFamiliar_Delete.RecordCount++;
+	AntecedenteFamiliar_Delete.RowCnt++;
+
+	// Set row properties
+	AntecedenteFamiliar_Delete.ResetAttributes();
+	AntecedenteFamiliar_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await AntecedenteFamiliar_Delete.LoadRowValues(AntecedenteFamiliar_Delete.Recordset);
+
+	// Render row
+	await AntecedenteFamiliar_Delete.RenderRow();
+	<tr @Html.Raw(AntecedenteFamiliar_Delete.RowAttributes)>
+@if (AntecedenteFamiliar.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<td @Html.Raw(AntecedenteFamiliar.nExpedienteID.CellAttributes)>
+<span id="el@(AntecedenteFamiliar_Delete.RowCnt)_AntecedenteFamiliar_nExpedienteID" class="AntecedenteFamiliar_nExpedienteID">
+<span @Html.Raw(AntecedenteFamiliar.nExpedienteID.ViewAttributes)>
+@Html.Raw(AntecedenteFamiliar.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+} @* nExpedienteID.Visible (end) *@
+@if (AntecedenteFamiliar.nParentescoID.Visible) { // nParentescoID (begin)
+		<td @Html.Raw(AntecedenteFamiliar.nParentescoID.CellAttributes)>
+<span id="el@(AntecedenteFamiliar_Delete.RowCnt)_AntecedenteFamiliar_nParentescoID" class="AntecedenteFamiliar_nParentescoID">
+<span @Html.Raw(AntecedenteFamiliar.nParentescoID.ViewAttributes)>
+@Html.Raw(AntecedenteFamiliar.nParentescoID.GetViewValue())</span>
+</span>
+</td>
+} @* nParentescoID.Visible (end) *@
+@if (AntecedenteFamiliar.sAntecedente.Visible) { // sAntecedente (begin)
+		<td @Html.Raw(AntecedenteFamiliar.sAntecedente.CellAttributes)>
+<span id="el@(AntecedenteFamiliar_Delete.RowCnt)_AntecedenteFamiliar_sAntecedente" class="AntecedenteFamiliar_sAntecedente">
+<span @Html.Raw(AntecedenteFamiliar.sAntecedente.ViewAttributes)>
+@Html.Raw(AntecedenteFamiliar.sAntecedente.GetViewValue())</span>
+</span>
+</td>
+} @* sAntecedente.Visible (end) *@
+@if (AntecedenteFamiliar.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(AntecedenteFamiliar.nEstadoID.CellAttributes)>
+<span id="el@(AntecedenteFamiliar_Delete.RowCnt)_AntecedenteFamiliar_nEstadoID" class="AntecedenteFamiliar_nEstadoID">
+<span @Html.Raw(AntecedenteFamiliar.nEstadoID.ViewAttributes)>
+@Html.Raw(AntecedenteFamiliar.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ AntecedenteFamiliar_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(AntecedenteFamiliar_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@AntecedenteFamiliar_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

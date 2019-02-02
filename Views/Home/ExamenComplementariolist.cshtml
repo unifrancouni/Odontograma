@@ -1,0 +1,414 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	ExamenComplementario_List.Page_Render();
+
+	// Check action result
+	if (ExamenComplementario_List.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!ExamenComplementario.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "list";
+var fExamenComplementariolist = currentForm = new ew.Form("fExamenComplementariolist", "list");
+fExamenComplementariolist.formKeyCountName = "@ExamenComplementario_List.FormKeyCountName";
+
+// Form_CustomValidate event
+fExamenComplementariolist.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExamenComplementariolist.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExamenComplementariolist.lists["x_nExpedienteID"] = @Html.Raw(ExamenComplementario_List.nExpedienteID.Lookup.ToClientList());
+fExamenComplementariolist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_List.nExpedienteID.LookupOptions()));
+fExamenComplementariolist.lists["x_nEstudiosRadiologicos"] = @Html.Raw(ExamenComplementario_List.nEstudiosRadiologicos.Lookup.ToClientList());
+fExamenComplementariolist.lists["x_nEstudiosRadiologicos"].options = @Html.Raw(ConvertToJson(ExamenComplementario_List.nEstudiosRadiologicos.Options(false))); // DN
+fExamenComplementariolist.lists["x_nEstudiosLaboratorio"] = @Html.Raw(ExamenComplementario_List.nEstudiosLaboratorio.Lookup.ToClientList());
+fExamenComplementariolist.lists["x_nEstudiosLaboratorio"].options = @Html.Raw(ConvertToJson(ExamenComplementario_List.nEstudiosLaboratorio.Options(false))); // DN
+fExamenComplementariolist.lists["x_nEstadoID"] = @Html.Raw(ExamenComplementario_List.nEstadoID.Lookup.ToClientList());
+fExamenComplementariolist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_List.nEstadoID.LookupOptions()));
+
+// Form object for search
+var fExamenComplementariolistsrch = currentSearchForm = new ew.Form("fExamenComplementariolistsrch");
+
+// Filters
+fExamenComplementariolistsrch.filterList = @Html.Raw(await ExamenComplementario_List.GetFilterList());
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!ExamenComplementario.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (ExamenComplementario_List.TotalRecords > 0 && ExamenComplementario_List.ExportOptions.Visible) {
+	ExamenComplementario_List.ExportOptions.Render("body");
+}
+@if (ExamenComplementario_List.ImportOptions.Visible) {
+	ExamenComplementario_List.ImportOptions.Render("body");
+}
+@if (ExamenComplementario_List.SearchOptions.Visible) {
+	ExamenComplementario_List.SearchOptions.Render("body");
+}
+@if (ExamenComplementario_List.FilterOptions.Visible) {
+	ExamenComplementario_List.FilterOptions.Render("body");
+}
+<div class="clearfix"></div>
+</div>
+}
+@{ ExamenComplementario_List.RenderOtherOptions(); }
+@{
+if (!ExamenComplementario_List.IsExport() && Empty(ExamenComplementario_List.CurrentAction)) { // Begin search form
+<form name="fExamenComplementariolistsrch" id="fExamenComplementariolistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
+<div id="fExamenComplementariolistsrch-search-panel" class="ew-search-panel collapse@(!Empty(ExamenComplementario_List.SearchWhere) ? " show" : " show")">
+<input type="hidden" name="cmd" value="search">
+<div class="ew-basic-search">
+<div id="xsr_1" class="ew-row d-sm-flex">
+	<div class="ew-quick-search input-group">
+	<input type="text" name="@Config.TableBasicSearch" id="@Config.TableBasicSearch" class="form-control" value="@ExamenComplementario_List.BasicSearch.SessionKeyword" placeholder="@Language.Phrase("Search")">
+	<input type="hidden" name="@Config.TableBasicSearchType" id="@Config.TableBasicSearchType" value="@ExamenComplementario_List.BasicSearch.SessionType">
+	<div class="input-group-append">
+		<button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+		<button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false"><span id="searchtype">@Html.Raw(ExamenComplementario_List.BasicSearch.TypeNameShort)</span></button>
+		<div class="dropdown-menu dropdown-menu-right">
+			<a class="dropdown-item @((ExamenComplementario_List.BasicSearch.SessionType == "") ? " active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this)">@Html.Raw(Language.Phrase("QuickSearchAuto"))</a>
+			<a class="dropdown-item @((ExamenComplementario_List.BasicSearch.SessionType == "=") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'=')">@Html.Raw(Language.Phrase("QuickSearchExact"))</a>
+			<a class="dropdown-item @((ExamenComplementario_List.BasicSearch.SessionType == "AND") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'AND')">@Html.Raw(Language.Phrase("QuickSearchAll"))</a>
+			<a class="dropdown-item @((ExamenComplementario_List.BasicSearch.SessionType == "OR") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'OR')">@Html.Raw(Language.Phrase("QuickSearchAny"))</a>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+</form>
+} @* End search form *@
+}
+@ExamenComplementario_List.ShowPageHeader()
+@ExamenComplementario_List.ShowMessages()
+@if (ExamenComplementario_List.TotalRecords > 0 || ExamenComplementario_List.CurrentAction != "") {
+<div class="card ew-card ew-grid@(ExamenComplementario_List.IsAddOrEdit ? " ew-grid-add-edit" : "") ExamenComplementario">
+<form name="fExamenComplementariolist" id="fExamenComplementariolist" class="form-inline ew-form ew-list-form" action="@AppPath(CurrentPageName())" method="post">
+@if (ExamenComplementario_List.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<div id="gmp_ExamenComplementario" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+@if (ExamenComplementario_List.TotalRecords > 0 || ExamenComplementario.IsGridEdit) { // Begin If TotalRecords > 0
+<table id="tbl_ExamenComplementariolist" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	ExamenComplementario_List.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await ExamenComplementario_List.RenderListOptions();
+
+	// Render list options (header, left)
+	ExamenComplementario_List.ListOptions.Render("header", "left");
+}
+@if (ExamenComplementario.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	if (ExamenComplementario_List.SortUrl(ExamenComplementario.nExpedienteID) == "") {
+		<th data-name="nExpedienteID" class="@ExamenComplementario.nExpedienteID.HeaderCellClass"><div id="elh_ExamenComplementario_nExpedienteID" class="ExamenComplementario_nExpedienteID"><div class="ew-table-header-caption">@Html.Raw(ExamenComplementario.nExpedienteID.Caption)</div></div></th>
+	} else {
+		<th data-name="nExpedienteID" class="@ExamenComplementario.nExpedienteID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(ExamenComplementario.SortUrl(ExamenComplementario.nExpedienteID))',1);"><div id="elh_ExamenComplementario_nExpedienteID" class="ExamenComplementario_nExpedienteID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ExamenComplementario.nExpedienteID.Caption)</span><span class="ew-table-header-sort">@if (ExamenComplementario.nExpedienteID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ExamenComplementario.nExpedienteID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nExpedienteID.Visible (end) *@
+@if (ExamenComplementario.nEstudiosRadiologicos.Visible) { // nEstudiosRadiologicos.Visible (begin)
+	if (ExamenComplementario_List.SortUrl(ExamenComplementario.nEstudiosRadiologicos) == "") {
+		<th data-name="nEstudiosRadiologicos" class="@ExamenComplementario.nEstudiosRadiologicos.HeaderCellClass"><div id="elh_ExamenComplementario_nEstudiosRadiologicos" class="ExamenComplementario_nEstudiosRadiologicos"><div class="ew-table-header-caption">@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.Caption)</div></div></th>
+	} else {
+		<th data-name="nEstudiosRadiologicos" class="@ExamenComplementario.nEstudiosRadiologicos.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(ExamenComplementario.SortUrl(ExamenComplementario.nEstudiosRadiologicos))',1);"><div id="elh_ExamenComplementario_nEstudiosRadiologicos" class="ExamenComplementario_nEstudiosRadiologicos">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.Caption)</span><span class="ew-table-header-sort">@if (ExamenComplementario.nEstudiosRadiologicos.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ExamenComplementario.nEstudiosRadiologicos.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nEstudiosRadiologicos.Visible (end) *@
+@if (ExamenComplementario.sDescripcionER.Visible) { // sDescripcionER.Visible (begin)
+	if (ExamenComplementario_List.SortUrl(ExamenComplementario.sDescripcionER) == "") {
+		<th data-name="sDescripcionER" class="@ExamenComplementario.sDescripcionER.HeaderCellClass"><div id="elh_ExamenComplementario_sDescripcionER" class="ExamenComplementario_sDescripcionER"><div class="ew-table-header-caption">@Html.Raw(ExamenComplementario.sDescripcionER.Caption)</div></div></th>
+	} else {
+		<th data-name="sDescripcionER" class="@ExamenComplementario.sDescripcionER.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(ExamenComplementario.SortUrl(ExamenComplementario.sDescripcionER))',1);"><div id="elh_ExamenComplementario_sDescripcionER" class="ExamenComplementario_sDescripcionER">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ExamenComplementario.sDescripcionER.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (ExamenComplementario.sDescripcionER.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ExamenComplementario.sDescripcionER.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sDescripcionER.Visible (end) *@
+@if (ExamenComplementario.nEstudiosLaboratorio.Visible) { // nEstudiosLaboratorio.Visible (begin)
+	if (ExamenComplementario_List.SortUrl(ExamenComplementario.nEstudiosLaboratorio) == "") {
+		<th data-name="nEstudiosLaboratorio" class="@ExamenComplementario.nEstudiosLaboratorio.HeaderCellClass"><div id="elh_ExamenComplementario_nEstudiosLaboratorio" class="ExamenComplementario_nEstudiosLaboratorio"><div class="ew-table-header-caption">@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.Caption)</div></div></th>
+	} else {
+		<th data-name="nEstudiosLaboratorio" class="@ExamenComplementario.nEstudiosLaboratorio.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(ExamenComplementario.SortUrl(ExamenComplementario.nEstudiosLaboratorio))',1);"><div id="elh_ExamenComplementario_nEstudiosLaboratorio" class="ExamenComplementario_nEstudiosLaboratorio">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.Caption)</span><span class="ew-table-header-sort">@if (ExamenComplementario.nEstudiosLaboratorio.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ExamenComplementario.nEstudiosLaboratorio.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nEstudiosLaboratorio.Visible (end) *@
+@if (ExamenComplementario.sDescripcionEL.Visible) { // sDescripcionEL.Visible (begin)
+	if (ExamenComplementario_List.SortUrl(ExamenComplementario.sDescripcionEL) == "") {
+		<th data-name="sDescripcionEL" class="@ExamenComplementario.sDescripcionEL.HeaderCellClass"><div id="elh_ExamenComplementario_sDescripcionEL" class="ExamenComplementario_sDescripcionEL"><div class="ew-table-header-caption">@Html.Raw(ExamenComplementario.sDescripcionEL.Caption)</div></div></th>
+	} else {
+		<th data-name="sDescripcionEL" class="@ExamenComplementario.sDescripcionEL.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(ExamenComplementario.SortUrl(ExamenComplementario.sDescripcionEL))',1);"><div id="elh_ExamenComplementario_sDescripcionEL" class="ExamenComplementario_sDescripcionEL">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ExamenComplementario.sDescripcionEL.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (ExamenComplementario.sDescripcionEL.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ExamenComplementario.sDescripcionEL.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sDescripcionEL.Visible (end) *@
+@if (ExamenComplementario.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	if (ExamenComplementario_List.SortUrl(ExamenComplementario.nEstadoID) == "") {
+		<th data-name="nEstadoID" class="@ExamenComplementario.nEstadoID.HeaderCellClass"><div id="elh_ExamenComplementario_nEstadoID" class="ExamenComplementario_nEstadoID"><div class="ew-table-header-caption">@Html.Raw(ExamenComplementario.nEstadoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nEstadoID" class="@ExamenComplementario.nEstadoID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(ExamenComplementario.SortUrl(ExamenComplementario.nEstadoID))',1);"><div id="elh_ExamenComplementario_nEstadoID" class="ExamenComplementario_nEstadoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(ExamenComplementario.nEstadoID.Caption)</span><span class="ew-table-header-sort">@if (ExamenComplementario.nEstadoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (ExamenComplementario.nEstadoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nEstadoID.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	ExamenComplementario_List.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+if (ExamenComplementario_List.ExportAll && ExamenComplementario_List.IsExport()) {
+	ExamenComplementario_List.StopRecord = ExamenComplementario_List.TotalRecords;
+} else {
+
+	// Set the last record to display
+	if (ExamenComplementario_List.TotalRecords > ExamenComplementario_List.StartRecord + ExamenComplementario_List.DisplayRecords - 1) {
+		ExamenComplementario_List.StopRecord = ExamenComplementario_List.StartRecord + ExamenComplementario_List.DisplayRecords - 1;
+	} else {
+		ExamenComplementario_List.StopRecord = ExamenComplementario_List.TotalRecords;
+	}
+}
+if (ExamenComplementario_List.Recordset != null && ExamenComplementario_List.Recordset.HasRows) {
+	if (!ExamenComplementario_List.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= ExamenComplementario_List.StartRecord - 1; i++) { // Move to first record
+			if (await ExamenComplementario_List.Recordset.ReadAsync()) {
+				ExamenComplementario_List.RecordCount++;
+			}
+		}
+	} else {
+		ExamenComplementario_List.RecordCount = ExamenComplementario_List.StartRecord - 1;
+	}
+} else if (!ExamenComplementario_List.AllowAddDeleteRow && ExamenComplementario_List.StopRecord == 0) {
+	ExamenComplementario_List.StopRecord = ExamenComplementario_List.GridAddRowCount;
+}
+
+// Initialize aggregate
+ExamenComplementario_List.RowType = Config.RowTypeAggregateInit;
+ExamenComplementario_List.ResetAttributes();
+await ExamenComplementario_List.RenderRow();
+
+// Output data rows
+bool eof = (ExamenComplementario_List.Recordset == null); // DN
+while (ExamenComplementario_List.RecordCount < ExamenComplementario_List.StopRecord) { // Begin While
+	if (!ExamenComplementario_List.IsGridAdd && !eof) { // DN
+		eof = !await ExamenComplementario_List.Recordset.ReadAsync();
+	}
+	ExamenComplementario_List.RecordCount++;
+	if (ExamenComplementario_List.RecordCount >= ExamenComplementario_List.StartRecord) {
+		ExamenComplementario_List.RowCnt++;
+
+		// Set up key count
+		ExamenComplementario_List.KeyCount = ConvertToInt(ExamenComplementario_List.RowIndex);
+
+		// Init row class and style
+		ExamenComplementario_List.ResetAttributes();
+		ExamenComplementario_List.CssClass = "";
+		if (ExamenComplementario_List.IsGridAdd) {
+		} else {
+			await ExamenComplementario_List.LoadRowValues(ExamenComplementario_List.Recordset); // Load row values
+		}
+		ExamenComplementario_List.RowType = Config.RowTypeView; // Render view
+
+		// Set up row id / data-rowindex
+		ExamenComplementario_List.RowAttrs.Add("data-rowindex", Convert.ToString(ExamenComplementario_List.RowCnt));
+		ExamenComplementario_List.RowAttrs.Add("id", "r" + Convert.ToString(ExamenComplementario_List.RowCnt) + "_ExamenComplementario");
+		ExamenComplementario_List.RowAttrs.Add("data-rowtype", Convert.ToString(ExamenComplementario_List.RowType));
+
+		// Render row
+		await ExamenComplementario_List.RenderRow();
+
+		// Render list options
+		await ExamenComplementario_List.RenderListOptions();
+	<tr @Html.Raw(ExamenComplementario_List.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		ExamenComplementario_List.ListOptions.Render("body", "left", ExamenComplementario_List.RowCnt);
+	}
+	@if (ExamenComplementario.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+		<td data-name="nExpedienteID"@Html.Raw(ExamenComplementario.nExpedienteID.CellAttributes)>
+<span id="el@(ExamenComplementario_List.RowCnt)_ExamenComplementario_nExpedienteID" class="ExamenComplementario_nExpedienteID">
+<span @Html.Raw(ExamenComplementario.nExpedienteID.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	} @* nExpedienteID.Visible (end) *@
+	@if (ExamenComplementario.nEstudiosRadiologicos.Visible) { // nEstudiosRadiologicos.Visible (begin)
+		<td data-name="nEstudiosRadiologicos"@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.CellAttributes)>
+<span id="el@(ExamenComplementario_List.RowCnt)_ExamenComplementario_nEstudiosRadiologicos" class="ExamenComplementario_nEstudiosRadiologicos">
+<span @Html.Raw(ExamenComplementario.nEstudiosRadiologicos.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.GetViewValue())</span>
+</span>
+</td>
+	} @* nEstudiosRadiologicos.Visible (end) *@
+	@if (ExamenComplementario.sDescripcionER.Visible) { // sDescripcionER.Visible (begin)
+		<td data-name="sDescripcionER"@Html.Raw(ExamenComplementario.sDescripcionER.CellAttributes)>
+<span id="el@(ExamenComplementario_List.RowCnt)_ExamenComplementario_sDescripcionER" class="ExamenComplementario_sDescripcionER">
+<span @Html.Raw(ExamenComplementario.sDescripcionER.ViewAttributes)>
+@Html.Raw(ExamenComplementario.sDescripcionER.GetViewValue())</span>
+</span>
+</td>
+	} @* sDescripcionER.Visible (end) *@
+	@if (ExamenComplementario.nEstudiosLaboratorio.Visible) { // nEstudiosLaboratorio.Visible (begin)
+		<td data-name="nEstudiosLaboratorio"@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.CellAttributes)>
+<span id="el@(ExamenComplementario_List.RowCnt)_ExamenComplementario_nEstudiosLaboratorio" class="ExamenComplementario_nEstudiosLaboratorio">
+<span @Html.Raw(ExamenComplementario.nEstudiosLaboratorio.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.GetViewValue())</span>
+</span>
+</td>
+	} @* nEstudiosLaboratorio.Visible (end) *@
+	@if (ExamenComplementario.sDescripcionEL.Visible) { // sDescripcionEL.Visible (begin)
+		<td data-name="sDescripcionEL"@Html.Raw(ExamenComplementario.sDescripcionEL.CellAttributes)>
+<span id="el@(ExamenComplementario_List.RowCnt)_ExamenComplementario_sDescripcionEL" class="ExamenComplementario_sDescripcionEL">
+<span @Html.Raw(ExamenComplementario.sDescripcionEL.ViewAttributes)>
+@Html.Raw(ExamenComplementario.sDescripcionEL.GetViewValue())</span>
+</span>
+</td>
+	} @* sDescripcionEL.Visible (end) *@
+	@if (ExamenComplementario.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+		<td data-name="nEstadoID"@Html.Raw(ExamenComplementario.nEstadoID.CellAttributes)>
+<span id="el@(ExamenComplementario_List.RowCnt)_ExamenComplementario_nEstadoID" class="ExamenComplementario_nEstadoID">
+<span @Html.Raw(ExamenComplementario.nEstadoID.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	} @* nEstadoID.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		ExamenComplementario_List.ListOptions.Render("body", "right", ExamenComplementario_List.RowCnt);
+	}
+	</tr>
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+@if (Empty(ExamenComplementario_List.CurrentAction)) {
+<input type="hidden" name="action" id="action" value="">
+}
+</div><!-- /.ew-grid-middle-panel -->
+</form><!-- /.ew-list-form -->
+@{ ExamenComplementario_List.CloseRecordset(); }
+		@if (!ExamenComplementario.IsExport()) {
+		<div class="card-footer ew-grid-lower-panel">
+		@if (!ExamenComplementario_List.IsGridAdd) {
+			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
+@{ ExamenComplementario_List.Pager = ExamenComplementario_List.Pager ?? new PrevNextPager(ExamenComplementario_List.StartRecord, ExamenComplementario_List.DisplayRecords, ExamenComplementario_List.TotalRecords, ExamenComplementario_List.AutoHidePager); }
+@if (ExamenComplementario_List.Pager.RecordCount > 0 && ExamenComplementario_List.Pager.Visible) {
+<div class="ew-pager">
+<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
+<div class="ew-prev-next"><div class="input-group input-group-sm">
+<div class="input-group-prepend">
+<!--first page button-->
+	@if (ExamenComplementario_List.Pager.FirstButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(ExamenComplementario_List.PageUrl)start=@ExamenComplementario_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
+	}
+<!--previous page button-->
+	@if (ExamenComplementario_List.Pager.PrevButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(ExamenComplementario_List.PageUrl)start=@ExamenComplementario_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
+	}
+</div>
+<!--current page number-->
+	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@ExamenComplementario_List.Pager.CurrentPageNumber">
+<div class="input-group-append">
+<!--next page button-->
+	@if (ExamenComplementario_List.Pager.NextButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(ExamenComplementario_List.PageUrl)start=@ExamenComplementario_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
+	}
+<!--last page button-->
+	@if (ExamenComplementario_List.Pager.LastButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(ExamenComplementario_List.PageUrl)start=@ExamenComplementario_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
+	}
+</div>
+</div>
+</div>
+<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@ExamenComplementario_List.Pager.PageCount</span>
+<div class="clearfix"></div>
+</div>
+}
+@if (ExamenComplementario_List.Pager.RecordCount > 0) {
+	<div class="ew-pager ew-rec">
+		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(ExamenComplementario_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(ExamenComplementario_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(ExamenComplementario_List.Pager.RecordCount)</span>
+	</div>
+}
+			</form>
+		}
+		<div class="ew-list-other-options">
+		@ExamenComplementario_List.OtherOptions.RenderBody("bottom")
+		</div>
+		<div class="clearfix"></div>
+		</div>
+		}
+</div><!-- /.ew-grid -->
+}
+@if (ExamenComplementario_List.TotalRecords <= 0 && ExamenComplementario_List.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@ExamenComplementario_List.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@ExamenComplementario_List.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!ExamenComplementario.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

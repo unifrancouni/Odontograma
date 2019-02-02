@@ -1,0 +1,43 @@
+@{
+}
+@if (Catalogo.Visible) { // Catalogo_Master.Visible (begin)
+<div class="ew-master-div">
+<table id="tbl_Catalogomaster" class="table ew-view-table ew-master-table ew-vertical">
+	<tbody>
+		@if (Catalogo.nCodigo.Visible) { // nCodigo.Visible (begin)
+		<tr id="r_nCodigo">
+			<td class="@Catalogo.TableLeftColumnClass">@Html.Raw(Catalogo.nCodigo.Caption)</td>
+			<td @Html.Raw(Catalogo.nCodigo.CellAttributes)>
+<span id="el_Catalogo_nCodigo">
+<span @Html.Raw(Catalogo.nCodigo.ViewAttributes)>
+@Html.Raw(Catalogo.nCodigo.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* nCodigo.Visible (end) *@
+		@if (Catalogo.sDescripcion.Visible) { // sDescripcion.Visible (begin)
+		<tr id="r_sDescripcion">
+			<td class="@Catalogo.TableLeftColumnClass">@Html.Raw(Catalogo.sDescripcion.Caption)</td>
+			<td @Html.Raw(Catalogo.sDescripcion.CellAttributes)>
+<span id="el_Catalogo_sDescripcion">
+<span @Html.Raw(Catalogo.sDescripcion.ViewAttributes)>
+@Html.Raw(Catalogo.sDescripcion.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* sDescripcion.Visible (end) *@
+		@if (Catalogo.nActivo.Visible) { // nActivo.Visible (begin)
+		<tr id="r_nActivo">
+			<td class="@Catalogo.TableLeftColumnClass">@Html.Raw(Catalogo.nActivo.Caption)</td>
+			<td @Html.Raw(Catalogo.nActivo.CellAttributes)>
+<span id="el_Catalogo_nActivo">
+<span @Html.Raw(Catalogo.nActivo.ViewAttributes)>
+@Html.Raw(Catalogo.nActivo.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* nActivo.Visible (end) *@
+	</tbody>
+</table>
+</div>
+} @* Catalogo_Master.Visible (end) *@

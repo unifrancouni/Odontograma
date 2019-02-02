@@ -1,0 +1,146 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Cita_View.Page_Render();
+
+	// Check action result
+	if (Cita_View.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Cita.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "view";
+var fCitaview = currentForm = new ew.Form("fCitaview", "view");
+
+// Form_CustomValidate event
+fCitaview.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fCitaview.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fCitaview.lists["x_nExpedienteID"] = @Html.Raw(Cita_View.nExpedienteID.Lookup.ToClientList());
+fCitaview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Cita_View.nExpedienteID.LookupOptions()));
+fCitaview.lists["x_nEstadoID"] = @Html.Raw(Cita_View.nEstadoID.Lookup.ToClientList());
+fCitaview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_View.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!Cita.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+	@Cita_View.ExportOptions.RenderBody()
+	@Cita_View.OtherOptions.RenderBody()
+	<div class="clearfix"></div>
+</div>
+}
+@Cita_View.ShowPageHeader()
+@Cita_View.ShowMessages()
+<form name="fCitaview" id="fCitaview" class="form-inline ew-form ew-view-form" method="post">
+@if (Cita_View.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(Cita_View.IsModal)">
+<table class="table table-striped table-sm ew-view-table">
+@if (Cita.nExpedienteID.Visible) { @* Cita.nExpedienteID.Visible (begin) *@
+	<tr id="r_nExpedienteID">
+		<td class="@Cita_View.TableLeftColumnClass"><span id="elh_Cita_nExpedienteID">@Html.Raw(Cita.nExpedienteID.Caption)</span></td>
+		<td data-name="nExpedienteID" @Html.Raw(Cita.nExpedienteID.CellAttributes)>
+<span id="el_Cita_nExpedienteID">
+<span @Html.Raw(Cita.nExpedienteID.ViewAttributes)>
+@Html.Raw(Cita.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Cita.nExpedienteID.Visible (end) *@
+@if (Cita.sMotivoCita.Visible) { @* Cita.sMotivoCita.Visible (begin) *@
+	<tr id="r_sMotivoCita">
+		<td class="@Cita_View.TableLeftColumnClass"><span id="elh_Cita_sMotivoCita">@Html.Raw(Cita.sMotivoCita.Caption)</span></td>
+		<td data-name="sMotivoCita" @Html.Raw(Cita.sMotivoCita.CellAttributes)>
+<span id="el_Cita_sMotivoCita">
+<span @Html.Raw(Cita.sMotivoCita.ViewAttributes)>
+@Html.Raw(Cita.sMotivoCita.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Cita.sMotivoCita.Visible (end) *@
+@if (Cita.dFechaHoraCita.Visible) { @* Cita.dFechaHoraCita.Visible (begin) *@
+	<tr id="r_dFechaHoraCita">
+		<td class="@Cita_View.TableLeftColumnClass"><span id="elh_Cita_dFechaHoraCita">@Html.Raw(Cita.dFechaHoraCita.Caption)</span></td>
+		<td data-name="dFechaHoraCita" @Html.Raw(Cita.dFechaHoraCita.CellAttributes)>
+<span id="el_Cita_dFechaHoraCita">
+<span @Html.Raw(Cita.dFechaHoraCita.ViewAttributes)>
+@Html.Raw(Cita.dFechaHoraCita.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Cita.dFechaHoraCita.Visible (end) *@
+@if (Cita.dHora.Visible) { @* Cita.dHora.Visible (begin) *@
+	<tr id="r_dHora">
+		<td class="@Cita_View.TableLeftColumnClass"><span id="elh_Cita_dHora">@Html.Raw(Cita.dHora.Caption)</span></td>
+		<td data-name="dHora" @Html.Raw(Cita.dHora.CellAttributes)>
+<span id="el_Cita_dHora">
+<span @Html.Raw(Cita.dHora.ViewAttributes)>
+@Html.Raw(Cita.dHora.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Cita.dHora.Visible (end) *@
+@if (Cita.nEstadoID.Visible) { @* Cita.nEstadoID.Visible (begin) *@
+	<tr id="r_nEstadoID">
+		<td class="@Cita_View.TableLeftColumnClass"><span id="elh_Cita_nEstadoID">@Html.Raw(Cita.nEstadoID.Caption)</span></td>
+		<td data-name="nEstadoID" @Html.Raw(Cita.nEstadoID.CellAttributes)>
+<span id="el_Cita_nEstadoID">
+<span @Html.Raw(Cita.nEstadoID.ViewAttributes)>
+@Html.Raw(Cita.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Cita.nEstadoID.Visible (end) *@
+</table>
+@{ Cita_View.CloseRecordset(); }
+</form>
+@Cita_View.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!Cita.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

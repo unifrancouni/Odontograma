@@ -1,0 +1,87 @@
+@{
+}
+@if (Paciente.Visible) { // Paciente_Master.Visible (begin)
+<div class="ew-master-div">
+<table id="tbl_Pacientemaster" class="table ew-view-table ew-master-table ew-vertical">
+	<tbody>
+		@if (Paciente.nCodigo.Visible) { // nCodigo.Visible (begin)
+		<tr id="r_nCodigo">
+			<td class="@Paciente.TableLeftColumnClass">@Html.Raw(Paciente.nCodigo.Caption)</td>
+			<td @Html.Raw(Paciente.nCodigo.CellAttributes)>
+<span id="el_Paciente_nCodigo">
+<span @Html.Raw(Paciente.nCodigo.ViewAttributes)>
+@Html.Raw(Paciente.nCodigo.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* nCodigo.Visible (end) *@
+		@if (Paciente.sNombre.Visible) { // sNombre.Visible (begin)
+		<tr id="r_sNombre">
+			<td class="@Paciente.TableLeftColumnClass">@Html.Raw(Paciente.sNombre.Caption)</td>
+			<td @Html.Raw(Paciente.sNombre.CellAttributes)>
+<span id="el_Paciente_sNombre">
+<span @Html.Raw(Paciente.sNombre.ViewAttributes)>
+@Html.Raw(Paciente.sNombre.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* sNombre.Visible (end) *@
+		@if (Paciente.sApellido1.Visible) { // sApellido1.Visible (begin)
+		<tr id="r_sApellido1">
+			<td class="@Paciente.TableLeftColumnClass">@Html.Raw(Paciente.sApellido1.Caption)</td>
+			<td @Html.Raw(Paciente.sApellido1.CellAttributes)>
+<span id="el_Paciente_sApellido1">
+<span @Html.Raw(Paciente.sApellido1.ViewAttributes)>
+@Html.Raw(Paciente.sApellido1.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* sApellido1.Visible (end) *@
+		@if (Paciente.sApellido2.Visible) { // sApellido2.Visible (begin)
+		<tr id="r_sApellido2">
+			<td class="@Paciente.TableLeftColumnClass">@Html.Raw(Paciente.sApellido2.Caption)</td>
+			<td @Html.Raw(Paciente.sApellido2.CellAttributes)>
+<span id="el_Paciente_sApellido2">
+<span @Html.Raw(Paciente.sApellido2.ViewAttributes)>
+@Html.Raw(Paciente.sApellido2.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* sApellido2.Visible (end) *@
+		@if (Paciente.nGeneroID.Visible) { // nGeneroID.Visible (begin)
+		<tr id="r_nGeneroID">
+			<td class="@Paciente.TableLeftColumnClass">@Html.Raw(Paciente.nGeneroID.Caption)</td>
+			<td @Html.Raw(Paciente.nGeneroID.CellAttributes)>
+<span id="el_Paciente_nGeneroID">
+<span @Html.Raw(Paciente.nGeneroID.ViewAttributes)>
+@Html.Raw(Paciente.nGeneroID.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* nGeneroID.Visible (end) *@
+		@if (Paciente.sCedula.Visible) { // sCedula.Visible (begin)
+		<tr id="r_sCedula">
+			<td class="@Paciente.TableLeftColumnClass">@Html.Raw(Paciente.sCedula.Caption)</td>
+			<td @Html.Raw(Paciente.sCedula.CellAttributes)>
+<span id="el_Paciente_sCedula">
+<span @Html.Raw(Paciente.sCedula.ViewAttributes)>
+@Html.Raw(Paciente.sCedula.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* sCedula.Visible (end) *@
+		@if (Paciente.sTelefono.Visible) { // sTelefono.Visible (begin)
+		<tr id="r_sTelefono">
+			<td class="@Paciente.TableLeftColumnClass">@Html.Raw(Paciente.sTelefono.Caption)</td>
+			<td @Html.Raw(Paciente.sTelefono.CellAttributes)>
+<span id="el_Paciente_sTelefono">
+<span @Html.Raw(Paciente.sTelefono.ViewAttributes)>
+@Html.Raw(Paciente.sTelefono.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* sTelefono.Visible (end) *@
+	</tbody>
+</table>
+</div>
+} @* Paciente_Master.Visible (end) *@

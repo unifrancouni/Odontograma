@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="SMUSURA0_FrancoModelStoreContainer" CdmEntityContainer="SIGECO_Entities">
+    <EntitySetMapping Name="OdontogramaDetalle">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.OdontogramaDetalle">
+        <MappingFragment StoreEntitySet="OdontogramaDetalle">
+          <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+          <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+          <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+          <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+          <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
+          <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
+          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+          <ScalarProperty Name="nOdontogramaID" ColumnName="nOdontogramaID" />
+          <ScalarProperty Name="nOdontogramaDetalleID" ColumnName="nOdontogramaDetalleID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Simbolo">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Simbolo">
+        <MappingFragment StoreEntitySet="Simbolo">
+          <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+          <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+          <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+          <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+          <ScalarProperty Name="nEstadoID" ColumnName="nEstadoID" />
+          <ScalarProperty Name="sPathImage" ColumnName="sPathImage" />
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="vwOdontogramaDetalle">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwOdontogramaDetalle">
+        <MappingFragment StoreEntitySet="vwOdontogramaDetalle">
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="sNombreDiente" ColumnName="sNombreDiente" />
+          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+          <ScalarProperty Name="nDienteID" ColumnName="nDienteID" />
+          <ScalarProperty Name="tipo" ColumnName="tipo" />
+          <ScalarProperty Name="nOdontogramaDetalleID" ColumnName="nOdontogramaDetalleID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="spGetSimbolos" FunctionName="SMUSURA0_FrancoModel.Store.spGetSimbolos">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="SMUSURA0_FrancoModel.spGetSimbolos_Result">
+          <ScalarProperty Name="tipo" ColumnName="tipo" />
+          <ScalarProperty Name="nSimboloID" ColumnName="nSimboloID" />
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="sPathImage" ColumnName="sPathImage" />
+          <ScalarProperty Name="nPagina" ColumnName="nPagina" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="vwSimbolosIncompatibles">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwSimbolosIncompatibles">
+        <MappingFragment StoreEntitySet="vwSimbolosIncompatibles">
+          <ScalarProperty Name="Simbolo2" ColumnName="Simbolo2" />
+          <ScalarProperty Name="Simbolo1" ColumnName="Simbolo1" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="vwDientesIncompatibles">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwDientesIncompatibles">
+        <MappingFragment StoreEntitySet="vwDientesIncompatibles">
+          <ScalarProperty Name="Diente2" ColumnName="Diente2" />
+          <ScalarProperty Name="Diente1" ColumnName="Diente1" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="vwUsuario">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.vwUsuario">
+        <MappingFragment StoreEntitySet="vwUsuario">
+          <ScalarProperty Name="nSesionIniciada" ColumnName="nSesionIniciada" />
+          <ScalarProperty Name="sToken" ColumnName="sToken" />
+          <ScalarProperty Name="sEmail" ColumnName="sEmail" />
+          <ScalarProperty Name="nUsuarioId" ColumnName="nUsuarioId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Menu">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.Menu">
+        <MappingFragment StoreEntitySet="Menu">
+          <ScalarProperty Name="sLink" ColumnName="sLink" />
+          <ScalarProperty Name="sController" ColumnName="sController" />
+          <ScalarProperty Name="sAction" ColumnName="sAction" />
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="sIconClass" ColumnName="sIconClass" />
+          <ScalarProperty Name="nNivel" ColumnName="nNivel" />
+          <ScalarProperty Name="nMenuItemPadreID" ColumnName="nMenuItemPadreID" />
+          <ScalarProperty Name="nMenuItemID" ColumnName="nMenuItemID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="spListarCatalogoPorCampoFK" FunctionName="SMUSURA0_FrancoModel.Store.spListarCatalogoPorCampoFK">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="SMUSURA0_FrancoModel.spListarCatalogoPorCampoFK_Result">
+          <ScalarProperty Name="nValorCatalogoID" ColumnName="nValorCatalogoID" />
+          <ScalarProperty Name="nCatalogoID" ColumnName="nCatalogoID" />
+          <ScalarProperty Name="nCodigo" ColumnName="nCodigo" />
+          <ScalarProperty Name="sDescripcion" ColumnName="sDescripcion" />
+          <ScalarProperty Name="nActivo" ColumnName="nActivo" />
+          <ScalarProperty Name="dFechaCreacion" ColumnName="dFechaCreacion" />
+          <ScalarProperty Name="sUsuarioCreacion" ColumnName="sUsuarioCreacion" />
+          <ScalarProperty Name="dFechaModificacion" ColumnName="dFechaModificacion" />
+          <ScalarProperty Name="sUsuarioModificacion" ColumnName="sUsuarioModificacion" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="TableColumns">
+      <EntityTypeMapping TypeName="SMUSURA0_FrancoModel.TableColumns">
+        <MappingFragment StoreEntitySet="TableColumns">
+          <ScalarProperty Name="HTML_EDIT_LOCK" ColumnName="HTML_EDIT_LOCK" />
+          <ScalarProperty Name="HTML_ADD_LOCK" ColumnName="HTML_ADD_LOCK" />
+          <ScalarProperty Name="HTML_LIST_SHOW" ColumnName="HTML_LIST_SHOW" />
+          <ScalarProperty Name="HTML_EDIT_SHOW" ColumnName="HTML_EDIT_SHOW" />
+          <ScalarProperty Name="HTML_ADD_SHOW" ColumnName="HTML_ADD_SHOW" />
+          <ScalarProperty Name="COLUMN_FK" ColumnName="COLUMN_FK" />
+          <ScalarProperty Name="TABLE_FK" ColumnName="TABLE_FK" />
+          <ScalarProperty Name="IS_FK" ColumnName="IS_FK" />
+          <ScalarProperty Name="NUMERIC_SCALE" ColumnName="NUMERIC_SCALE" />
+          <ScalarProperty Name="NUMERIC_PRECISION" ColumnName="NUMERIC_PRECISION" />
+          <ScalarProperty Name="NULLABLE" ColumnName="NULLABLE" />
+          <ScalarProperty Name="MAX_LENGTH" ColumnName="MAX_LENGTH" />
+          <ScalarProperty Name="DATA_TYPE" ColumnName="DATA_TYPE" />
+          <ScalarProperty Name="HTML_PATTERN" ColumnName="HTML_PATTERN" />
+          <ScalarProperty Name="HTML_TYPE" ColumnName="HTML_TYPE" />
+          <ScalarProperty Name="COLUMN_DEFAULT" ColumnName="COLUMN_DEFAULT" />
+          <ScalarProperty Name="ORDINAL_POSITION" ColumnName="ORDINAL_POSITION" />
+          <ScalarProperty Name="CAPTION" ColumnName="CAPTION" />
+          <ScalarProperty Name="COLUMN_NAME" ColumnName="COLUMN_NAME" />
+          <ScalarProperty Name="TABLE_NAME" ColumnName="TABLE_NAME" />
+          <ScalarProperty Name="TABLE_SCHEMA" ColumnName="TABLE_SCHEMA" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="spGetXMLRowsByTableName" FunctionName="SMUSURA0_FrancoModel.Store.spGetXMLRowsByTableName" />
+  </EntityContainerMapping>
+</Mapping>

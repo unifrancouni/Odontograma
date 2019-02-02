@@ -1,0 +1,161 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	ExamenComplementario_View.Page_Render();
+
+	// Check action result
+	if (ExamenComplementario_View.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!ExamenComplementario.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "view";
+var fExamenComplementarioview = currentForm = new ew.Form("fExamenComplementarioview", "view");
+
+// Form_CustomValidate event
+fExamenComplementarioview.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fExamenComplementarioview.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fExamenComplementarioview.lists["x_nExpedienteID"] = @Html.Raw(ExamenComplementario_View.nExpedienteID.Lookup.ToClientList());
+fExamenComplementarioview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_View.nExpedienteID.LookupOptions()));
+fExamenComplementarioview.lists["x_nEstudiosRadiologicos"] = @Html.Raw(ExamenComplementario_View.nEstudiosRadiologicos.Lookup.ToClientList());
+fExamenComplementarioview.lists["x_nEstudiosRadiologicos"].options = @Html.Raw(ConvertToJson(ExamenComplementario_View.nEstudiosRadiologicos.Options(false))); // DN
+fExamenComplementarioview.lists["x_nEstudiosLaboratorio"] = @Html.Raw(ExamenComplementario_View.nEstudiosLaboratorio.Lookup.ToClientList());
+fExamenComplementarioview.lists["x_nEstudiosLaboratorio"].options = @Html.Raw(ConvertToJson(ExamenComplementario_View.nEstudiosLaboratorio.Options(false))); // DN
+fExamenComplementarioview.lists["x_nEstadoID"] = @Html.Raw(ExamenComplementario_View.nEstadoID.Lookup.ToClientList());
+fExamenComplementarioview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_View.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!ExamenComplementario.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+	@ExamenComplementario_View.ExportOptions.RenderBody()
+	@ExamenComplementario_View.OtherOptions.RenderBody()
+	<div class="clearfix"></div>
+</div>
+}
+@ExamenComplementario_View.ShowPageHeader()
+@ExamenComplementario_View.ShowMessages()
+<form name="fExamenComplementarioview" id="fExamenComplementarioview" class="form-inline ew-form ew-view-form" method="post">
+@if (ExamenComplementario_View.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(ExamenComplementario_View.IsModal)">
+<table class="table table-striped table-sm ew-view-table">
+@if (ExamenComplementario.nExpedienteID.Visible) { @* ExamenComplementario.nExpedienteID.Visible (begin) *@
+	<tr id="r_nExpedienteID">
+		<td class="@ExamenComplementario_View.TableLeftColumnClass"><span id="elh_ExamenComplementario_nExpedienteID">@Html.Raw(ExamenComplementario.nExpedienteID.Caption)</span></td>
+		<td data-name="nExpedienteID" @Html.Raw(ExamenComplementario.nExpedienteID.CellAttributes)>
+<span id="el_ExamenComplementario_nExpedienteID">
+<span @Html.Raw(ExamenComplementario.nExpedienteID.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* ExamenComplementario.nExpedienteID.Visible (end) *@
+@if (ExamenComplementario.nEstudiosRadiologicos.Visible) { @* ExamenComplementario.nEstudiosRadiologicos.Visible (begin) *@
+	<tr id="r_nEstudiosRadiologicos">
+		<td class="@ExamenComplementario_View.TableLeftColumnClass"><span id="elh_ExamenComplementario_nEstudiosRadiologicos">@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.Caption)</span></td>
+		<td data-name="nEstudiosRadiologicos" @Html.Raw(ExamenComplementario.nEstudiosRadiologicos.CellAttributes)>
+<span id="el_ExamenComplementario_nEstudiosRadiologicos">
+<span @Html.Raw(ExamenComplementario.nEstudiosRadiologicos.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstudiosRadiologicos.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* ExamenComplementario.nEstudiosRadiologicos.Visible (end) *@
+@if (ExamenComplementario.sDescripcionER.Visible) { @* ExamenComplementario.sDescripcionER.Visible (begin) *@
+	<tr id="r_sDescripcionER">
+		<td class="@ExamenComplementario_View.TableLeftColumnClass"><span id="elh_ExamenComplementario_sDescripcionER">@Html.Raw(ExamenComplementario.sDescripcionER.Caption)</span></td>
+		<td data-name="sDescripcionER" @Html.Raw(ExamenComplementario.sDescripcionER.CellAttributes)>
+<span id="el_ExamenComplementario_sDescripcionER">
+<span @Html.Raw(ExamenComplementario.sDescripcionER.ViewAttributes)>
+@Html.Raw(ExamenComplementario.sDescripcionER.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* ExamenComplementario.sDescripcionER.Visible (end) *@
+@if (ExamenComplementario.nEstudiosLaboratorio.Visible) { @* ExamenComplementario.nEstudiosLaboratorio.Visible (begin) *@
+	<tr id="r_nEstudiosLaboratorio">
+		<td class="@ExamenComplementario_View.TableLeftColumnClass"><span id="elh_ExamenComplementario_nEstudiosLaboratorio">@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.Caption)</span></td>
+		<td data-name="nEstudiosLaboratorio" @Html.Raw(ExamenComplementario.nEstudiosLaboratorio.CellAttributes)>
+<span id="el_ExamenComplementario_nEstudiosLaboratorio">
+<span @Html.Raw(ExamenComplementario.nEstudiosLaboratorio.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstudiosLaboratorio.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* ExamenComplementario.nEstudiosLaboratorio.Visible (end) *@
+@if (ExamenComplementario.sDescripcionEL.Visible) { @* ExamenComplementario.sDescripcionEL.Visible (begin) *@
+	<tr id="r_sDescripcionEL">
+		<td class="@ExamenComplementario_View.TableLeftColumnClass"><span id="elh_ExamenComplementario_sDescripcionEL">@Html.Raw(ExamenComplementario.sDescripcionEL.Caption)</span></td>
+		<td data-name="sDescripcionEL" @Html.Raw(ExamenComplementario.sDescripcionEL.CellAttributes)>
+<span id="el_ExamenComplementario_sDescripcionEL">
+<span @Html.Raw(ExamenComplementario.sDescripcionEL.ViewAttributes)>
+@Html.Raw(ExamenComplementario.sDescripcionEL.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* ExamenComplementario.sDescripcionEL.Visible (end) *@
+@if (ExamenComplementario.nEstadoID.Visible) { @* ExamenComplementario.nEstadoID.Visible (begin) *@
+	<tr id="r_nEstadoID">
+		<td class="@ExamenComplementario_View.TableLeftColumnClass"><span id="elh_ExamenComplementario_nEstadoID">@Html.Raw(ExamenComplementario.nEstadoID.Caption)</span></td>
+		<td data-name="nEstadoID" @Html.Raw(ExamenComplementario.nEstadoID.CellAttributes)>
+<span id="el_ExamenComplementario_nEstadoID">
+<span @Html.Raw(ExamenComplementario.nEstadoID.ViewAttributes)>
+@Html.Raw(ExamenComplementario.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* ExamenComplementario.nEstadoID.Visible (end) *@
+</table>
+@{ ExamenComplementario_View.CloseRecordset(); }
+</form>
+@ExamenComplementario_View.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!ExamenComplementario.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

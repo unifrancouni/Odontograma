@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<configuration date="2019/02/01" author="e.World Technology Ltd.">
+  <project id="{9B083C8B-EE2F-4356-BE8D-9A26D5707365}" file="C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\prjSIGECO.agx" name="prjSIGECO" product="ASPNETMaker" version="16.0" datetime="2019/02/01 00:09:36" languagefolder="wwwroot/lang" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0">
+    <table id="AntecedenteDental" name="AntecedenteDental" caption="Antecedente Dental" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="AntecedenteFamiliar" name="AntecedenteFamiliar" caption="Antecedente Familiar" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Catalogo" name="Catalogo" caption="Catálogo" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Cita" name="Cita" caption="Cita" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Diente" name="Diente" caption="Diente" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="ExamenComplementario" name="ExamenComplementario" caption="Examen Complementario" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Expediente" name="Expediente" caption="Expediente" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Odontograma" name="Odontograma" caption="Odontograma" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="OdontogramaDetalle" name="OdontogramaDetalle" caption="Odontograma Detalle" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Paciente" name="Paciente" caption="Paciente" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Periodontograma" name="Periodontograma" caption="Periodontograma" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="PeriodontogramaDetalle" name="PeriodontogramaDetalle" caption="Periodontograma Detalle" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Placagrama" name="Placagrama" caption="Placagrama" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="PlacagramaDetalle" name="PlacagramaDetalle" caption="Placagrama Detalle" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Simbolo" name="Simbolo" caption="Simbolo" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="sysdiagrams" name="sysdiagrams" caption="sysdiagrams" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Tratamiento" name="Tratamiento" caption="Tratamiento" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="TratamientoRealizado" name="TratamientoRealizado" caption="Tratamiento Realizado" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="Usuario" name="Usuario" caption="Usuario" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="ValidacionSimboloOdontograma" name="ValidacionSimboloOdontograma" caption="Validacion Simbolo Odontograma" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,109" priv="1" />
+    <table id="ValorCatalogo" name="ValorCatalogo" caption="Detalle Catálogo" userlevel="-2,&quot;Anonymous&quot;,72;0,&quot;Default&quot;,109" priv="1" />
+    <table id="vwDientesIncompatibles" name="vwDientesIncompatibles" caption="vw Dientes Incompatibles" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="vwOdontogramaDetalle" name="vwOdontogramaDetalle" caption="vw Odontograma Detalle" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="vwSimbolosIncompatibles" name="vwSimbolosIncompatibles" caption="vw Simbolos Incompatibles" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+    <table id="vwPacienteExpediente" name="vwPacienteExpediente" caption="vw Paciente Expediente" userlevel="-2,&quot;Anonymous&quot;,0;0,&quot;Default&quot;,0" priv="1" />
+  </project>
+</configuration>

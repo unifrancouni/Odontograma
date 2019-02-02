@@ -1,0 +1,249 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	TratamientoRealizado_Edit.Page_Render();
+
+	// Check action result
+	if (TratamientoRealizado_Edit.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "edit";
+var fTratamientoRealizadoedit = currentForm = new ew.Form("fTratamientoRealizadoedit", "edit");
+
+// Validate form
+fTratamientoRealizadoedit.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (TratamientoRealizado_Edit.nExpedienteID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nExpedienteID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(TratamientoRealizado.nExpedienteID.RequiredErrorMessage.Replace("%s", TratamientoRealizado.nExpedienteID.Caption)))");
+		</text>
+	}
+	@if (TratamientoRealizado_Edit.sDescripcionTratamiento.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sDescripcionTratamiento");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(TratamientoRealizado.sDescripcionTratamiento.RequiredErrorMessage.Replace("%s", TratamientoRealizado.sDescripcionTratamiento.Caption)))");
+		</text>
+	}
+	@if (TratamientoRealizado_Edit.dFechaTratamiento.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaTratamiento");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(TratamientoRealizado.dFechaTratamiento.RequiredErrorMessage.Replace("%s", TratamientoRealizado.dFechaTratamiento.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaTratamiento");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(TratamientoRealizado.dFechaTratamiento.ErrorMessage))");
+	@if (TratamientoRealizado_Edit.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(TratamientoRealizado.nEstadoID.RequiredErrorMessage.Replace("%s", TratamientoRealizado.nEstadoID.Caption)))");
+		</text>
+	}
+	@if (TratamientoRealizado_Edit.dFechaCreacion.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaCreacion");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(TratamientoRealizado.dFechaCreacion.RequiredErrorMessage.Replace("%s", TratamientoRealizado.dFechaCreacion.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaCreacion");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(TratamientoRealizado.dFechaCreacion.ErrorMessage))");
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fTratamientoRealizadoedit.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fTratamientoRealizadoedit.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fTratamientoRealizadoedit.lists["x_nExpedienteID"] = @Html.Raw(TratamientoRealizado_Edit.nExpedienteID.Lookup.ToClientList());
+fTratamientoRealizadoedit.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_Edit.nExpedienteID.LookupOptions()));
+fTratamientoRealizadoedit.lists["x_nEstadoID"] = @Html.Raw(TratamientoRealizado_Edit.nEstadoID.Lookup.ToClientList());
+fTratamientoRealizadoedit.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_Edit.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@TratamientoRealizado_Edit.ShowPageHeader()
+@TratamientoRealizado_Edit.ShowMessages()
+<form name="fTratamientoRealizadoedit" id="fTratamientoRealizadoedit" class="@TratamientoRealizado_Edit.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (TratamientoRealizado_Edit.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="update">
+@if (TratamientoRealizado_Edit.IsModal) {
+<input type="hidden" name="modal" value="@ConvertToInt(TratamientoRealizado_Edit.IsModal)">
+}
+<div class="ew-edit-div"><!-- page* -->
+@if (TratamientoRealizado.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	<div id="r_nExpedienteID" class="form-group row">
+		<label id="elh_TratamientoRealizado_nExpedienteID" for="x_nExpedienteID" class="@TratamientoRealizado_Edit.LeftColumnClass">@Html.Raw(TratamientoRealizado.nExpedienteID.Caption)@Html.Raw(TratamientoRealizado.nExpedienteID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@TratamientoRealizado_Edit.RightColumnClass"><div @Html.Raw(TratamientoRealizado.nExpedienteID.CellAttributes)>
+<span id="el_TratamientoRealizado_nExpedienteID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(TratamientoRealizado.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : TratamientoRealizado.nExpedienteID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(TratamientoRealizado.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((TratamientoRealizado.nExpedienteID.ReadOnly || TratamientoRealizado.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(TratamientoRealizado.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
+<input type="hidden" data-table="TratamientoRealizado" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@TratamientoRealizado.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@TratamientoRealizado.nExpedienteID.CurrentValue"@Html.Raw(TratamientoRealizado.nExpedienteID.EditAttributes)>
+</span>
+@Html.Raw(TratamientoRealizado.nExpedienteID.CustomMessage)</div></div>
+	</div>
+} @* nExpedienteID.Visible (end) *@
+@if (TratamientoRealizado.sDescripcionTratamiento.Visible) { // sDescripcionTratamiento.Visible (begin)
+	<div id="r_sDescripcionTratamiento" class="form-group row">
+		<label id="elh_TratamientoRealizado_sDescripcionTratamiento" for="x_sDescripcionTratamiento" class="@TratamientoRealizado_Edit.LeftColumnClass">@Html.Raw(TratamientoRealizado.sDescripcionTratamiento.Caption)@Html.Raw(TratamientoRealizado.sDescripcionTratamiento.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@TratamientoRealizado_Edit.RightColumnClass"><div @Html.Raw(TratamientoRealizado.sDescripcionTratamiento.CellAttributes)>
+<span id="el_TratamientoRealizado_sDescripcionTratamiento">
+<textarea data-table="TratamientoRealizado" data-field="x_sDescripcionTratamiento" name="x_sDescripcionTratamiento" id="x_sDescripcionTratamiento" cols="35" rows="4" placeholder="@TratamientoRealizado.sDescripcionTratamiento.PlaceHolder" @Html.Raw(TratamientoRealizado.sDescripcionTratamiento.EditAttributes)>@TratamientoRealizado.sDescripcionTratamiento.EditValue</textarea>
+</span>
+@Html.Raw(TratamientoRealizado.sDescripcionTratamiento.CustomMessage)</div></div>
+	</div>
+} @* sDescripcionTratamiento.Visible (end) *@
+@if (TratamientoRealizado.dFechaTratamiento.Visible) { // dFechaTratamiento.Visible (begin)
+	<div id="r_dFechaTratamiento" class="form-group row">
+		<label id="elh_TratamientoRealizado_dFechaTratamiento" for="x_dFechaTratamiento" class="@TratamientoRealizado_Edit.LeftColumnClass">@Html.Raw(TratamientoRealizado.dFechaTratamiento.Caption)@Html.Raw(TratamientoRealizado.dFechaTratamiento.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@TratamientoRealizado_Edit.RightColumnClass"><div @Html.Raw(TratamientoRealizado.dFechaTratamiento.CellAttributes)>
+<span id="el_TratamientoRealizado_dFechaTratamiento">
+<input type="text" data-table="TratamientoRealizado" data-field="x_dFechaTratamiento" name="x_dFechaTratamiento" id="x_dFechaTratamiento" placeholder="@TratamientoRealizado.dFechaTratamiento.PlaceHolder" value="@TratamientoRealizado.dFechaTratamiento.EditValue" @Html.Raw(TratamientoRealizado.dFechaTratamiento.EditAttributes)>
+@if (!TratamientoRealizado.dFechaTratamiento.ReadOnly && !TratamientoRealizado.dFechaTratamiento.Disabled && !TratamientoRealizado.dFechaTratamiento.EditAttrs.ContainsKey("readonly") && !TratamientoRealizado.dFechaTratamiento.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fTratamientoRealizadoedit", "x_dFechaTratamiento", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(TratamientoRealizado.dFechaTratamiento.CustomMessage)</div></div>
+	</div>
+} @* dFechaTratamiento.Visible (end) *@
+@if (TratamientoRealizado.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	<div id="r_nEstadoID" class="form-group row">
+		<label id="elh_TratamientoRealizado_nEstadoID" for="x_nEstadoID" class="@TratamientoRealizado_Edit.LeftColumnClass">@Html.Raw(TratamientoRealizado.nEstadoID.Caption)@Html.Raw(TratamientoRealizado.nEstadoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@TratamientoRealizado_Edit.RightColumnClass"><div @Html.Raw(TratamientoRealizado.nEstadoID.CellAttributes)>
+<span id="el_TratamientoRealizado_nEstadoID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(TratamientoRealizado.nEstadoID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(TratamientoRealizado.nEstadoID.ViewValue)</button>
+		<div id="dsl_x_nEstadoID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@TratamientoRealizado.nEstadoID.RadioButtonListHtml(true, "x_nEstadoID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x_nEstadoID" class="ew-template"><input type="radio" class="form-check-input" data-table="TratamientoRealizado" data-field="x_nEstadoID" data-value-separator="@TratamientoRealizado.nEstadoID.DisplayValueSeparatorAttribute" data-please-select-text="@TratamientoRealizado.nEstadoID.PleaseSelectText" name="x_nEstadoID" id="x_nEstadoID" value="{value}"@Html.Raw(TratamientoRealizado.nEstadoID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!TratamientoRealizado.nEstadoID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(TratamientoRealizado.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+@Html.Raw(TratamientoRealizado.nEstadoID.CustomMessage)</div></div>
+	</div>
+} @* nEstadoID.Visible (end) *@
+@if (TratamientoRealizado.dFechaCreacion.Visible) { // dFechaCreacion.Visible (begin)
+	<div id="r_dFechaCreacion" class="form-group row">
+		<label id="elh_TratamientoRealizado_dFechaCreacion" for="x_dFechaCreacion" class="@TratamientoRealizado_Edit.LeftColumnClass">@Html.Raw(TratamientoRealizado.dFechaCreacion.Caption)@Html.Raw(TratamientoRealizado.dFechaCreacion.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@TratamientoRealizado_Edit.RightColumnClass"><div @Html.Raw(TratamientoRealizado.dFechaCreacion.CellAttributes)>
+<span id="el_TratamientoRealizado_dFechaCreacion">
+<input type="text" data-table="TratamientoRealizado" data-field="x_dFechaCreacion" name="x_dFechaCreacion" id="x_dFechaCreacion" placeholder="@TratamientoRealizado.dFechaCreacion.PlaceHolder" value="@TratamientoRealizado.dFechaCreacion.EditValue" @Html.Raw(TratamientoRealizado.dFechaCreacion.EditAttributes)>
+@if (!TratamientoRealizado.dFechaCreacion.ReadOnly && !TratamientoRealizado.dFechaCreacion.Disabled && !TratamientoRealizado.dFechaCreacion.EditAttrs.ContainsKey("readonly") && !TratamientoRealizado.dFechaCreacion.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fTratamientoRealizadoedit", "x_dFechaCreacion", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(TratamientoRealizado.dFechaCreacion.CustomMessage)</div></div>
+	</div>
+} @* dFechaCreacion.Visible (end) *@
+</div><!-- /page* -->
+	<input type="hidden" data-table="TratamientoRealizado" data-field="x_nTratamientoRealizadoID" name="x_nTratamientoRealizadoID" id="x_nTratamientoRealizadoID" value="@TratamientoRealizado.nTratamientoRealizadoID.CurrentValue">
+@{ TratamientoRealizado_Edit.CloseRecordset(); }
+@if (!TratamientoRealizado_Edit.IsModal) {
+@:<div class="form-group row"><!-- buttons .form-group -->
+	@:<div class="@TratamientoRealizado_Edit.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("SaveBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(TratamientoRealizado_Edit.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+	@:</div><!-- /buttons offset -->
+@:</div><!-- /buttons .form-group -->
+}
+</form>
+@TratamientoRealizado_Edit.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

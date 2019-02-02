@@ -1,0 +1,378 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	AntecedenteFamiliar_List.Page_Render();
+
+	// Check action result
+	if (AntecedenteFamiliar_List.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!AntecedenteFamiliar.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "list";
+var fAntecedenteFamiliarlist = currentForm = new ew.Form("fAntecedenteFamiliarlist", "list");
+fAntecedenteFamiliarlist.formKeyCountName = "@AntecedenteFamiliar_List.FormKeyCountName";
+
+// Form_CustomValidate event
+fAntecedenteFamiliarlist.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fAntecedenteFamiliarlist.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fAntecedenteFamiliarlist.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteFamiliar_List.nExpedienteID.Lookup.ToClientList());
+fAntecedenteFamiliarlist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nExpedienteID.LookupOptions()));
+fAntecedenteFamiliarlist.lists["x_nParentescoID"] = @Html.Raw(AntecedenteFamiliar_List.nParentescoID.Lookup.ToClientList());
+fAntecedenteFamiliarlist.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nParentescoID.LookupOptions()));
+fAntecedenteFamiliarlist.lists["x_nEstadoID"] = @Html.Raw(AntecedenteFamiliar_List.nEstadoID.Lookup.ToClientList());
+fAntecedenteFamiliarlist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nEstadoID.LookupOptions()));
+
+// Form object for search
+var fAntecedenteFamiliarlistsrch = currentSearchForm = new ew.Form("fAntecedenteFamiliarlistsrch");
+
+// Filters
+fAntecedenteFamiliarlistsrch.filterList = @Html.Raw(await AntecedenteFamiliar_List.GetFilterList());
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!AntecedenteFamiliar.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (AntecedenteFamiliar_List.TotalRecords > 0 && AntecedenteFamiliar_List.ExportOptions.Visible) {
+	AntecedenteFamiliar_List.ExportOptions.Render("body");
+}
+@if (AntecedenteFamiliar_List.ImportOptions.Visible) {
+	AntecedenteFamiliar_List.ImportOptions.Render("body");
+}
+@if (AntecedenteFamiliar_List.SearchOptions.Visible) {
+	AntecedenteFamiliar_List.SearchOptions.Render("body");
+}
+@if (AntecedenteFamiliar_List.FilterOptions.Visible) {
+	AntecedenteFamiliar_List.FilterOptions.Render("body");
+}
+<div class="clearfix"></div>
+</div>
+}
+@{ AntecedenteFamiliar_List.RenderOtherOptions(); }
+@{
+if (!AntecedenteFamiliar_List.IsExport() && Empty(AntecedenteFamiliar_List.CurrentAction)) { // Begin search form
+<form name="fAntecedenteFamiliarlistsrch" id="fAntecedenteFamiliarlistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
+<div id="fAntecedenteFamiliarlistsrch-search-panel" class="ew-search-panel collapse@(!Empty(AntecedenteFamiliar_List.SearchWhere) ? " show" : " show")">
+<input type="hidden" name="cmd" value="search">
+<div class="ew-basic-search">
+<div id="xsr_1" class="ew-row d-sm-flex">
+	<div class="ew-quick-search input-group">
+	<input type="text" name="@Config.TableBasicSearch" id="@Config.TableBasicSearch" class="form-control" value="@AntecedenteFamiliar_List.BasicSearch.SessionKeyword" placeholder="@Language.Phrase("Search")">
+	<input type="hidden" name="@Config.TableBasicSearchType" id="@Config.TableBasicSearchType" value="@AntecedenteFamiliar_List.BasicSearch.SessionType">
+	<div class="input-group-append">
+		<button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+		<button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false"><span id="searchtype">@Html.Raw(AntecedenteFamiliar_List.BasicSearch.TypeNameShort)</span></button>
+		<div class="dropdown-menu dropdown-menu-right">
+			<a class="dropdown-item @((AntecedenteFamiliar_List.BasicSearch.SessionType == "") ? " active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this)">@Html.Raw(Language.Phrase("QuickSearchAuto"))</a>
+			<a class="dropdown-item @((AntecedenteFamiliar_List.BasicSearch.SessionType == "=") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'=')">@Html.Raw(Language.Phrase("QuickSearchExact"))</a>
+			<a class="dropdown-item @((AntecedenteFamiliar_List.BasicSearch.SessionType == "AND") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'AND')">@Html.Raw(Language.Phrase("QuickSearchAll"))</a>
+			<a class="dropdown-item @((AntecedenteFamiliar_List.BasicSearch.SessionType == "OR") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'OR')">@Html.Raw(Language.Phrase("QuickSearchAny"))</a>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+</form>
+} @* End search form *@
+}
+@AntecedenteFamiliar_List.ShowPageHeader()
+@AntecedenteFamiliar_List.ShowMessages()
+@if (AntecedenteFamiliar_List.TotalRecords > 0 || AntecedenteFamiliar_List.CurrentAction != "") {
+<div class="card ew-card ew-grid@(AntecedenteFamiliar_List.IsAddOrEdit ? " ew-grid-add-edit" : "") AntecedenteFamiliar">
+<form name="fAntecedenteFamiliarlist" id="fAntecedenteFamiliarlist" class="form-inline ew-form ew-list-form" action="@AppPath(CurrentPageName())" method="post">
+@if (AntecedenteFamiliar_List.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<div id="gmp_AntecedenteFamiliar" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+@if (AntecedenteFamiliar_List.TotalRecords > 0 || AntecedenteFamiliar.IsGridEdit) { // Begin If TotalRecords > 0
+<table id="tbl_AntecedenteFamiliarlist" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	AntecedenteFamiliar_List.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await AntecedenteFamiliar_List.RenderListOptions();
+
+	// Render list options (header, left)
+	AntecedenteFamiliar_List.ListOptions.Render("header", "left");
+}
+@if (AntecedenteFamiliar.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	if (AntecedenteFamiliar_List.SortUrl(AntecedenteFamiliar.nExpedienteID) == "") {
+		<th data-name="nExpedienteID" class="@AntecedenteFamiliar.nExpedienteID.HeaderCellClass"><div id="elh_AntecedenteFamiliar_nExpedienteID" class="AntecedenteFamiliar_nExpedienteID"><div class="ew-table-header-caption">@Html.Raw(AntecedenteFamiliar.nExpedienteID.Caption)</div></div></th>
+	} else {
+		<th data-name="nExpedienteID" class="@AntecedenteFamiliar.nExpedienteID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(AntecedenteFamiliar.SortUrl(AntecedenteFamiliar.nExpedienteID))',1);"><div id="elh_AntecedenteFamiliar_nExpedienteID" class="AntecedenteFamiliar_nExpedienteID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(AntecedenteFamiliar.nExpedienteID.Caption)</span><span class="ew-table-header-sort">@if (AntecedenteFamiliar.nExpedienteID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (AntecedenteFamiliar.nExpedienteID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nExpedienteID.Visible (end) *@
+@if (AntecedenteFamiliar.nParentescoID.Visible) { // nParentescoID.Visible (begin)
+	if (AntecedenteFamiliar_List.SortUrl(AntecedenteFamiliar.nParentescoID) == "") {
+		<th data-name="nParentescoID" class="@AntecedenteFamiliar.nParentescoID.HeaderCellClass"><div id="elh_AntecedenteFamiliar_nParentescoID" class="AntecedenteFamiliar_nParentescoID"><div class="ew-table-header-caption">@Html.Raw(AntecedenteFamiliar.nParentescoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nParentescoID" class="@AntecedenteFamiliar.nParentescoID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(AntecedenteFamiliar.SortUrl(AntecedenteFamiliar.nParentescoID))',1);"><div id="elh_AntecedenteFamiliar_nParentescoID" class="AntecedenteFamiliar_nParentescoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(AntecedenteFamiliar.nParentescoID.Caption)</span><span class="ew-table-header-sort">@if (AntecedenteFamiliar.nParentescoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (AntecedenteFamiliar.nParentescoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nParentescoID.Visible (end) *@
+@if (AntecedenteFamiliar.sAntecedente.Visible) { // sAntecedente.Visible (begin)
+	if (AntecedenteFamiliar_List.SortUrl(AntecedenteFamiliar.sAntecedente) == "") {
+		<th data-name="sAntecedente" class="@AntecedenteFamiliar.sAntecedente.HeaderCellClass"><div id="elh_AntecedenteFamiliar_sAntecedente" class="AntecedenteFamiliar_sAntecedente"><div class="ew-table-header-caption">@Html.Raw(AntecedenteFamiliar.sAntecedente.Caption)</div></div></th>
+	} else {
+		<th data-name="sAntecedente" class="@AntecedenteFamiliar.sAntecedente.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(AntecedenteFamiliar.SortUrl(AntecedenteFamiliar.sAntecedente))',1);"><div id="elh_AntecedenteFamiliar_sAntecedente" class="AntecedenteFamiliar_sAntecedente">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(AntecedenteFamiliar.sAntecedente.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (AntecedenteFamiliar.sAntecedente.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (AntecedenteFamiliar.sAntecedente.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sAntecedente.Visible (end) *@
+@if (AntecedenteFamiliar.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	if (AntecedenteFamiliar_List.SortUrl(AntecedenteFamiliar.nEstadoID) == "") {
+		<th data-name="nEstadoID" class="@AntecedenteFamiliar.nEstadoID.HeaderCellClass"><div id="elh_AntecedenteFamiliar_nEstadoID" class="AntecedenteFamiliar_nEstadoID"><div class="ew-table-header-caption">@Html.Raw(AntecedenteFamiliar.nEstadoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nEstadoID" class="@AntecedenteFamiliar.nEstadoID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(AntecedenteFamiliar.SortUrl(AntecedenteFamiliar.nEstadoID))',1);"><div id="elh_AntecedenteFamiliar_nEstadoID" class="AntecedenteFamiliar_nEstadoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(AntecedenteFamiliar.nEstadoID.Caption)</span><span class="ew-table-header-sort">@if (AntecedenteFamiliar.nEstadoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (AntecedenteFamiliar.nEstadoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nEstadoID.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	AntecedenteFamiliar_List.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+if (AntecedenteFamiliar_List.ExportAll && AntecedenteFamiliar_List.IsExport()) {
+	AntecedenteFamiliar_List.StopRecord = AntecedenteFamiliar_List.TotalRecords;
+} else {
+
+	// Set the last record to display
+	if (AntecedenteFamiliar_List.TotalRecords > AntecedenteFamiliar_List.StartRecord + AntecedenteFamiliar_List.DisplayRecords - 1) {
+		AntecedenteFamiliar_List.StopRecord = AntecedenteFamiliar_List.StartRecord + AntecedenteFamiliar_List.DisplayRecords - 1;
+	} else {
+		AntecedenteFamiliar_List.StopRecord = AntecedenteFamiliar_List.TotalRecords;
+	}
+}
+if (AntecedenteFamiliar_List.Recordset != null && AntecedenteFamiliar_List.Recordset.HasRows) {
+	if (!AntecedenteFamiliar_List.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= AntecedenteFamiliar_List.StartRecord - 1; i++) { // Move to first record
+			if (await AntecedenteFamiliar_List.Recordset.ReadAsync()) {
+				AntecedenteFamiliar_List.RecordCount++;
+			}
+		}
+	} else {
+		AntecedenteFamiliar_List.RecordCount = AntecedenteFamiliar_List.StartRecord - 1;
+	}
+} else if (!AntecedenteFamiliar_List.AllowAddDeleteRow && AntecedenteFamiliar_List.StopRecord == 0) {
+	AntecedenteFamiliar_List.StopRecord = AntecedenteFamiliar_List.GridAddRowCount;
+}
+
+// Initialize aggregate
+AntecedenteFamiliar_List.RowType = Config.RowTypeAggregateInit;
+AntecedenteFamiliar_List.ResetAttributes();
+await AntecedenteFamiliar_List.RenderRow();
+
+// Output data rows
+bool eof = (AntecedenteFamiliar_List.Recordset == null); // DN
+while (AntecedenteFamiliar_List.RecordCount < AntecedenteFamiliar_List.StopRecord) { // Begin While
+	if (!AntecedenteFamiliar_List.IsGridAdd && !eof) { // DN
+		eof = !await AntecedenteFamiliar_List.Recordset.ReadAsync();
+	}
+	AntecedenteFamiliar_List.RecordCount++;
+	if (AntecedenteFamiliar_List.RecordCount >= AntecedenteFamiliar_List.StartRecord) {
+		AntecedenteFamiliar_List.RowCnt++;
+
+		// Set up key count
+		AntecedenteFamiliar_List.KeyCount = ConvertToInt(AntecedenteFamiliar_List.RowIndex);
+
+		// Init row class and style
+		AntecedenteFamiliar_List.ResetAttributes();
+		AntecedenteFamiliar_List.CssClass = "";
+		if (AntecedenteFamiliar_List.IsGridAdd) {
+		} else {
+			await AntecedenteFamiliar_List.LoadRowValues(AntecedenteFamiliar_List.Recordset); // Load row values
+		}
+		AntecedenteFamiliar_List.RowType = Config.RowTypeView; // Render view
+
+		// Set up row id / data-rowindex
+		AntecedenteFamiliar_List.RowAttrs.Add("data-rowindex", Convert.ToString(AntecedenteFamiliar_List.RowCnt));
+		AntecedenteFamiliar_List.RowAttrs.Add("id", "r" + Convert.ToString(AntecedenteFamiliar_List.RowCnt) + "_AntecedenteFamiliar");
+		AntecedenteFamiliar_List.RowAttrs.Add("data-rowtype", Convert.ToString(AntecedenteFamiliar_List.RowType));
+
+		// Render row
+		await AntecedenteFamiliar_List.RenderRow();
+
+		// Render list options
+		await AntecedenteFamiliar_List.RenderListOptions();
+	<tr @Html.Raw(AntecedenteFamiliar_List.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		AntecedenteFamiliar_List.ListOptions.Render("body", "left", AntecedenteFamiliar_List.RowCnt);
+	}
+	@if (AntecedenteFamiliar.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+		<td data-name="nExpedienteID"@Html.Raw(AntecedenteFamiliar.nExpedienteID.CellAttributes)>
+<span id="el@(AntecedenteFamiliar_List.RowCnt)_AntecedenteFamiliar_nExpedienteID" class="AntecedenteFamiliar_nExpedienteID">
+<span @Html.Raw(AntecedenteFamiliar.nExpedienteID.ViewAttributes)>
+@Html.Raw(AntecedenteFamiliar.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	} @* nExpedienteID.Visible (end) *@
+	@if (AntecedenteFamiliar.nParentescoID.Visible) { // nParentescoID.Visible (begin)
+		<td data-name="nParentescoID"@Html.Raw(AntecedenteFamiliar.nParentescoID.CellAttributes)>
+<span id="el@(AntecedenteFamiliar_List.RowCnt)_AntecedenteFamiliar_nParentescoID" class="AntecedenteFamiliar_nParentescoID">
+<span @Html.Raw(AntecedenteFamiliar.nParentescoID.ViewAttributes)>
+@Html.Raw(AntecedenteFamiliar.nParentescoID.GetViewValue())</span>
+</span>
+</td>
+	} @* nParentescoID.Visible (end) *@
+	@if (AntecedenteFamiliar.sAntecedente.Visible) { // sAntecedente.Visible (begin)
+		<td data-name="sAntecedente"@Html.Raw(AntecedenteFamiliar.sAntecedente.CellAttributes)>
+<span id="el@(AntecedenteFamiliar_List.RowCnt)_AntecedenteFamiliar_sAntecedente" class="AntecedenteFamiliar_sAntecedente">
+<span @Html.Raw(AntecedenteFamiliar.sAntecedente.ViewAttributes)>
+@Html.Raw(AntecedenteFamiliar.sAntecedente.GetViewValue())</span>
+</span>
+</td>
+	} @* sAntecedente.Visible (end) *@
+	@if (AntecedenteFamiliar.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+		<td data-name="nEstadoID"@Html.Raw(AntecedenteFamiliar.nEstadoID.CellAttributes)>
+<span id="el@(AntecedenteFamiliar_List.RowCnt)_AntecedenteFamiliar_nEstadoID" class="AntecedenteFamiliar_nEstadoID">
+<span @Html.Raw(AntecedenteFamiliar.nEstadoID.ViewAttributes)>
+@Html.Raw(AntecedenteFamiliar.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	} @* nEstadoID.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		AntecedenteFamiliar_List.ListOptions.Render("body", "right", AntecedenteFamiliar_List.RowCnt);
+	}
+	</tr>
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+@if (Empty(AntecedenteFamiliar_List.CurrentAction)) {
+<input type="hidden" name="action" id="action" value="">
+}
+</div><!-- /.ew-grid-middle-panel -->
+</form><!-- /.ew-list-form -->
+@{ AntecedenteFamiliar_List.CloseRecordset(); }
+		@if (!AntecedenteFamiliar.IsExport()) {
+		<div class="card-footer ew-grid-lower-panel">
+		@if (!AntecedenteFamiliar_List.IsGridAdd) {
+			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
+@{ AntecedenteFamiliar_List.Pager = AntecedenteFamiliar_List.Pager ?? new PrevNextPager(AntecedenteFamiliar_List.StartRecord, AntecedenteFamiliar_List.DisplayRecords, AntecedenteFamiliar_List.TotalRecords, AntecedenteFamiliar_List.AutoHidePager); }
+@if (AntecedenteFamiliar_List.Pager.RecordCount > 0 && AntecedenteFamiliar_List.Pager.Visible) {
+<div class="ew-pager">
+<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
+<div class="ew-prev-next"><div class="input-group input-group-sm">
+<div class="input-group-prepend">
+<!--first page button-->
+	@if (AntecedenteFamiliar_List.Pager.FirstButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(AntecedenteFamiliar_List.PageUrl)start=@AntecedenteFamiliar_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
+	}
+<!--previous page button-->
+	@if (AntecedenteFamiliar_List.Pager.PrevButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(AntecedenteFamiliar_List.PageUrl)start=@AntecedenteFamiliar_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
+	}
+</div>
+<!--current page number-->
+	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@AntecedenteFamiliar_List.Pager.CurrentPageNumber">
+<div class="input-group-append">
+<!--next page button-->
+	@if (AntecedenteFamiliar_List.Pager.NextButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(AntecedenteFamiliar_List.PageUrl)start=@AntecedenteFamiliar_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
+	}
+<!--last page button-->
+	@if (AntecedenteFamiliar_List.Pager.LastButton.Enabled) {
+	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(AntecedenteFamiliar_List.PageUrl)start=@AntecedenteFamiliar_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
+	} else {
+	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
+	}
+</div>
+</div>
+</div>
+<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@AntecedenteFamiliar_List.Pager.PageCount</span>
+<div class="clearfix"></div>
+</div>
+}
+@if (AntecedenteFamiliar_List.Pager.RecordCount > 0) {
+	<div class="ew-pager ew-rec">
+		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(AntecedenteFamiliar_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(AntecedenteFamiliar_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(AntecedenteFamiliar_List.Pager.RecordCount)</span>
+	</div>
+}
+			</form>
+		}
+		<div class="ew-list-other-options">
+		@AntecedenteFamiliar_List.OtherOptions.RenderBody("bottom")
+		</div>
+		<div class="clearfix"></div>
+		</div>
+		}
+</div><!-- /.ew-grid -->
+}
+@if (AntecedenteFamiliar_List.TotalRecords <= 0 && AntecedenteFamiliar_List.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@AntecedenteFamiliar_List.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@AntecedenteFamiliar_List.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!AntecedenteFamiliar.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

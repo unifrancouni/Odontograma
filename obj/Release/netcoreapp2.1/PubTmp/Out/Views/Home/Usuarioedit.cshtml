@@ -1,0 +1,181 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Usuario_Edit.Page_Render();
+
+	// Check action result
+	if (Usuario_Edit.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "edit";
+var fUsuarioedit = currentForm = new ew.Form("fUsuarioedit", "edit");
+
+// Validate form
+fUsuarioedit.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (Usuario_Edit.nUsuarioId.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nUsuarioId");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Usuario.nUsuarioId.RequiredErrorMessage.Replace("%s", Usuario.nUsuarioId.Caption)))");
+		</text>
+	}
+	@if (Usuario_Edit.sEmail.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sEmail");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Usuario.sEmail.RequiredErrorMessage.Replace("%s", Usuario.sEmail.Caption)))");
+		</text>
+	}
+	@if (Usuario_Edit.sPassword.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sPassword");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Usuario.sPassword.RequiredErrorMessage.Replace("%s", Usuario.sPassword.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_sPassword");
+		if (elm && $(elm).hasClass("ew-password-strength") && !$(elm).data("validated"))
+			return this.onError(elm, ew.language.phrase("PasswordTooSimple"));
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fUsuarioedit.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fUsuarioedit.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+// Form object for search
+
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Usuario_Edit.ShowPageHeader()
+@Usuario_Edit.ShowMessages()
+<form name="fUsuarioedit" id="fUsuarioedit" class="@Usuario_Edit.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (Usuario_Edit.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="update">
+@if (Usuario_Edit.IsModal) {
+<input type="hidden" name="modal" value="@ConvertToInt(Usuario_Edit.IsModal)">
+}
+<!-- Fields to prevent google autofill -->
+<input class="d-none" type="text" name="@Encrypt(Random())">
+<input class="d-none" type="password" name="@Encrypt(Random())">
+<div class="ew-edit-div"><!-- page* -->
+@if (Usuario.nUsuarioId.Visible) { // nUsuarioId.Visible (begin)
+	<div id="r_nUsuarioId" class="form-group row">
+		<label id="elh_Usuario_nUsuarioId" class="@Usuario_Edit.LeftColumnClass">@Html.Raw(Usuario.nUsuarioId.Caption)@Html.Raw(Usuario.nUsuarioId.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Usuario_Edit.RightColumnClass"><div @Html.Raw(Usuario.nUsuarioId.CellAttributes)>
+<span id="el_Usuario_nUsuarioId">
+<span @Html.Raw(Usuario.nUsuarioId.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(Usuario.nUsuarioId.EditValue))"></span>
+</span>
+<input type="hidden" data-table="Usuario" data-field="x_nUsuarioId" name="x_nUsuarioId" id="x_nUsuarioId" value="@Usuario.nUsuarioId.CurrentValue">
+@Html.Raw(Usuario.nUsuarioId.CustomMessage)</div></div>
+	</div>
+} @* nUsuarioId.Visible (end) *@
+@if (Usuario.sEmail.Visible) { // sEmail.Visible (begin)
+	<div id="r_sEmail" class="form-group row">
+		<label id="elh_Usuario_sEmail" for="x_sEmail" class="@Usuario_Edit.LeftColumnClass">@Html.Raw(Usuario.sEmail.Caption)@Html.Raw(Usuario.sEmail.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Usuario_Edit.RightColumnClass"><div @Html.Raw(Usuario.sEmail.CellAttributes)>
+<span id="el_Usuario_sEmail">
+<input type="text" data-table="Usuario" data-field="x_sEmail" name="x_sEmail" id="x_sEmail" size="30" maxlength="200" placeholder="@Usuario.sEmail.PlaceHolder" value="@Usuario.sEmail.EditValue" @Html.Raw(Usuario.sEmail.EditAttributes)>
+</span>
+@Html.Raw(Usuario.sEmail.CustomMessage)</div></div>
+	</div>
+} @* sEmail.Visible (end) *@
+@if (Usuario.sPassword.Visible) { // sPassword.Visible (begin)
+	<div id="r_sPassword" class="form-group row">
+		<label id="elh_Usuario_sPassword" for="x_sPassword" class="@Usuario_Edit.LeftColumnClass">@Html.Raw(Usuario.sPassword.Caption)@Html.Raw(Usuario.sPassword.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Usuario_Edit.RightColumnClass"><div @Html.Raw(Usuario.sPassword.CellAttributes)>
+<span id="el_Usuario_sPassword">
+<input type="password" data-password-strength="pst_sPassword" data-table="Usuario" data-field="x_sPassword" name="x_sPassword" id="x_sPassword" value="@Usuario.sPassword.EditValue" size="30" maxlength="100" placeholder="@Usuario.sPassword.PlaceHolder"@Html.Raw(Usuario.sPassword.EditAttributes)>
+<div class="progress ew-password-strength-bar form-text mt-1 d-none" id="pst_sPassword">
+	<div class="progress-bar" role="progressbar"></div>
+</div>
+</span>
+@Html.Raw(Usuario.sPassword.CustomMessage)</div></div>
+	</div>
+} @* sPassword.Visible (end) *@
+</div><!-- /page* -->
+@{ Usuario_Edit.CloseRecordset(); }
+@if (!Usuario_Edit.IsModal) {
+@:<div class="form-group row"><!-- buttons .form-group -->
+	@:<div class="@Usuario_Edit.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("SaveBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Usuario_Edit.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+	@:</div><!-- /buttons offset -->
+@:</div><!-- /buttons .form-group -->
+}
+</form>
+@Usuario_Edit.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
