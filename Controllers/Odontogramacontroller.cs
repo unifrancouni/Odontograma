@@ -25,19 +25,73 @@ namespace AspNetMaker2019.Controllers
 {
 
 	// Partial class
-	public class OdontogramaController : Controller
+	public partial class HomeController : Controller
 	{
 
-        public ActionResult List()
+		// list
+		[Route("Odontogramalist/{nOdontogramaID?}")]
+		[Route("Home/Odontogramalist/{nOdontogramaID?}")]
+		public async Task<IActionResult> Odontogramalist()
 		{
-			return View();
+
+			// Create page object
+			Odontograma_List = new _Odontograma_List(this);
+			Odontograma_List.Cache = _cache;
+
+			// Run the page
+			return await Odontograma_List.Run();
 		}
 
-        [HttpPost]
-        public ActionResult Simbolos()
-        {
-            return Json(1);
-        }
+		// add
+		[Route("Odontogramaadd/{nOdontogramaID?}")]
+		[Route("Home/Odontogramaadd/{nOdontogramaID?}")]
+		public async Task<IActionResult> Odontogramaadd()
+		{
 
-    }
+			// Create page object
+			Odontograma_Add = new _Odontograma_Add(this);
+
+			// Run the page
+			return await Odontograma_Add.Run();
+		}
+
+		// view
+		[Route("Odontogramaview/{nOdontogramaID?}")]
+		[Route("Home/Odontogramaview/{nOdontogramaID?}")]
+		public async Task<IActionResult> Odontogramaview()
+		{
+
+			// Create page object
+			Odontograma_View = new _Odontograma_View(this);
+
+			// Run the page
+			return await Odontograma_View.Run();
+		}
+
+		// edit
+		[Route("Odontogramaedit/{nOdontogramaID?}")]
+		[Route("Home/Odontogramaedit/{nOdontogramaID?}")]
+		public async Task<IActionResult> Odontogramaedit()
+		{
+
+			// Create page object
+			Odontograma_Edit = new _Odontograma_Edit(this);
+
+			// Run the page
+			return await Odontograma_Edit.Run();
+		}
+
+		// delete
+		[Route("Odontogramadelete/{nOdontogramaID?}")]
+		[Route("Home/Odontogramadelete/{nOdontogramaID?}")]
+		public async Task<IActionResult> Odontogramadelete()
+		{
+
+			// Create page object
+			Odontograma_Delete = new _Odontograma_Delete(this);
+
+			// Run the page
+			return await Odontograma_Delete.Run();
+		}
+	}
 }

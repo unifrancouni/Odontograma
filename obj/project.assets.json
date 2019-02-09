@@ -4568,6 +4568,15 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
+      },
+      "MicroDB/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/MicroDB.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MicroDB.dll": {}
+        }
       }
     }
   },
@@ -12386,6 +12395,11 @@
         "system.xml.xpath.xdocument.4.3.0.nupkg.sha512",
         "system.xml.xpath.xdocument.nuspec"
       ]
+    },
+    "MicroDB/1.0.0": {
+      "type": "project",
+      "path": "../MicroDB/MicroDB.csproj",
+      "msbuildProject": "../MicroDB/MicroDB.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -12394,6 +12408,7 @@
       "Dapper >= 1.50.5",
       "HtmlSanitizer >= 4.0.199",
       "Magick.NET-Q16-AnyCPU >= 7.10.0",
+      "MicroDB >= 1.0.0",
       "Microsoft.AspNetCore.App >= 2.1.1",
       "Microsoft.NETCore.App >= 2.1.0",
       "Microsoft.VisualStudio.Web.BrowserLink >= 2.1.1",
@@ -12433,7 +12448,11 @@
       },
       "frameworks": {
         "netcoreapp2.1": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\User\\Documents\\ASPNETMaker\\Projects\\MicroDB\\MicroDB.csproj": {
+              "projectPath": "C:\\Users\\User\\Documents\\ASPNETMaker\\Projects\\MicroDB\\MicroDB.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

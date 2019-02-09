@@ -9,3 +9,6 @@ C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Debug\netcoreapp2.1\prjS
 C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\bin\Debug\netcoreapp2.1\AspNetMaker2019.pdb
 C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Debug\netcoreapp2.1\AspNetMaker2019.dll
 C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Debug\netcoreapp2.1\AspNetMaker2019.pdb
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\bin\Debug\netcoreapp2.1\MicroDB.dll
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\bin\Debug\netcoreapp2.1\MicroDB.pdb
+C:\Users\User\Documents\ASPNETMaker\Projects\SIGECO\obj\Debug\netcoreapp2.1\prjSIGECO.csproj.CopyComplete

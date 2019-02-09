@@ -23,7 +23,7 @@ namespace AspNetMaker2019.Models {
 			sideMenu.AddMenuItem(2, "mi_AntecedenteFamiliar", Language.MenuPhrase("2", "MenuText"), "AntecedenteFamiliarlist", 78, "", true, false, false, "", "", false);
 			sideMenu.AddMenuItem(79, "mci_Examenes", Language.MenuPhrase("79", "MenuText"), "", 52, "", true, false, true, "", "", false);
 			sideMenu.AddMenuItem(6, "mi_ExamenComplementario", Language.MenuPhrase("6", "MenuText"), "ExamenComplementariolist", 79, "", true, false, false, "", "", false);
-			sideMenu.AddMenuItem(82, "mci_Odontograma", Language.MenuPhrase("82", "MenuText"), "Odontograma/View", 79, "", true, false, true, "fa fa-table", "", false);
+			sideMenu.AddMenuItem(8, "mi_Odontograma", Language.MenuPhrase("8", "MenuText"), "Odontogramalist", 79, "", true, false, false, "", "", false);
 			sideMenu.AddMenuItem(83, "mci_Periodontorama", Language.MenuPhrase("83", "MenuText"), "", 79, "", true, false, true, "fa fa-table", "", false);
 			sideMenu.AddMenuItem(84, "mci_Placagrama", Language.MenuPhrase("84", "MenuText"), "", 79, "", true, false, true, "fa fa-table", "", false);
 			sideMenu.AddMenuItem(80, "mci_Tratamientos", Language.MenuPhrase("80", "MenuText"), "", 52, "", true, false, true, "", "", false);
@@ -31,6 +31,8 @@ namespace AspNetMaker2019.Models {
 			sideMenu.AddMenuItem(85, "mci_Citas", Language.MenuPhrase("85", "MenuText"), "", -1, "", true, false, true, "fa fa-calendar", "", false);
 			sideMenu.AddMenuItem(4, "mi_Cita", Language.MenuPhrase("4", "MenuText"), "Citalist", 85, "", true, false, false, "fa fa-table", "", false);
 			sideMenu.AddMenuItem(86, "mci_Calendario", Language.MenuPhrase("86", "MenuText"), "Calendar", 85, "", true, false, true, "fa fa-calendar", "", false);
+			sideMenu.AddMenuItem(11, "mi_Periodontograma", Language.MenuPhrase("11", "MenuText"), "Periodontogramalist", -1, "", true, false, false, "", "", false);
+			sideMenu.AddMenuItem(13, "mi_Placagrama", Language.MenuPhrase("13", "MenuText"), "Placagramalist", -1, "", true, false, false, "", "", false);
 			sideMenu.AddMenuItem(19, "mi_Usuario", Language.MenuPhrase("19", "MenuText"), "Usuariolist", -1, "", true, false, false, "", "", false);
 			SideMenu = sideMenu.ToScript();
 		}

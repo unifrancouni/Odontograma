@@ -1,0 +1,534 @@
+﻿<html style="height: auto; overflow-y: auto;">
+<head>
+    <title>SIGECO</title>
+    <meta charset="utf-8">
+    <link href="/adminlte3/css/adminlte.css" rel="stylesheet" type="text/css">
+    <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"><!-- Optional font -->
+    <link href="/colorbox/colorbox.css" rel="stylesheet" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/css/prjSIGECO.css" rel="stylesheet" type="text/css">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/jquery.ui.widget.js"></script>
+    <script src="/js/pStrength.jquery.js"></script>
+    <script src="/bootstrap4/js/bootstrap.bundle.min.js"></script>
+    <script src="/adminlte3/js/adminlte.js"></script>
+    <script src="/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/js/load-image.all.min.js"></script>
+    <script src="/js/typeahead.jquery.js"></script>
+    <script src="/colorbox/jquery.colorbox-min.js"></script>
+    <script src="/js/mobile-detect.min.js"></script>
+    <script src="/moment/moment.min.js"></script>
+    <script src="/js/jsrender.min.js"></script>
+    <script src="/js/ew.js"></script>
+    <script>
+        jQuery.extend(ew, {
+            LANGUAGE_ID: "en",
+            DATE_SEPARATOR: "/",
+            TIME_SEPARATOR: ":",
+            DATE_FORMAT: "mm/dd/yyyy", // Default date format
+            DATE_FORMAT_ID: 6, // Default date format ID
+            DATETIME_WITHOUT_SECONDS: false, // Date/Time without seconds
+            DECIMAL_POINT: ".",
+            THOUSANDS_SEP: ",",
+            MIN_PASSWORD_STRENGTH: 60,
+            SESSION_TIMEOUT: 1170, // Session timeout time (seconds)
+            SESSION_TIMEOUT_COUNTDOWN: 60, // Count down time to session timeout (seconds)
+            SESSION_KEEP_ALIVE_INTERVAL: 0, // Keep alive interval (seconds)
+            IS_LOGGEDIN: false, // Is logged in
+            IS_SYS_ADMIN: false, // Is sys admin
+            CURRENT_USER_NAME: "", // Current user name
+            IS_AUTOLOGIN: false, // Is logged in with option "Auto login until I logout explicitly"
+            TIMEOUT_URL: "/Index", // Timeout URL
+            API_URL: "/api/", // API file name
+            API_ACTION_NAME: "action", // API action name
+            API_OBJECT_NAME: "table", // API object name
+            API_FIELD_NAME: "field", // API field name
+            API_KEY_NAME: "key", // API key name
+            API_LIST_ACTION: "list", // API list action
+            API_VIEW_ACTION: "view", // API view action
+            API_ADD_ACTION: "add", // API add action
+            API_EDIT_ACTION: "edit", // API edit action
+            API_DELETE_ACTION: "delete", // API delete action
+            API_LOGIN_ACTION: "login", // API login action
+            API_FILE_ACTION: "file", // API file action
+            API_UPLOAD_ACTION: "upload", // API upload action
+            API_JQUERY_UPLOAD_ACTION: "jupload", // API jQuery upload action
+            API_SESSION_ACTION: "session", // API get session action
+            API_LOOKUP_ACTION: "lookup", // API lookup action
+            API_LOOKUP_TABLE: "linkTable", // API lookup table name
+            API_PROGRESS_ACTION: "progress", // API progress action
+            LOOKUP_FILTER_VALUE_SEPARATOR: ",", // Lookup filter value separator
+            AUTO_SUGGEST_MAX_ENTRIES: 10, // Auto-Suggest max entries
+            DISABLE_BUTTON_ON_SUBMIT: true,
+            PATH_BASE: "/", // Path base
+            IMAGE_FOLDER: "/images/", // Image folder
+            SESSION_ID: "2LcxJgDTGjzqL0w3nFdkyqqYC3nv520TsrO0DDi87dPVICFNCbYHNg", // Session ID
+            UPLOAD_URL: "/api/", // Upload URL
+            UPLOAD_TYPE: "POST", // Upload type
+            UPLOAD_THUMBNAIL_WIDTH: 200, // Upload thumbnail width
+            UPLOAD_THUMBNAIL_HEIGHT: 0, // Upload thumbnail height
+            MULTIPLE_UPLOAD_SEPARATOR: ",", // Upload multiple separator
+            IMPORT_FILE_ALLOWED_EXT: "csv,xlsx", // Import file allowed extensions
+            USE_COLORBOX: true,
+            USE_JAVASCRIPT_MESSAGE: false,
+            PROJECT_STYLESHEET_FILENAME: "/css/prjSIGECO.css", // Project stylesheet
+            PDF_STYLESHEET_FILENAME: "/css/ewpdf.css", // PDF stylesheet
+            TOKEN_NAME: "__RequestVerificationToken", // DN
+            ANTIFORGERY_TOKEN: "CfDJ8KfNMpSVy8VKowx3Z4qYLHZHt8rKGYtvBqn7wYu-ZPO3gJtQYWlFImyCAqXcCxXKE2d9LG0HgD21seh35Dk9InSTTeLAuajd640Hu-wHqEauU5jBxeg7H5PNgMTz2E--CI6JsXomOsSnul8rGX-dVOQ",
+            CSS_FLIP: false,
+            LAZY_LOAD: true,
+            RESET_HEIGHT: true,
+            DEBUG_ENABLED: false,
+            SEARCH_FILTER_OPTION: "Client",
+            OPTION_HTML_TEMPLATE: "<span class=\"ew-option\">{value}</span>"
+        });
+    </script>
+    <script src="/js/userfn.js"></script>
+    <meta name="generator" content="SIGECO">
+</head>
+<body style="height: auto;" dir="ltr">
+    <div class="wrapper ew-layout">
+        <!-- Main Header -->
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-dark bg-info">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav" id="ew-navbar">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-widget="pushmenu"><i class="fa fa-bars"></i></a>
+                </li>
+            </ul>
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto" id="ew-navbar-right"></ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-info" style="height: 636px; min-height: 567.04px;">
+            <!-- Brand Logo //** Note: Only licensed users are allowed to change the logo ** -->
+            <a class="brand-link" href="#">
+                <span class="brand-text">SIGECO 2019</span>
+            </a>
+            <!-- Sidebar -->
+            <div class="slimScrollDiv" style="width: auto; height: 567.04px; overflow: hidden; position: relative;">
+                <div class="sidebar" style="width: auto; height: 567.04px; overflow: hidden;">
+                    <!-- Sidebar Menu -->
+                    <nav class="mt-2" id="ew-menu">
+                        <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-widget="treeview" data-accordion="true">
+
+
+                            <li class="nav-item has-treeview" id="26" name="mci_Básicos">
+
+                                <a class="nav-link" href="#">
+                                    <i class="nav-icon fa fa-sitemap"></i>
+                                    <p>
+                                        <span>Básicos</span>
+
+                                        <i class="right fa fa-angle-left"></i>
+
+
+                                    </p>
+                                </a>
+
+
+                                <ul class="nav nav-treeview" "=" ">
+
+
+                                    <li class="nav-item" id="3" name="mi_Catalogo">
+
+                                        <a class="nav-link" href="/Catalogolist">
+
+                                            <p>
+                                                <span>Catálogo</span>
+
+
+
+                                            </p>
+                                        </a>
+
+
+                                    </li>
+
+                                    <li class="nav-item" id="17" name="mi_Tratamiento">
+
+                                        <a class="nav-link" href="/Tratamientolist">
+
+                                            <p>
+                                                <span>Catálogo Tratamientos</span>
+
+
+
+                                            </p>
+                                        </a>
+
+
+                                    </li>
+
+
+                                </ul>
+
+                            </li>
+
+                            <li class="nav-item has-treeview" id="52" name="mci_Pacientes">
+
+                                <a class="nav-link" href="#">
+                                    <i class="nav-icon fa fa-users"></i>
+                                    <p>
+                                        <span>Pacientes</span>
+
+                                        <i class="right fa fa-angle-left"></i>
+
+
+                                    </p>
+                                </a>
+
+
+                                <ul class="nav nav-treeview" "=" ">
+
+
+                                    <li class="nav-item" id="10" name="mi_Paciente">
+
+                                        <a class="nav-link" href="/Pacientelist">
+                                            <i class="nav-icon fa fa-user"></i>
+                                            <p>
+                                                <span>Paciente</span>
+
+
+
+                                            </p>
+                                        </a>
+
+
+                                    </li>
+
+                                    <li class="nav-item has-treeview" id="78" name="mci_Antecedentes">
+
+                                        <a class="nav-link" href="#">
+
+                                            <p>
+                                                <span>Antecedentes</span>
+
+                                                <i class="right fa fa-angle-left"></i>
+
+
+                                            </p>
+                                        </a>
+
+
+                                        <ul class="nav nav-treeview" "=" ">
+
+
+                                            <li class="nav-item" id="1" name="mi_AntecedenteDental">
+
+                                                <a class="nav-link" href="/AntecedenteDentallist">
+
+                                                    <p>
+                                                        <span>Antecedente Dental</span>
+
+
+
+                                                    </p>
+                                                </a>
+
+
+                                            </li>
+
+                                            <li class="nav-item" id="2" name="mi_AntecedenteFamiliar">
+
+                                                <a class="nav-link" href="/AntecedenteFamiliarlist">
+
+                                                    <p>
+                                                        <span>Antecedente Familiar</span>
+
+
+
+                                                    </p>
+                                                </a>
+
+
+                                            </li>
+
+
+                                        </ul>
+
+                                    </li>
+
+                                    <li class="nav-item has-treeview" id="79" name="mci_Examenes">
+
+                                        <a class="nav-link" href="#">
+
+                                            <p>
+                                                <span>Examenes</span>
+
+                                                <i class="right fa fa-angle-left"></i>
+
+
+                                            </p>
+                                        </a>
+
+
+                                        <ul class="nav nav-treeview" "=" ">
+
+
+                                            <li class="nav-item" id="6" name="mi_ExamenComplementario">
+
+                                                <a class="nav-link" href="/ExamenComplementariolist">
+
+                                                    <p>
+                                                        <span>Examen Complementario</span>
+
+
+
+                                                    </p>
+                                                </a>
+
+
+                                            </li>
+
+                                            <li class="nav-item active current" id="82" name="mci_Odontograma">
+
+                                                <a class="nav-link active" href="/Odontograma/List">
+                                                    <i class="nav-icon fa fa-table"></i>
+                                                    <p>
+                                                        <span>Odontograma</span>
+
+
+
+                                                    </p>
+                                                </a>
+
+
+                                            </li>
+
+
+                                        </ul>
+
+                                    </li>
+
+                                    <li class="nav-item has-treeview" id="80" name="mci_Tratamientos">
+
+                                        <a class="nav-link" href="#">
+
+                                            <p>
+                                                <span>Tratamientos</span>
+
+                                                <i class="right fa fa-angle-left"></i>
+
+
+                                            </p>
+                                        </a>
+
+
+                                        <ul class="nav nav-treeview" "=" ">
+
+
+                                            <li class="nav-item" id="18" name="mi_TratamientoRealizado">
+
+                                                <a class="nav-link" href="/TratamientoRealizadolist">
+
+                                                    <p>
+                                                        <span>Tratamiento Realizado</span>
+
+
+
+                                                    </p>
+                                                </a>
+
+
+                                            </li>
+
+
+                                        </ul>
+
+                                    </li>
+
+
+                                </ul>
+
+                            </li>
+
+                            <li class="nav-item has-treeview" id="85" name="mci_Citas">
+
+                                <a class="nav-link" href="#">
+                                    <i class="nav-icon fa fa-calendar"></i>
+                                    <p>
+                                        <span>Citas</span>
+
+                                        <i class="right fa fa-angle-left"></i>
+
+
+                                    </p>
+                                </a>
+
+
+                                <ul class="nav nav-treeview" "=" ">
+
+
+                                    <li class="nav-item" id="4" name="mi_Cita">
+
+                                        <a class="nav-link" href="/Citalist">
+                                            <i class="nav-icon fa fa-table"></i>
+                                            <p>
+                                                <span>Registro de Citas</span>
+
+
+
+                                            </p>
+                                        </a>
+
+
+                                    </li>
+
+                                    <li class="nav-item" id="86" name="mci_Calendario">
+
+                                        <a class="nav-link" href="/Calendar">
+                                            <i class="nav-icon fa fa-calendar"></i>
+                                            <p>
+                                                <span>Calendario</span>
+
+
+
+                                            </p>
+                                        </a>
+
+
+                                    </li>
+
+
+                                </ul>
+
+                            </li>
+
+                            <li class="nav-item" id="19" name="mi_Usuario">
+
+                                <a class="nav-link" href="#">
+
+                                    <p>
+                                        <span>Usuario</span>
+
+
+
+                                    </p>
+                                </a>
+
+
+                            </li>
+
+
+                        </ul>
+                    </nav>
+                    <!-- /.sidebar-menu -->
+                </div><div class="slimScrollBar" style="background: rgb(0, 0, 0); border-radius: 7px; top: -0.04px; width: 7px; height: 567.08px; right: 1px; display: none; position: absolute; z-index: 99; opacity: 0.4;"></div><div class="slimScrollRail" style="background: rgb(51, 51, 51); border-radius: 7px; top: 0px; width: 7px; height: 100%; right: 1px; display: none; position: absolute; z-index: 90; opacity: 0.2;"></div>
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper" style="height: auto; min-height: 452.44px;">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 text-dark">Usuario <small class="text-muted"></small></h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right ew-breadcrumbs"><li class="breadcrumb-item" id="ew-breadcrumb1"><a title="" class="ew-home" href="/Pacientelist" data-original-title="P&amp;#225;gina principal"><i class="fa fa-home ew-icon" data-caption="Página principal" data-phrase="HomePage"></i></a></li><li class="breadcrumb-item active" id="ew-breadcrumb2"><span id="ew-page-caption">Usuario</span></li></ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+            <!-- Main content -->
+            <section class="content">
+                @RenderBody()
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- Main Footer -->
+        <footer class="main-footer fade show">
+            <!-- ** Note: Only licensed users are allowed to change the copyright statement. ** -->
+            <div class="ew-footer-text">SIGECO 2019. Todos derechos Reservados</div>
+            <div class="float-right d-none d-sm-inline-block"></div>
+        </footer>
+    </div>
+    <!-- ./wrapper -->
+    <!-- Navbar -->
+    <script class="ew-js-template" id="navbar-menu-items" type="text/html" data-name="navbar" data-target="#ew-navbar" data-method="appendTo" data-data="navbar">
+        {{if items}}
+        {{for items}}
+        <li id="{{:id}}" name="{{:name}}" class="{{if parentId == -1}}nav-item ew-navbar-item{{/if}}{{if isHeader && parentId > -1}}dropdown-header{{/if}}{{if items}} dropdown{{/if}}{{if items && parentId != -1}} dropdown-submenu{{/if}} d-none d-md-block">
+            {{if isHeader && parentId > -1}}
+            {{if icon}}<i class="{{:icon}}"></i>{{/if}}
+            <span>{{:text}}</span>
+            {{else}}
+            <a href="{{:href}}" {{if target}} target="{{:target}}" {{/if}} {{if attrs}} {{:attrs}} {{/if}} class="{{if parentId == -1}}nav-link{{else}}dropdown-item{{/if}}{{if active}} active{{/if}}{{if items}} dropdown-toggle ew-dropdown{{/if}}" {{if items}} role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" {{/if}}>
+                {{if icon}}<i class="{{:icon}}"></i>{{/if}}
+                <span>{{:text}}</span>
+            </a>
+            {{/if}}
+            {{if items}}
+            <ul class="dropdown-menu">
+                {{include tmpl="#navbar-menu-items"/}}
+            </ul>
+            {{/if}}
+        </li>
+        {{/for}}
+        {{/if}}
+    </script>
+    <!-- Sidebar -->
+    <script class="ew-js-template" type="text/html" data-name="menu" data-target="#ew-menu" data-data="menu" data-jsv-tmpl="jsvTmpl">
+        {{if items}}
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="{{:accordion}}">
+            {{include tmpl="#menu-items"/}}
+        </ul>
+        {{/if}}
+    </script>
+    <script id="menu-items" type="text/html" data-jsv-tmpl="jsvTmpl">
+        {{if items}}
+        {{for items}}
+        <li id="{{:id}}" name="{{:name}}" class="{{if isHeader}}nav-header{{else}}nav-item{{if items}} has-treeview{{/if}}{{if active}} active current{{/if}}{{if open}} menu-open{{/if}}{{/if}}{{if isNavbarItem}} d-block d-md-none{{/if}}">
+            {{if isHeader}}
+            {{if icon}}<i class="{{:icon}}"></i>{{/if}}
+            <span>{{:text}}</span>
+            {{if label}}
+            <span class="right">
+                {{:label}}
+            </span>
+            {{/if}}
+            {{else}}
+            <a href="{{:href}}" class="nav-link{{if active}} active{{/if}}" {{if target}} target="{{:target}}" {{/if}} {{if attrs}} {{:attrs}} {{/if}}>
+                {{if icon}}<i class="nav-icon {{:icon}}"></i>{{/if}}
+                <p>
+                    <span>{{:text}}</span>
+                    {{if items}}
+                    <i class="right fa fa-angle-left"></i>
+                    {{if label}}
+                    <span class="right">
+                        {{:label}}
+                    </span>
+                    {{/if}}
+                    {{else}}
+                    {{if label}}
+                    <span class="right">
+                        {{:label}}
+                    </span>
+                    {{/if}}
+                    {{/if}}
+                </p>
+            </a>
+            {{/if}}
+            {{if items}}
+            <ul class="nav nav-treeview" {{if open}} style="display: block;" {{/if}} ">
+                {{include tmpl="#menu-items"/}}
+            </ul>
+            {{/if}}
+        </li>
+        {{/for}}
+        {{/if}}
+    </script>
+    <script class="ew-js-template" type="text/html" data-name="languages" data-target=".navbar-nav.ml-auto" data-method="prependTo" data-data="languages" data-jsv-tmpl="jsvTmpl">
+        {{for languages}}
+        <li class="nav-item"><a href="#" class="nav-link{{if selected}} active{{/if}} ew-tooltip" title="{{>desc}}" onclick="ew.setLanguage(this);" data-language="{{:id}}">{{:id}}</a></li>{{/for}}
+    </script>
+
+
+</body>
+</html>

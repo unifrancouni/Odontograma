@@ -3,19 +3,15 @@ var xEmp = 2; var yEmp = 1; var T = 50;
 var lineV; var lineH; var rectangle;
 
 var images = [
-    { key: 'arrow_right', value: '../Content/img/arrow_right.png', width: T, height: T, },
-    { key: 'arrow_left', value: '../Content/img/arrow_left.png', width: T, height: T, },
-    /*{ key: 'caries_central', value: '../Content/img/caries_central.png', width: T, height: T, },
-    { key: 'caries_derecha', value: '../Content/img/caries_derecha.png', width: T, height: T, },
-    { key: 'caries_izquierda', value: '../Content/img/caries_izquierda.png', width: T, height: T, },
-    { key: 'caries_arriba', value: '../Content/img/caries_arriba.png', width: T, height: T, },
-    { key: 'caries_abajo', value: '../Content/img/caries_abajo.png', width: T, height: T, },*/
-    { key: 'item', value: '../Content/img/diente.png', width: T, height: T, },
-    { key: 'panel', value: '../Content/img/panel.png', width: T, height: T, },
-    { key: 'save_button', value: '../Content/img/save_button.png', width: T, height: T, },
-    { key: 'toggle_d', value: '../Content/img/toggle_d.png', width: T, height: T, },
-    { key: 'toggle_ed', value: '../Content/img/toggle_ed.png', width: T, height: T, },
-    { key: 'background', value: '../Content/img/background.png', width: T, height: T, },
+    { key: 'arrow_right', value: 'http://localhost:52124/Content/img/arrow_right.png', width: T, height: T, },
+    { key: 'arrow_left', value: 'http://localhost:52124/Content/img/arrow_left.png', width: T, height: T, },
+    { key: 'item', value: 'http://localhost:52124/Content/img/diente.png', width: T, height: T, },
+    { key: 'panel', value: 'http://localhost:52124/Content/img/panel.png', width: T, height: T, },
+    { key: 'save_button', value: 'http://localhost:52124/Content/img/save_button.png', width: T, height: T, },
+    { key: 'print_button', value: 'http://localhost:52124/Content/img/print_button.png', width: T, height: T, },
+    { key: 'toggle_d', value: 'http://localhost:52124/Content/img/toggle_d.png', width: T, height: T, },
+    { key: 'toggle_ed', value: 'http://localhost:52124/Content/img/toggle_ed.png', width: T, height: T, },
+    { key: 'background', value: 'http://localhost:52124/Content/img/background.png', width: T, height: T, },
 ];
 
 var init_config = {
@@ -29,28 +25,30 @@ var game = new Phaser.Game(21 * T, 10 * T, Phaser.CANVAS, 'odontograma', { prelo
 
 function preload() {
 
-    var id = 1;
+    var id = $("#iOdi").val();
 
     $.ajax({
         async: false,
-        url: 'http://localhost:58409/Home/OdontogramaDetalle',
+        url: '/OdontogramaDetalle/Detalle',
         method: 'post',
         data: JSON.stringify({ id: id }),
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
+            debugger
             if (data.length != 0) {
                 init_config.simbolos = data;
             }
         },
         error: function (ex) {
+            debugger
             alert(ex.responseText);
         }
     });
 
     $.ajax({
         async: false,
-        url: 'http://localhost:58409/Home/Simbolos',
+        url: '/OdontogramaDetalle/Simbolos',
         method: 'post',
         //data: JSON.stringify({ id: id }),
         dataType: 'json',
@@ -86,21 +84,27 @@ var grupo_simbolos;
 var grupo_tools;
 var switcher_bool;
 var switcher;
+var save_button;
+var print_button;
 
 function create() {
 
     game.add.image(0, 0, 'background');
-    var save_button = game.add.sprite(0.5 * T, 0.4 * T, 'save_button');
+    save_button = game.add.sprite(0.2 * T, 0.2 * T, 'save_button');
+    print_button = game.add.sprite(0.4 * T + 35, 0.2 * T, 'print_button');
     var arrow_derecha = game.add.sprite(14 * T, 7 * T, 'arrow_right');
     var arrow_izquierda = game.add.sprite(5 * T, 7 * T, 'arrow_left');
     save_button.inputEnabled = true;
+    print_button.inputEnabled = true;
     arrow_derecha.inputEnabled = true;
     arrow_izquierda.inputEnabled = true;
     save_button.input.useHandCursor = true;
+    print_button.input.useHandCursor = true;
     arrow_derecha.input.useHandCursor = true;
     arrow_izquierda.input.useHandCursor = true;
 
     // evento click de boton Save
+    print_button.events.onInputUp.add(print_up, this);
     save_button.events.onInputUp.add(save_up, this);
     arrow_derecha.events.onInputUp.add(fn_arrowDerecha, this);
     arrow_izquierda.events.onInputUp.add(fn_arrowIzquierda, this);
@@ -223,7 +227,7 @@ function save_up() {
     //debugger
     $.ajax({
         async: false,
-        url: 'http://localhost:58409/Home/SaveOdontogramaDetalle',
+        url: '/Odontograma/SaveOdontogramaDetalle',
         method: 'post',
         data: JSON.stringify({ json: JSON.stringify(init_config.simbolos) }),
         dataType: 'json',
@@ -239,6 +243,34 @@ function save_up() {
         }
     });
     
+}
+
+function print_up() {
+    var new_canvas = document.createElement("canvas");
+    new_canvas.width = 1050;
+    new_canvas.height = 260;
+
+    var canvas_get = document.getElementsByTagName('canvas')[0];
+
+    var ctx = new_canvas.getContext("2d");
+    ctx.drawImage(canvas_get, 0, 0);
+
+    var dataUrl = new_canvas.toDataURL();
+    var windowContent = '<!DOCTYPE html>';
+    windowContent += '<html>'
+    windowContent += '<head><title>Print canvas</title></head>';
+    windowContent += '<body>'
+    windowContent += '<img src="' + dataUrl + '">';
+    windowContent += '</body>';
+    windowContent += '</html>';
+    var printWin = window.open('', '', 'width=1050,height=500');
+    printWin.document.open();
+    printWin.document.write(windowContent);
+    printWin.document.close();
+    printWin.focus();
+    printWin.print();
+    printWin.close();
+    return;
 }
 
 function render() {
@@ -313,13 +345,13 @@ function ValidationDrop(item) {
         init_config.simbolos.forEach(o => {
             
             if (o != undefined) {
-
+                //JSON.stringify(
                 init_config.simbolos.forEach(q => {
                     if (q != undefined) {
                         //debugger
                         $.ajax({
                             async: false,
-                            url: 'http://localhost:58409/Home/ValidarCompatibilidadDientes',
+                            url: '/Odontograma/ValidarCompatibilidadDientes',
                             method: 'post',
                             data: JSON.stringify({ diente1: o.sNombreDiente, diente2: q.sNombreDiente }),
                             dataType: 'json',
@@ -342,7 +374,7 @@ function ValidationDrop(item) {
                     //debugger
                     $.ajax({
                         async: false,
-                        url: 'http://localhost:58409/Home/ValidarCompatibilidadSimbolos',
+                        url: '/Odontograma/ValidarCompatibilidadSimbolos',
                         method: 'post',
                         data: JSON.stringify({ simbolo1: o.sDescripcion, simbolo2: item.data.sDescripcion }),
                         dataType: 'json',

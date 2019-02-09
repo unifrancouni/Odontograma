@@ -1094,28 +1094,22 @@
         <phrase id="fldcaption" value="n Odontograma ID" />
       </field>
       <field id="nexpedienteid">
-        <phrase id="fldcaption" value="n Expediente ID" />
+        <phrase id="fldcaption" value="Expediente" />
       </field>
       <field id="dfechaodontograma">
-        <phrase id="fldcaption" value="d Fecha Odontograma" />
+        <phrase id="fldcaption" value="Fecha Odontograma" />
       </field>
       <field id="sobservaciones">
-        <phrase id="fldcaption" value="s Observaciones" />
+        <phrase id="fldcaption" value="Observaciones" />
       </field>
       <field id="nestadoid">
-        <phrase id="fldcaption" value="n Estado ID" />
+        <phrase id="fldcaption" value="Estado" />
       </field>
       <field id="dfechacreacion">
         <phrase id="fldcaption" value="d Fecha Creacion" />
       </field>
-      <field id="susuariocreacion">
-        <phrase id="fldcaption" value="s Usuario Creacion" />
-      </field>
       <field id="dfechamodificacion">
         <phrase id="fldcaption" value="d Fecha Modificacion" />
-      </field>
-      <field id="susuariomodificacion">
-        <phrase id="fldcaption" value="s Usuario Modificacion" />
       </field>
     </table>
     <table id="odontogramadetalle">

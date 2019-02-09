@@ -230,42 +230,48 @@ while (Catalogo_List.RecordCount < Catalogo_List.StopRecord) { // Begin While
 
 		// Render list options
 		await Catalogo_List.RenderListOptions();
-	<tr @Html.Raw(Catalogo_List.RowAttributes)>
-	@{
+    <tr @Html.Raw(Catalogo_List.RowAttributes)>
+        @{
 
-		// Render list options (body, left)
-		Catalogo_List.ListOptions.Render("body", "left", Catalogo_List.RowCnt);
-	}
-	@if (Catalogo.nCodigo.Visible) { // nCodigo.Visible (begin)
-		<td data-name="nCodigo"@Html.Raw(Catalogo.nCodigo.CellAttributes)>
-<span id="el@(Catalogo_List.RowCnt)_Catalogo_nCodigo" class="Catalogo_nCodigo">
-<span @Html.Raw(Catalogo.nCodigo.ViewAttributes)>
-@Html.Raw(Catalogo.nCodigo.GetViewValue())</span>
-</span>
-</td>
-	} @* nCodigo.Visible (end) *@
-	@if (Catalogo.sDescripcion.Visible) { // sDescripcion.Visible (begin)
-		<td data-name="sDescripcion"@Html.Raw(Catalogo.sDescripcion.CellAttributes)>
-<span id="el@(Catalogo_List.RowCnt)_Catalogo_sDescripcion" class="Catalogo_sDescripcion">
-<span @Html.Raw(Catalogo.sDescripcion.ViewAttributes)>
-@Html.Raw(Catalogo.sDescripcion.GetViewValue())</span>
-</span>
-</td>
-	} @* sDescripcion.Visible (end) *@
-	@if (Catalogo.nActivo.Visible) { // nActivo.Visible (begin)
-		<td data-name="nActivo"@Html.Raw(Catalogo.nActivo.CellAttributes)>
-<span id="el@(Catalogo_List.RowCnt)_Catalogo_nActivo" class="Catalogo_nActivo">
-<span @Html.Raw(Catalogo.nActivo.ViewAttributes)>
-@Html.Raw(Catalogo.nActivo.GetViewValue())</span>
-</span>
-</td>
-	} @* nActivo.Visible (end) *@
-	@{
+            // Render list options (body, left)
+            Catalogo_List.ListOptions.Render("body", "left", Catalogo_List.RowCnt);
+        }
+        @if (Catalogo.nCodigo.Visible)
+        { // nCodigo.Visible (begin)
+            <td data-name="nCodigo" @Html.Raw(Catalogo.nCodigo.CellAttributes)>
+                <span id="el@(Catalogo_List.RowCnt)_Catalogo_nCodigo" class="Catalogo_nCodigo">
+                    <span @Html.Raw(Catalogo.nCodigo.ViewAttributes)>
+                        @Html.Raw(Catalogo.nCodigo.GetViewValue())
+                    </span>
+                </span>
+            </td>
+        } @* nCodigo.Visible (end) *@
+        @if (Catalogo.sDescripcion.Visible)
+        { // sDescripcion.Visible (begin)
+            <td data-name="sDescripcion" @Html.Raw(Catalogo.sDescripcion.CellAttributes)>
+                <span id="el@(Catalogo_List.RowCnt)_Catalogo_sDescripcion" class="Catalogo_sDescripcion">
+                    <span @Html.Raw(Catalogo.sDescripcion.ViewAttributes)>
+                        @Html.Raw(Catalogo.sDescripcion.GetViewValue())
+                    </span>
+                </span>
+            </td>
+        } @* sDescripcion.Visible (end) *@
+        @if (Catalogo.nActivo.Visible)
+        { // nActivo.Visible (begin)
+            <td data-name="nActivo" @Html.Raw(Catalogo.nActivo.CellAttributes)>
+                <span id="el@(Catalogo_List.RowCnt)_Catalogo_nActivo" class="Catalogo_nActivo">
+                    <span @Html.Raw(Catalogo.nActivo.ViewAttributes)>
+                        @Html.Raw(Catalogo.nActivo.GetViewValue())
+                    </span>
+                </span>
+            </td>
+        } @* nActivo.Visible (end) *@
+            @{
 
-		// Render list options (body, right)
-		Catalogo_List.ListOptions.Render("body", "right", Catalogo_List.RowCnt);
-	}
-	</tr>
+                // Render list options (body, right)
+                Catalogo_List.ListOptions.Render("body", "right", Catalogo_List.RowCnt);
+            }
+    </tr>
 	} @* End if *@
 } @* End While *@
 } @* End Code *@

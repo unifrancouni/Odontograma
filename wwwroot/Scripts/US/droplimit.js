@@ -33,34 +33,38 @@ function preload() {
 
     $.ajax({
         async: false,
-        url: 'http://localhost:58409/Home/OdontogramaDetalle',
+        url: '/Odontograma/Detalle',
         method: 'post',
         data: JSON.stringify({ id: id }),
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
+            debugger
             if (data.length != 0) {
                 init_config.simbolos = data;
             }
         },
         error: function (ex) {
+            debugger
             alert(ex.responseText);
         }
     });
 
     $.ajax({
         async: false,
-        url: 'http://localhost:58409/Home/Simbolos',
+        url: '/Odontograma/Sombolos',
         method: 'post',
         //data: JSON.stringify({ id: id }),
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
+            debugger
             if (data.length != 0) {
                 init_config.sim_defaults = data;
             }
         },
         error: function (ex) {
+            debugger
             alert(ex.responseText);
         }
     });

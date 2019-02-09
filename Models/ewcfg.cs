@@ -95,7 +95,7 @@ namespace AspNetMaker2019.Models {
 			public const string ConfigFileFolder = ProjectName; // Config file name
 			public const string ProjectId = "{9B083C8B-EE2F-4356-BE8D-9A26D5707365}"; // Project ID (GUID)
 			public static string RelatedLanguageFolder = "";
-			public static string RandomKey = "WP54cKQ7QP7wsxGk"; // Random key for encryption
+			public static string RandomKey = "8QPa99zvrkKmUQ76"; // Random key for encryption
 			public static string EncryptionKey = ""; // Encryption key for data protection
 			public static string ProjectStylesheetFilename = "css/prjSIGECO.css"; // Project stylesheet file name (relative to wwwroot)
 			public static string Charset = "utf-8"; // Project charset
@@ -488,7 +488,6 @@ namespace AspNetMaker2019.Models {
 				{"Placagrama", "_Placagrama"},
 				{"PlacagramaDetalle", "_PlacagramaDetalle"},
 				{"Simbolo", "_Simbolo"},
-				{"sysdiagrams", "_sysdiagrams"},
 				{"Tratamiento", "_Tratamiento"},
 				{"TratamientoRealizado", "_TratamientoRealizado"},
 				{"Usuario", "_Usuario"},

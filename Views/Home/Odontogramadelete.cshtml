@@ -1,0 +1,158 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Odontograma_Delete.Page_Render();
+
+	// Check action result
+	if (Odontograma_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fOdontogramadelete = currentForm = new ew.Form("fOdontogramadelete", "delete");
+
+// Form_CustomValidate event
+fOdontogramadelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fOdontogramadelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fOdontogramadelete.lists["x_nExpedienteID"] = @Html.Raw(Odontograma_Delete.nExpedienteID.Lookup.ToClientList());
+fOdontogramadelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Odontograma_Delete.nExpedienteID.LookupOptions()));
+fOdontogramadelete.lists["x_nEstadoID"] = @Html.Raw(Odontograma_Delete.nEstadoID.Lookup.ToClientList());
+fOdontogramadelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Odontograma_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Odontograma_Delete.ShowPageHeader()
+@Odontograma_Delete.ShowMessages()
+<form name="fOdontogramadelete" id="fOdontogramadelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Odontograma_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in Odontograma_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (Odontograma.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<th class="@Html.Raw(Odontograma.nExpedienteID.HeaderCellClass)"><span id="elh_Odontograma_nExpedienteID" class="Odontograma_nExpedienteID">@Html.Raw(Odontograma.nExpedienteID.Caption)</span></th>
+} @* nExpedienteID.Visible (end) *@
+@if (Odontograma.dFechaOdontograma.Visible) { // dFechaOdontograma (begin)
+		<th class="@Html.Raw(Odontograma.dFechaOdontograma.HeaderCellClass)"><span id="elh_Odontograma_dFechaOdontograma" class="Odontograma_dFechaOdontograma">@Html.Raw(Odontograma.dFechaOdontograma.Caption)</span></th>
+} @* dFechaOdontograma.Visible (end) *@
+@if (Odontograma.sObservaciones.Visible) { // sObservaciones (begin)
+		<th class="@Html.Raw(Odontograma.sObservaciones.HeaderCellClass)"><span id="elh_Odontograma_sObservaciones" class="Odontograma_sObservaciones">@Html.Raw(Odontograma.sObservaciones.Caption)</span></th>
+} @* sObservaciones.Visible (end) *@
+@if (Odontograma.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(Odontograma.nEstadoID.HeaderCellClass)"><span id="elh_Odontograma_nEstadoID" class="Odontograma_nEstadoID">@Html.Raw(Odontograma.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ Odontograma_Delete.RecordCount = 0; }
+@while (Odontograma_Delete.Recordset != null && await Odontograma_Delete.Recordset.ReadAsync()) { // DN
+	Odontograma_Delete.RecordCount++;
+	Odontograma_Delete.RowCnt++;
+
+	// Set row properties
+	Odontograma_Delete.ResetAttributes();
+	Odontograma_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await Odontograma_Delete.LoadRowValues(Odontograma_Delete.Recordset);
+
+	// Render row
+	await Odontograma_Delete.RenderRow();
+	<tr @Html.Raw(Odontograma_Delete.RowAttributes)>
+@if (Odontograma.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<td @Html.Raw(Odontograma.nExpedienteID.CellAttributes)>
+<span id="el@(Odontograma_Delete.RowCnt)_Odontograma_nExpedienteID" class="Odontograma_nExpedienteID">
+<span @Html.Raw(Odontograma.nExpedienteID.ViewAttributes)>
+@Html.Raw(Odontograma.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+} @* nExpedienteID.Visible (end) *@
+@if (Odontograma.dFechaOdontograma.Visible) { // dFechaOdontograma (begin)
+		<td @Html.Raw(Odontograma.dFechaOdontograma.CellAttributes)>
+<span id="el@(Odontograma_Delete.RowCnt)_Odontograma_dFechaOdontograma" class="Odontograma_dFechaOdontograma">
+<span @Html.Raw(Odontograma.dFechaOdontograma.ViewAttributes)>
+@Html.Raw(Odontograma.dFechaOdontograma.GetViewValue())</span>
+</span>
+</td>
+} @* dFechaOdontograma.Visible (end) *@
+@if (Odontograma.sObservaciones.Visible) { // sObservaciones (begin)
+		<td @Html.Raw(Odontograma.sObservaciones.CellAttributes)>
+<span id="el@(Odontograma_Delete.RowCnt)_Odontograma_sObservaciones" class="Odontograma_sObservaciones">
+<span @Html.Raw(Odontograma.sObservaciones.ViewAttributes)>
+@Html.Raw(Odontograma.sObservaciones.GetViewValue())</span>
+</span>
+</td>
+} @* sObservaciones.Visible (end) *@
+@if (Odontograma.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(Odontograma.nEstadoID.CellAttributes)>
+<span id="el@(Odontograma_Delete.RowCnt)_Odontograma_nEstadoID" class="Odontograma_nEstadoID">
+<span @Html.Raw(Odontograma.nEstadoID.ViewAttributes)>
+@Html.Raw(Odontograma.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ Odontograma_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Odontograma_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@Odontograma_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

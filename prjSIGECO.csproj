@@ -19,4 +19,7 @@
 		<PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
 		<PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.4.4" />
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\MicroDB\MicroDB.csproj" />
+	</ItemGroup>
 </Project>
