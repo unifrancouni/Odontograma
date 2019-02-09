@@ -337,7 +337,7 @@ while (Odontograma_List.RecordCount < Odontograma_List.StopRecord) { // Begin Wh
             </td>
         } @* nEstadoID.Visible (end) *@
         <td @Html.Raw(Odontograma.nEstadoID.CellAttributes)>
-            <a id="el@(Odontograma_List.RowCnt)_Odontograma_cDetailButton" href="/OdontogramaDetalle/List/@Html.Raw(Odontograma.nOdontogramaID.DbValue)" class="btn btn-default ew-row-link ew-detail">
+            <a id="el@(Odontograma_List.RowCnt)_Odontograma_cDetailButton" href="/OdontogramaDetalle/List/@Html.Raw(Odontograma.nOdontogramaID.DbValue)" target="_blank" class="btn btn-default ew-row-link ew-detail">
                 Editar Detalle
             </a>
         </td>

@@ -1,8 +1,9 @@
 
-var xEmp = 2; var yEmp = 1; var T = 50;
+var xEmp = 2; var yEmp = 2; var T = 50;
 var lineV; var lineH; var rectangle;
 
 var images = [
+    { key: 'espacio', value: 'http://localhost:52124/Content/img/espacio.png', width: T, height: T, },
     { key: 'arrow_right', value: 'http://localhost:52124/Content/img/arrow_right.png', width: T, height: T, },
     { key: 'arrow_left', value: 'http://localhost:52124/Content/img/arrow_left.png', width: T, height: T, },
     { key: 'item', value: 'http://localhost:52124/Content/img/diente.png', width: T, height: T, },
@@ -17,11 +18,12 @@ var images = [
 var init_config = {
     "dientes": [],
     "sim_defaults": [],
-    "simbolos": []
+    "simbolos": [],
+    "espacios": []
 };
 
 
-var game = new Phaser.Game(21 * T, 10 * T, Phaser.CANVAS, 'odontograma', { preload: preload, create: create, render: render, update: update });
+var game = new Phaser.Game(21 * T, 11 * T, Phaser.CANVAS, 'odontograma', { preload: preload, create: create, render: render, update: update });
 
 function preload() {
 
@@ -35,13 +37,13 @@ function preload() {
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
-            debugger
+            //debugger
             if (data.length != 0) {
                 init_config.simbolos = data;
             }
         },
         error: function (ex) {
-            debugger
+            //debugger
             alert(ex.responseText);
         }
     });
@@ -54,19 +56,19 @@ function preload() {
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
-            debugger
+            //debugger
             if (data.length != 0) {
                 init_config.sim_defaults = data;
             }
         },
         error: function (ex) {
-            debugger
+            //debugger
             alert(ex.responseText);
         }
     });
 
     init_config.sim_defaults.forEach(o => {
-        images.push({ key: o.sDescripcion, value: o.sPathImage, width: T, height: T, });
+        images.push({ key: o.sDescripcion, value: o.sPathImage, width: T, height: T, tipo: o.tipo});
     });
 
     //this.load.crossOrigin = 'Anonymous';
@@ -92,8 +94,8 @@ function create() {
     game.add.image(0, 0, 'background');
     save_button = game.add.sprite(0.2 * T, 0.2 * T, 'save_button');
     print_button = game.add.sprite(0.4 * T + 35, 0.2 * T, 'print_button');
-    var arrow_derecha = game.add.sprite(14 * T, 7 * T, 'arrow_right');
-    var arrow_izquierda = game.add.sprite(5 * T, 7 * T, 'arrow_left');
+    var arrow_derecha = game.add.sprite(14 * T, T * (yEmp + 7), 'arrow_right');
+    var arrow_izquierda = game.add.sprite(5 * T, T * (yEmp + 7), 'arrow_left');
     save_button.inputEnabled = true;
     print_button.inputEnabled = true;
     arrow_derecha.inputEnabled = true;
@@ -115,7 +117,7 @@ function create() {
 
 
     //Switcher toggle of panel
-    switcher = game.add.sprite(T * (xEmp + 3), T * (yEmp + 5), 'toggle_d');
+    switcher = game.add.sprite(T * (xEmp + 3), T * (yEmp + 6), 'toggle_d');
     switcher.inputEnabled = true;
     switcher.input.useHandCursor = true;
     switcher.events.onInputUp.add(fn_switcher, this);
@@ -123,12 +125,20 @@ function create() {
 
 
     //Panel de opciones
-    game.add.sprite(T * (xEmp + 4), T * (yEmp + 5), 'panel');
+    game.add.sprite(T * (xEmp + 4), T * (yEmp + 6), 'panel');
     
     //Crear grupos de sprites para recorrerlos a futuro
-    grupo_dientes = game.add.group();
-    grupo_simbolos = game.add.group();;
-    grupo_tools = game.add.group();
+    grupo_dientes = game.add.group(); //back layer
+    grupo_espacios = game.add.group(); //mid layer
+    grupo_tools = game.add.group(); //front layer
+    grupo_simbolos = game.add.group(); //mid layer
+    
+
+    //Espacios para abreviaturas
+    for (var i = 1; i <= 16; i++) {
+        addAbreviatura(i, -1);
+        addAbreviatura(i, 4);
+    }
 
     //Agregando los dientes
     for (var i = 1; i <= 16; i++) {
@@ -139,6 +149,8 @@ function create() {
         }
         addDiente(i, 4);
     }
+
+    
 
     llenarPanel(0);
 
@@ -179,7 +191,7 @@ function llenarPanel(increment) {
 
     //debugger
     //Borrar elementos actuales del panel
-    for (i = 0; 4 > i; i++) { //Ciclo porque pasaba de que si se hace solo una vez, no se borran todos (bug de phaser)
+    for (i = 0; 10 > i; i++) { //Ciclo porque pasaba de que si se hace solo una vez, no se borran todos (bug de phaser)
         grupo_tools.forEach(function (it) {
             it.destroy();
         });
@@ -188,31 +200,54 @@ function llenarPanel(increment) {
     //debugger
     //Agregar los simbolos disponibles al panel
     i = 4;
-    j = 5;
-
+    j = 6;
+    //debugger
     if (switcher.data.state == true) {
         init_config.sim_defaults.forEach(o => {
-            if (o.nPagina == public_pagina) {
-                item = grupo_tools.create(T * (xEmp + i), T * (yEmp + j), o.sDescripcion);
-                item.inputEnabled = true;
-                item.input.useHandCursor = true;
-                item.input.enableSnap(T, T, false, true);
-                item.events.onInputDown.add(DuplicateAndDrag, this);
-                item.data = o;
-            }
-            j++;
-            if (j == 8) {
-                j = 5;
-                i++;
-            }
-            if (i == 12) {
-                i = 4;
-                j = 5
+            //debugger
+            if (o.tipo === "T") {
+                if (o.nPagina == public_pagina) {
+                    item = grupo_tools.create(T * (xEmp + i), T * (yEmp + j), o.sDescripcion);
+                    item.inputEnabled = true;
+                    item.input.useHandCursor = true;
+                    item.input.enableSnap(T, T, false, true);
+                    item.events.onInputDown.add(DuplicateAndDrag, this);
+                    item.data = o;
+                }
+                j++;
+                if (j == 9) {
+                    j = 6;
+                    i++;
+                }
+                if (i == 12) {
+                    i = 4;
+                    j = 6
+                }
             }
         });
     }
     else {
-
+        init_config.sim_defaults.forEach(o => {
+            if (o.tipo === "A") {
+                if (o.nPagina == public_pagina) {
+                    item = grupo_tools.create(T * (xEmp + i), T * (yEmp + j), o.sDescripcion);
+                    item.inputEnabled = true;
+                    item.input.useHandCursor = true;
+                    item.input.enableSnap(T, T, false, true);
+                    item.events.onInputDown.add(DuplicateAndDrag, this);
+                    item.data = o;
+                }
+                j++;
+                if (j == 9) {
+                    j = 6;
+                    i++;
+                }
+                if (i == 12) {
+                    i = 4;
+                    j = 6
+                }
+            }
+        });
     }
 
     
@@ -227,7 +262,7 @@ function save_up() {
     //debugger
     $.ajax({
         async: false,
-        url: '/Odontograma/SaveOdontogramaDetalle',
+        url: '/OdontogramaDetalle/SaveOdontogramaDetalle',
         method: 'post',
         data: JSON.stringify({ json: JSON.stringify(init_config.simbolos) }),
         dataType: 'json',
@@ -248,7 +283,7 @@ function save_up() {
 function print_up() {
     var new_canvas = document.createElement("canvas");
     new_canvas.width = 1050;
-    new_canvas.height = 260;
+    new_canvas.height = 360;
 
     var canvas_get = document.getElementsByTagName('canvas')[0];
 
@@ -291,16 +326,27 @@ function update() {
     text.text = ':: '+item.data.x+','+item.data.y;
 }*/
 
+
+
 function DuplicateAndDrag(item) {
     //debugger
     var tmpItem = grupo_simbolos.create(game.input.mousePointer.x, game.input.mousePointer.y, item.generateTexture());
+    
     tmpItem.inputEnabled = true;
     tmpItem.input.enableDrag();
     tmpItem.input.enableSnap(T, T, false, true);
     //tmpItem.anchor.setTo(0.5);
     tmpItem.input.startDrag(game.input.activePointer);
     tmpItem.events.onDragStop.add(ValidationDrop, this);
-    tmpItem.data = { tipo: "S", sidentifier: uniqueID(), nOdontogramaDetalleID: 0, sNombreDiente: null, sDescripcion: item.key };
+    tmpItem.events.onInputUp.add(ValidationDrop, this);
+
+    var tipo_nuevo = "";
+    if (item.data.tipo === "T")
+        tipo_nuevo = "S";
+    if (item.data.tipo === "A")
+        tipo_nuevo = "V";
+
+    tmpItem.data = { tipo: tipo_nuevo, sidentifier: uniqueID(), nOdontogramaDetalleID: 0, sNombreDiente: null, sDescripcion: item.key };
     init_config.simbolos.push(tmpItem.data);
 }
 
@@ -309,26 +355,52 @@ function ValidationDrop(item) {
     //tipo: S -- simbolo
     item.data.validating = 1;
     var encontrado = 0;
-    grupo_dientes.forEach(function (it) {
-        if (it.x == item.x && it.y == item.y && it.data.validating != 1) {
-            encontrado = 1;
-            item.data.validating = 0;
+    //debugger
+    if (item.data.tipo === "S") {
+        grupo_dientes.forEach(function (it) {
+            if (it.x == item.x && it.y == item.y && it.data.validating != 1) {
+                encontrado = 1;
+                item.data.validating = 0;
 
-            if (it.data.Nombre != undefined)
-            item.data.sNombreDiente = it.data.Nombre;
+                if (it.data.Nombre != undefined)
+                    item.data.sNombreDiente = it.data.Nombre;
 
-            //Encontrar si existe, el nOdontogramaDetalleID, modificar los valores
-            init_config.simbolos.forEach(o => {
-                if (o.nOdontogramaDetalleID == item.data.nOdontogramaDetalleID && o.sidentifier===item.data.sidentifier) {
-                    if (item.data.sNombreDiente != undefined) {
-                        o.sNombreDiente = item.data.sNombreDiente;
-                        console.log(o.sNombreDiente);
+                //Encontrar si existe, el nOdontogramaDetalleID, modificar los valores
+                init_config.simbolos.forEach(o => {
+                    if (o.nOdontogramaDetalleID == item.data.nOdontogramaDetalleID && o.sidentifier === item.data.sidentifier) {
+                        if (item.data.sNombreDiente != undefined) {
+                            o.sNombreDiente = item.data.sNombreDiente;
+                            console.log(o.sNombreDiente);
+                        }
                     }
-                }
-            });
+                });
 
-        }
-    });
+            }
+        });
+    }
+    if (item.data.tipo === "V") {
+        grupo_espacios.forEach(function (it) {
+            if (it.x == item.x && it.y == item.y && it.data.validating != 1) {
+                encontrado = 1;
+                item.data.validating = 0;
+
+                if (it.data.Nombre != undefined)
+                    item.data.sNombreDiente = it.data.Nombre;
+
+                //Encontrar si existe, el nOdontogramaDetalleID, modificar los valores
+                init_config.simbolos.forEach(o => {
+                    if (o.nOdontogramaDetalleID == item.data.nOdontogramaDetalleID && o.sidentifier === item.data.sidentifier) {
+                        if (item.data.sNombreDiente != undefined) {
+                            o.sNombreDiente = item.data.sNombreDiente;
+                            console.log(o.sNombreDiente);
+                        }
+                    }
+                });
+
+            }
+        });
+    }
+    
     if (encontrado == 0) {
         //Eliminar del init_config la primer ocurrencia del nOdontogramaDetalleID, sNombreDiente, sDescripcion del item
         init_config.simbolos.forEach(o => {
@@ -342,7 +414,7 @@ function ValidationDrop(item) {
         //Diente encontrado, entonces validar compatibilidad con demas simbolos
         var diente = item.data.sNombreDiente;
         var incompatibilidad_encontrada = 0;
-        init_config.simbolos.forEach(o => {
+        /*init_config.simbolos.forEach(o => {
             
             if (o != undefined) {
                 //JSON.stringify(
@@ -351,7 +423,7 @@ function ValidationDrop(item) {
                         //debugger
                         $.ajax({
                             async: false,
-                            url: '/Odontograma/ValidarCompatibilidadDientes',
+                            url: '/OdontogramaDetalle/ValidarCompatibilidadDientes',
                             method: 'post',
                             data: JSON.stringify({ diente1: o.sNombreDiente, diente2: q.sNombreDiente }),
                             dataType: 'json',
@@ -374,7 +446,7 @@ function ValidationDrop(item) {
                     //debugger
                     $.ajax({
                         async: false,
-                        url: '/Odontograma/ValidarCompatibilidadSimbolos',
+                        url: '/OdontogramaDetalle/ValidarCompatibilidadSimbolos',
                         method: 'post',
                         data: JSON.stringify({ simbolo1: o.sDescripcion, simbolo2: item.data.sDescripcion }),
                         dataType: 'json',
@@ -405,7 +477,7 @@ function ValidationDrop(item) {
             });
             item.destroy();
         }
-        else
+        else*/
             item.bringToTop();
     }
 }
@@ -473,7 +545,7 @@ function addDiente(i, y) {
     dentText.anchor.setTo(0.5);
     dentText.font = 'Arial';
     dentText.fontSize = 10;
-    //item.scale.setTo(T, T);
+
     item.data = {
         tipo: "D",
         Nombre: obtenerNombre(i, y),
@@ -485,12 +557,10 @@ function addDiente(i, y) {
 
     dentText.text = item.data.Nombre;
     item.inputEnabled = true;
-    //item.input.useHandCursor = true;
-    //item.input.enableDrag();
+
     item.input.enableSnap(T, T, false, true);
-    //item.events.onDragStop.add(fixLocation);
-    //item.events.onInputDown.add(Nombre, this);
-    //item.events.onInputOver.add(Nombre, this);
+
+    /*Cargando de la BD*/
     init_config.simbolos.forEach(o => {
         if (item.data.Nombre === o.sNombreDiente) {
             var tmpItem = grupo_simbolos.create(T * (xEmp - 1) + T * i, T * (y + yEmp - 1), o.sDescripcion);
@@ -502,6 +572,40 @@ function addDiente(i, y) {
             tmpItem.data.sidentifier = uniqueID();
         }
     });
+}
+
+function addAbreviatura(i, y) {
+    var x = 0;
+    item = grupo_espacios.create(T * (xEmp + i - 1), T * (yEmp + y), 'espacio');
+    //game.add.sprite(T * (xEmp + i - 1), T * (yEmp - 1), 'espacio');
+    //game.add.sprite(T * (xEmp + i - 1), T * (yEmp + 4), 'espacio');
+    var abs_y = (0 > y) ? -y : y;
+    item.data = {
+        tipo: "E",
+        Nombre: "E" + i + "." + abs_y,
+        x: item.x,
+        y: item.y
+    };
+
+    init_config.espacios.push(item.data);
+
+    item.inputEnabled = true;
+
+    item.input.enableSnap(T, T, false, true);
+
+    /*Cargando de la BD*/
+    init_config.simbolos.forEach(o => {
+        if (item.data.Nombre === o.sNombreDiente) {
+            var tmpItem = grupo_simbolos.create(T * (xEmp + i - 1), T * (yEmp + y), o.sDescripcion);
+            tmpItem.inputEnabled = true;
+            tmpItem.input.enableDrag();
+            tmpItem.input.enableSnap(T, T, false, true);
+            tmpItem.events.onDragStop.add(ValidationDrop, this);
+            tmpItem.data = o;
+            tmpItem.data.sidentifier = uniqueID();
+        }
+    });
+
 }
 
 
