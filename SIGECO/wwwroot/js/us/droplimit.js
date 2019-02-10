@@ -441,6 +441,24 @@ function ValidationDrop(item) {
         //Diente encontrado, entonces validar compatibilidad con demas simbolos
         var diente = item.data.sNombreDiente;
         var incompatibilidad_encontrada = 0;
+
+        if (!item.data.sNombreDiente.includes("E")) {
+
+            var diente_actual = parseInt(diente); //Convertimos a entero
+            var diente_incompatible = (diente_actual < 51) ? diente_actual + 40 : diente_actual - 40;
+
+            init_config.simbolos.forEach(o => {
+                if (o != undefined) {
+                    if (!o.sNombreDiente.includes("E")) {
+                        if (o.sNombreDiente === diente_incompatible.toString() && o.sidentifier != item.data.sidentifier) {
+                            debugger
+                            incompatibilidad_encontrada = 1;
+                            alert("Incompatibilidad de dientes encontrada");
+                        }
+                    }
+                }
+            });
+        }
         
         if (incompatibilidad_encontrada) {
             //Eliminar del init_config la primer ocurrencia del nOdontogramaDetalleID, sNombreDiente, sDescripcion del item
