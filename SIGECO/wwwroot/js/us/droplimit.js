@@ -27,7 +27,7 @@ var game = new Phaser.Game(21 * T, 11 * T, Phaser.CANVAS, 'odontograma', { prelo
 
 function preload() {
 
-    var id = 1;
+    var id = $("#iOdi").val();
 
     $.ajax({
         async: false,
