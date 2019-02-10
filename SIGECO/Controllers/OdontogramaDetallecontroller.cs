@@ -33,7 +33,27 @@ namespace AspNetMaker2019.Controllers
 
         public ActionResult List(int id)
 		{
+            MicroDB.MicroDB db = new MicroDB.MicroDB();
+
             ViewBag.Id = id;
+            ViewBag.nCodigoExpediente = "";
+            ViewBag.NombrePaciente = "";
+            ViewBag.sCedula = "";
+            ViewBag.dFechaOdontograma = "";
+
+            string strSQL = string.Format("SELECT * FROM vwOdontogramaInfoPaciente WHERE nOdontogramaID = {0}", id);
+            var o = db.ExecuteReaderList(strSQL);
+
+            if (o.Count > 0)
+            {
+                DateTime dt = Convert.ToDateTime(o[0]["dFechaOdontograma"]);
+                
+                ViewBag.nCodigoExpediente = o[0]["nCodigoExpediente"];
+                ViewBag.NombrePaciente = o[0]["NombrePaciente"];
+                ViewBag.sCedula = o[0]["sCedula"];
+                ViewBag.dFechaOdontograma = dt.ToString("dd/MM/yyyy");
+            }
+
             return View();
 		}
 

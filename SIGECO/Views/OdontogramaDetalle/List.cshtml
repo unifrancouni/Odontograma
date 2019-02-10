@@ -6,32 +6,36 @@
 
 }
 
-<table border="1">
-    <thead></thead>
-    <tbody>
-        <tr>
-            <td width="200">
-                <b>No. de Expediente</b>
-            </td>
-            <td width="50">
-                1
-            </td>
-            <td width="100">
-                <b>Nombre</b>
-            </td>
-            <td width="400">
-                PRIMER PACIENTE INSERTADO
-            </td>
-            <td width="100">
-                <b>Fecha</b>
-            </td>
-            <td>
-                06/02/2019
-            </td>
-        </tr>
-    </tbody>
-    <tfoot></tfoot>
-</table>
+
+<div id="info_paciente">
+    <table border="1">
+        <thead></thead>
+        <tbody>
+            <tr>
+                <td width="200">
+                    <b>No. de Expediente</b>
+                </td>
+                <td width="50">
+                    @ViewBag.nCodigoExpediente
+                </td>
+                <td width="100">
+                    <b>Nombre</b>
+                </td>
+                <td width="400">
+                    @ViewBag.NombrePaciente | @ViewBag.sCedula
+                </td>
+                <td width="100">
+                    <b>Fecha</b>
+                </td>
+                <td>
+                    @ViewBag.dFechaOdontograma
+                </td>
+            </tr>
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
+
 
 <input id="iOdi" type="hidden" value="@ViewBag.Id" />
     

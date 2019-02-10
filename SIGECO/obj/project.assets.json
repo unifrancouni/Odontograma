@@ -12426,11 +12426,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\Documents\\ASPNETMaker\\Projects\\SIGECO\\prjSIGECO.csproj",
+      "projectUniqueName": "C:\\Users\\User\\Documents\\SIGECO\\SIGECO\\prjSIGECO.csproj",
       "projectName": "AspNetMaker2019",
-      "projectPath": "C:\\Users\\User\\Documents\\ASPNETMaker\\Projects\\SIGECO\\prjSIGECO.csproj",
+      "projectPath": "C:\\Users\\User\\Documents\\SIGECO\\SIGECO\\prjSIGECO.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\Documents\\ASPNETMaker\\Projects\\SIGECO\\obj\\",
+      "outputPath": "C:\\Users\\User\\Documents\\SIGECO\\SIGECO\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -12449,8 +12449,8 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "C:\\Users\\User\\Documents\\ASPNETMaker\\Projects\\MicroDB\\MicroDB.csproj": {
-              "projectPath": "C:\\Users\\User\\Documents\\ASPNETMaker\\Projects\\MicroDB\\MicroDB.csproj"
+            "C:\\Users\\User\\Documents\\SIGECO\\MicroDB\\MicroDB.csproj": {
+              "projectPath": "C:\\Users\\User\\Documents\\SIGECO\\MicroDB\\MicroDB.csproj"
             }
           }
         }

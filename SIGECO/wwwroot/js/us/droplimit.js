@@ -19,7 +19,7 @@ var init_config = {
     "dientes": [],
     "sim_defaults": [],
     "simbolos": [],
-    "espacios": []
+    "espacios": [],
 };
 
 
@@ -27,7 +27,7 @@ var game = new Phaser.Game(21 * T, 11 * T, Phaser.CANVAS, 'odontograma', { prelo
 
 function preload() {
 
-    var id = $("#iOdi").val();
+    var id = 1;
 
     $.ajax({
         async: false,
@@ -37,13 +37,11 @@ function preload() {
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
-            //debugger
             if (data.length != 0) {
                 init_config.simbolos = data;
             }
         },
         error: function (ex) {
-            //debugger
             alert(ex.responseText);
         }
     });
@@ -56,19 +54,17 @@ function preload() {
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
-            //debugger
             if (data.length != 0) {
                 init_config.sim_defaults = data;
             }
         },
         error: function (ex) {
-            //debugger
             alert(ex.responseText);
         }
     });
 
     init_config.sim_defaults.forEach(o => {
-        images.push({ key: o.sDescripcion, value: o.sPathImage, width: T, height: T, tipo: o.tipo});
+        images.push({ key: o.sDescripcion, value: o.sPathImage, width: T, height: T, });
     });
 
     //this.load.crossOrigin = 'Anonymous';
@@ -84,10 +80,12 @@ function preload() {
 var grupo_dientes;
 var grupo_simbolos;
 var grupo_tools;
+var grupo_espacios;
 var switcher_bool;
 var switcher;
 var save_button;
 var print_button;
+var descriptionText;
 
 function create() {
 
@@ -111,7 +109,7 @@ function create() {
     arrow_derecha.events.onInputUp.add(fn_arrowDerecha, this);
     arrow_izquierda.events.onInputUp.add(fn_arrowIzquierda, this);
 
-    //Líneas divisorias
+    //Lineas divisorias
     lineV = new Phaser.Line(T * (xEmp + 8), T * yEmp, T * (xEmp + 8), T * (yEmp + 4) + 3);
     lineH = new Phaser.Line(T * xEmp, T * (yEmp + 2) + 3, T * (xEmp + 16), T * (yEmp + 2) + 3);
 
@@ -126,14 +124,18 @@ function create() {
 
     //Panel de opciones
     game.add.sprite(T * (xEmp + 4), T * (yEmp + 6), 'panel');
-    
+
+    //Texto descriptivo de símbolos del panel de opciones
+    descriptionText = game.add.text(T * (xEmp + 3) + 60, T * (yEmp + 6) - 15, '');
+    descriptionText.font = 'Arial';
+    descriptionText.fontSize = 15;
+
     //Crear grupos de sprites para recorrerlos a futuro
     grupo_dientes = game.add.group(); //back layer
     grupo_espacios = game.add.group(); //mid layer
     grupo_tools = game.add.group(); //front layer
     grupo_simbolos = game.add.group(); //mid layer
     
-
     //Espacios para abreviaturas
     for (var i = 1; i <= 16; i++) {
         addAbreviatura(i, -1);
@@ -149,8 +151,6 @@ function create() {
         }
         addDiente(i, 4);
     }
-
-    
 
     llenarPanel(0);
 
@@ -179,11 +179,29 @@ function llenarPanel(increment) {
     //debugger
     //Si en la pagina : public_pagina + increment, no hay nada, entonces no hacer nada
     encontrado = 0;
-    init_config.sim_defaults.forEach(o => {
-        if (o.nPagina == (public_pagina + increment)) {
-            encontrado = 1;
-        }
-    });
+
+    if (switcher.data.state == true) {
+        init_config.sim_defaults.forEach(o => {
+            init_config.sim_defaults.forEach(o => {
+                if (o.tipo === "T") {
+                    if (o.nPagina == (public_pagina + increment)) {
+                        encontrado = 1;
+                    }
+                }
+            });
+        });
+    }
+    else {
+        init_config.sim_defaults.forEach(o => {
+            if (o.tipo === "A") {
+                if (o.nPagina == (public_pagina + increment)) {
+                    encontrado = 1;
+                }
+            }
+        });
+    }
+
+
     if (!encontrado)
         return;
 
@@ -212,6 +230,8 @@ function llenarPanel(increment) {
                     item.input.useHandCursor = true;
                     item.input.enableSnap(T, T, false, true);
                     item.events.onInputDown.add(DuplicateAndDrag, this);
+                    item.events.onInputOver.add(SimboloOver, this);
+                    item.events.onInputOut.add(SimboloOut, this);
                     item.data = o;
                 }
                 j++;
@@ -235,6 +255,8 @@ function llenarPanel(increment) {
                     item.input.useHandCursor = true;
                     item.input.enableSnap(T, T, false, true);
                     item.events.onInputDown.add(DuplicateAndDrag, this);
+                    item.events.onInputOver.add(SimboloOver, this);
+                    item.events.onInputOut.add(SimboloOut, this);
                     item.data = o;
                 }
                 j++;
@@ -249,8 +271,13 @@ function llenarPanel(increment) {
             }
         });
     }
+}
 
-    
+function SimboloOver(item) {
+    descriptionText.text = item.data.sDescripcionLarga;
+}
+function SimboloOut(item) {
+    descriptionText.text = "";
 }
 
 function save_up() {
@@ -271,13 +298,13 @@ function save_up() {
             /*if (data.length != 0) {
                 init_config.simbolos = data;
             }*/
-            alert('Success '+data);
+            alert('Success ' + data);
         },
         error: function (ex) {
             alert(ex.responseText);
         }
     });
-    
+
 }
 
 function print_up() {
@@ -295,6 +322,7 @@ function print_up() {
     windowContent += '<html>'
     windowContent += '<head><title>Print canvas</title></head>';
     windowContent += '<body>'
+    windowContent += $('#info_paciente').html();
     windowContent += '<img src="' + dataUrl + '">';
     windowContent += '</body>';
     windowContent += '</html>';
@@ -326,19 +354,16 @@ function update() {
     text.text = ':: '+item.data.x+','+item.data.y;
 }*/
 
-
-
 function DuplicateAndDrag(item) {
     //debugger
     var tmpItem = grupo_simbolos.create(game.input.mousePointer.x, game.input.mousePointer.y, item.generateTexture());
-    
+
     tmpItem.inputEnabled = true;
     tmpItem.input.enableDrag();
     tmpItem.input.enableSnap(T, T, false, true);
     //tmpItem.anchor.setTo(0.5);
     tmpItem.input.startDrag(game.input.activePointer);
     tmpItem.events.onDragStop.add(ValidationDrop, this);
-    tmpItem.events.onInputUp.add(ValidationDrop, this);
 
     var tipo_nuevo = "";
     if (item.data.tipo === "T")
@@ -355,9 +380,10 @@ function ValidationDrop(item) {
     //tipo: S -- simbolo
     item.data.validating = 1;
     var encontrado = 0;
-    //debugger
+
     if (item.data.tipo === "S") {
         grupo_dientes.forEach(function (it) {
+            debugger
             if (it.x == item.x && it.y == item.y && it.data.validating != 1) {
                 encontrado = 1;
                 item.data.validating = 0;
@@ -367,6 +393,7 @@ function ValidationDrop(item) {
 
                 //Encontrar si existe, el nOdontogramaDetalleID, modificar los valores
                 init_config.simbolos.forEach(o => {
+                    debugger
                     if (o.nOdontogramaDetalleID == item.data.nOdontogramaDetalleID && o.sidentifier === item.data.sidentifier) {
                         if (item.data.sNombreDiente != undefined) {
                             o.sNombreDiente = item.data.sNombreDiente;
@@ -389,6 +416,7 @@ function ValidationDrop(item) {
 
                 //Encontrar si existe, el nOdontogramaDetalleID, modificar los valores
                 init_config.simbolos.forEach(o => {
+                    debugger
                     if (o.nOdontogramaDetalleID == item.data.nOdontogramaDetalleID && o.sidentifier === item.data.sidentifier) {
                         if (item.data.sNombreDiente != undefined) {
                             o.sNombreDiente = item.data.sNombreDiente;
@@ -400,11 +428,10 @@ function ValidationDrop(item) {
             }
         });
     }
-    
     if (encontrado == 0) {
         //Eliminar del init_config la primer ocurrencia del nOdontogramaDetalleID, sNombreDiente, sDescripcion del item
         init_config.simbolos.forEach(o => {
-            if (o.sidentifier===item.data.sidentifier && o.nOdontogramaDetalleID === item.data.nOdontogramaDetalleID && o.sNombreDiente === item.data.sNombreDiente && o.sDescripcion === item.data.sDescripcion) {
+            if (o.sidentifier === item.data.sidentifier && o.nOdontogramaDetalleID === item.data.nOdontogramaDetalleID && o.sNombreDiente === item.data.sNombreDiente && o.sDescripcion === item.data.sDescripcion) {
                 init_config.simbolos.splice(init_config.simbolos.indexOf(o), 1); //Eliminar el elemento current
             }
         });
@@ -414,70 +441,17 @@ function ValidationDrop(item) {
         //Diente encontrado, entonces validar compatibilidad con demas simbolos
         var diente = item.data.sNombreDiente;
         var incompatibilidad_encontrada = 0;
-        /*init_config.simbolos.forEach(o => {
-            
-            if (o != undefined) {
-                //JSON.stringify(
-                init_config.simbolos.forEach(q => {
-                    if (q != undefined) {
-                        //debugger
-                        $.ajax({
-                            async: false,
-                            url: '/OdontogramaDetalle/ValidarCompatibilidadDientes',
-                            method: 'post',
-                            data: JSON.stringify({ diente1: o.sNombreDiente, diente2: q.sNombreDiente }),
-                            dataType: 'json',
-                            contentType: 'application/json',
-                            success: function (data) {
-                                //debugger
-                                if (data === 1) {
-                                    incompatibilidad_encontrada = 1;
-                                    alert('Incompatibilidad de dientes encontrada')
-                                }
-                            },
-                            error: function (ex) {
-                                alert(ex.responseText);
-                            }
-                        });
-                    }
-                });
-
-                if (o.sNombreDiente === diente && o.sidentifier!=item.data.sidentifier) {
-                    //debugger
-                    $.ajax({
-                        async: false,
-                        url: '/OdontogramaDetalle/ValidarCompatibilidadSimbolos',
-                        method: 'post',
-                        data: JSON.stringify({ simbolo1: o.sDescripcion, simbolo2: item.data.sDescripcion }),
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function (data) {
-                            //debugger
-                            if (data === 1) {
-                                incompatibilidad_encontrada = 1;
-                                alert('Incompatibilidad de simbolos encontrada')
-                            }
-                        },
-                        error: function (ex) {
-                            alert(ex.responseText);
-                        }
-                    });
-                }
-            }
-
-            
-
-        });
-        if (incompatibilidad_encontrada){
+        
+        if (incompatibilidad_encontrada) {
             //Eliminar del init_config la primer ocurrencia del nOdontogramaDetalleID, sNombreDiente, sDescripcion del item
             init_config.simbolos.forEach(o => {
-                if (o.sidentifier===item.data.sidentifier && o.nOdontogramaDetalleID === item.data.nOdontogramaDetalleID && o.sNombreDiente === item.data.sNombreDiente && o.sDescripcion === item.data.sDescripcion) {
+                if (o.sidentifier === item.data.sidentifier && o.nOdontogramaDetalleID === item.data.nOdontogramaDetalleID && o.sNombreDiente === item.data.sNombreDiente && o.sDescripcion === item.data.sDescripcion) {
                     init_config.simbolos.splice(init_config.simbolos.indexOf(o), 1); //Eliminar el elemento current
                 }
             });
             item.destroy();
         }
-        else*/
+        else
             item.bringToTop();
     }
 }
@@ -545,7 +519,7 @@ function addDiente(i, y) {
     dentText.anchor.setTo(0.5);
     dentText.font = 'Arial';
     dentText.fontSize = 10;
-
+    //item.scale.setTo(T, T);
     item.data = {
         tipo: "D",
         Nombre: obtenerNombre(i, y),
@@ -557,10 +531,12 @@ function addDiente(i, y) {
 
     dentText.text = item.data.Nombre;
     item.inputEnabled = true;
-
+    //item.input.useHandCursor = true;
+    //item.input.enableDrag();
     item.input.enableSnap(T, T, false, true);
-
-    /*Cargando de la BD*/
+    //item.events.onDragStop.add(fixLocation);
+    //item.events.onInputDown.add(Nombre, this);
+    //item.events.onInputOver.add(Nombre, this);
     init_config.simbolos.forEach(o => {
         if (item.data.Nombre === o.sNombreDiente) {
             var tmpItem = grupo_simbolos.create(T * (xEmp - 1) + T * i, T * (y + yEmp - 1), o.sDescripcion);
@@ -573,6 +549,7 @@ function addDiente(i, y) {
         }
     });
 }
+
 
 function addAbreviatura(i, y) {
     var x = 0;
@@ -595,7 +572,9 @@ function addAbreviatura(i, y) {
 
     /*Cargando de la BD*/
     init_config.simbolos.forEach(o => {
+        //debugger
         if (item.data.Nombre === o.sNombreDiente) {
+            //debugger
             var tmpItem = grupo_simbolos.create(T * (xEmp + i - 1), T * (yEmp + y), o.sDescripcion);
             tmpItem.inputEnabled = true;
             tmpItem.input.enableDrag();
@@ -607,7 +586,6 @@ function addAbreviatura(i, y) {
     });
 
 }
-
 
 function uniqueID() {
     // Math.random should be unique because of its seeding algorithm.
