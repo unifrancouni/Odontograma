@@ -20,10 +20,28 @@ var init_config = {
     "sim_defaults": [],
     "simbolos": [],
     "espacios": [],
-    "simbolos_incompatibles": [
-        { "simbolo1": "diente_ausente", "simbolo2": "diente_ausente"},
-    ],
+    "simbolos_incompatibles": []
 };
+
+
+function readTextFile(file, callback) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.overrideMimeType("application/json");
+    rawFile.open("GET", file, true);
+    rawFile.onreadystatechange = function () {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+            callback(rawFile.responseText);
+        }
+    }
+    rawFile.send(null);
+}
+
+//usage:
+readTextFile("http://localhost:52124/Content/Jsons/simbolos_incompatibles.json", function (text) {
+    debugger
+    //var data = JSON.parse(text);
+    init_config.simbolos_incompatibles = JSON.parse(text);
+});
 
 
 var game = new Phaser.Game(21 * T, 11 * T, Phaser.CANVAS, 'odontograma', { preload: preload, create: create, render: render, update: update });

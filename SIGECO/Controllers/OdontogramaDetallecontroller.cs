@@ -35,6 +35,13 @@ namespace AspNetMaker2019.Controllers
 		{
             MicroDB.MicroDB db = new MicroDB.MicroDB();
 
+            //Para sacar el json de una consulta X, tool
+            /*string strSQL2 = string.Format("select distinct s2.sDescripcion as simbolo1, s1.sDescripcion as simbolo2 "+
+            "from Simbolo s1, Simbolo s2 "+
+           " where s2.sDescripcion = 'diente_ausente' "+
+           " and s1.sDescripcion not like '%abrev%'");
+            var o2 = db.ExecuteReader(strSQL2);*/
+
             ViewBag.Id = id;
             ViewBag.nCodigoExpediente = "";
             ViewBag.NombrePaciente = "";
