@@ -20,6 +20,9 @@ var init_config = {
     "sim_defaults": [],
     "simbolos": [],
     "espacios": [],
+    "simbolos_incompatibles": [
+        { "simbolo1": "diente_ausente", "simbolo2": "diente_ausente"},
+    ],
 };
 
 
@@ -383,7 +386,7 @@ function ValidationDrop(item) {
 
     if (item.data.tipo === "S") {
         grupo_dientes.forEach(function (it) {
-            debugger
+            //debugger
             if (it.x == item.x && it.y == item.y && it.data.validating != 1) {
                 encontrado = 1;
                 item.data.validating = 0;
@@ -393,7 +396,7 @@ function ValidationDrop(item) {
 
                 //Encontrar si existe, el nOdontogramaDetalleID, modificar los valores
                 init_config.simbolos.forEach(o => {
-                    debugger
+                    //debugger
                     if (o.nOdontogramaDetalleID == item.data.nOdontogramaDetalleID && o.sidentifier === item.data.sidentifier) {
                         if (item.data.sNombreDiente != undefined) {
                             o.sNombreDiente = item.data.sNombreDiente;
@@ -416,7 +419,7 @@ function ValidationDrop(item) {
 
                 //Encontrar si existe, el nOdontogramaDetalleID, modificar los valores
                 init_config.simbolos.forEach(o => {
-                    debugger
+                    //debugger
                     if (o.nOdontogramaDetalleID == item.data.nOdontogramaDetalleID && o.sidentifier === item.data.sidentifier) {
                         if (item.data.sNombreDiente != undefined) {
                             o.sNombreDiente = item.data.sNombreDiente;
@@ -440,6 +443,7 @@ function ValidationDrop(item) {
     else {
         //Diente encontrado, entonces validar compatibilidad con demas simbolos
         var diente = item.data.sNombreDiente;
+        var simbolo = item.data.sDescripcion; 
         var incompatibilidad_encontrada = 0;
 
         if (!item.data.sNombreDiente.includes("E")) {
@@ -451,9 +455,41 @@ function ValidationDrop(item) {
                 if (o != undefined) {
                     if (!o.sNombreDiente.includes("E")) {
                         if (o.sNombreDiente === diente_incompatible.toString() && o.sidentifier != item.data.sidentifier) {
-                            debugger
+                            //debugger
                             incompatibilidad_encontrada = 1;
                             alert("Incompatibilidad de dientes encontrada");
+                        }
+                    }
+                }
+            });
+            init_config.simbolos.forEach(o => {
+                if (o != undefined) {
+                    if (!o.sNombreDiente.includes("E")) {
+                        if (o.sNombreDiente === diente && o.sidentifier != item.data.sidentifier) {
+                            init_config.simbolos_incompatibles.forEach(i => {
+                                //debugger
+                                console.log(o);
+                                if ((o.sDescripcion === i.simbolo1 && simbolo === i.simbolo2) || (o.sDescripcion === i.simbolo2 && simbolo === i.simbolo1)) {
+                                    //debugger
+                                    incompatibilidad_encontrada = 1;
+                                    alert("Incompatibilidad de simbolos encontrada");
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        else {
+            //debugger
+            //Con solo que el diente tenga algo es incompatible, ya que solo se permite una abreviatura por espacio
+            init_config.simbolos.forEach(o => {
+                if (o != undefined) {
+                    if (o.sNombreDiente.includes("E")) {
+                        if (o.sNombreDiente === diente && o.sidentifier != item.data.sidentifier) {
+                            //debugger
+                            incompatibilidad_encontrada = 1;
+                            alert("Solo se permite una abreviatura por espacio");
                         }
                     }
                 }
