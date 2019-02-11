@@ -359,7 +359,7 @@ function update() {
 
 function DuplicateAndDrag(item) {
     //debugger
-    var tmpItem = grupo_simbolos.create(game.input.mousePointer.x, game.input.mousePointer.y, item.generateTexture());
+    var tmpItem = grupo_simbolos.create(game.input.mousePointer.x-25, game.input.mousePointer.y-25, item.generateTexture());
 
     tmpItem.inputEnabled = true;
     tmpItem.input.enableDrag();
