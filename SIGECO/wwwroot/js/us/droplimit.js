@@ -59,6 +59,7 @@ function preload() {
         contentType: 'application/json',
         success: function (data) {
             if (data.length != 0) {
+                debugger
                 init_config.simbolos = data;
             }
         },
@@ -307,19 +308,26 @@ function save_up() {
 
     console.log(JSON.stringify(init_config.simbolos));
 
+    debugger
+    var oID = $("#iOdi").val();
+    var jsonSend = { oId: oID.toString(), detail: JSON.stringify(init_config.simbolos) };
+
     //debugger
     $.ajax({
         async: false,
         url: '/OdontogramaDetalle/SaveOdontogramaDetalle',
         method: 'post',
-        data: JSON.stringify({ json: JSON.stringify(init_config.simbolos) }),
+        data: JSON.stringify(jsonSend),
         dataType: 'json',
         contentType: 'application/json',
         success: function (data) {
             /*if (data.length != 0) {
                 init_config.simbolos = data;
             }*/
-            alert('Success ' + data);
+            if (data == 1)
+                alert('Guardado exitosamente.');
+            else
+                alert('Error al guardar.');
         },
         error: function (ex) {
             alert(ex.responseText);
@@ -392,7 +400,7 @@ function DuplicateAndDrag(item) {
     if (item.data.tipo === "A")
         tipo_nuevo = "V";
 
-    tmpItem.data = { tipo: tipo_nuevo, sidentifier: uniqueID(), nOdontogramaDetalleID: 0, sNombreDiente: null, sDescripcion: item.key };
+    tmpItem.data = { tipo: tipo_nuevo, sidentifier: uniqueID(), nOdontogramaID: $("#iOdi").val(), nOdontogramaDetalleID: 0, sNombreDiente: null, sDescripcion: item.key };
     init_config.simbolos.push(tmpItem.data);
 }
 

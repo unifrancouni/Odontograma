@@ -51,16 +51,19 @@ namespace AspNetMaker2019.Controllers
             string strSQL = string.Format("SELECT * FROM vwOdontogramaInfoPaciente WHERE nOdontogramaID = {0}", id);
             var o = db.ExecuteReaderList(strSQL);
 
-            if (o.Count > 0)
+            if (o != null)
             {
-                DateTime dt = Convert.ToDateTime(o[0]["dFechaOdontograma"]);
-                
-                ViewBag.nCodigoExpediente = o[0]["nCodigoExpediente"];
-                ViewBag.NombrePaciente = o[0]["NombrePaciente"];
-                ViewBag.sCedula = o[0]["sCedula"];
-                ViewBag.dFechaOdontograma = dt.ToString("dd/MM/yyyy");
-            }
+                if (o.Count > 0)
+                {
+                    DateTime dt = Convert.ToDateTime(o[0]["dFechaOdontograma"]);
 
+                    ViewBag.nCodigoExpediente = o[0]["nCodigoExpediente"];
+                    ViewBag.NombrePaciente = o[0]["NombrePaciente"];
+                    ViewBag.sCedula = o[0]["sCedula"];
+                    ViewBag.dFechaOdontograma = dt.ToString("dd/MM/yyyy");
+                }
+            }
+            
             return View();
 		}
 
@@ -74,7 +77,7 @@ namespace AspNetMaker2019.Controllers
         {
             MicroDB.MicroDB db = new MicroDB.MicroDB();
 
-            object detalle = db.ExecuteReader("select nOdontogramaDetalleID, tipo, sNombreDiente, sDescripcion " +
+            object detalle = db.ExecuteReader("select nOdontogramaID, nOdontogramaDetalleID, tipo, sNombreDiente, sDescripcion " +
                 "from vwOdontogramaDetalle where nOdontogramaID="+id.id);
 
             return Json(detalle);
@@ -140,12 +143,14 @@ namespace AspNetMaker2019.Controllers
          
         public class Odontograma
         {
+            public int oid;
             public int odi;
             public string d;
             public string nd;
 
-            public Odontograma(int odi, string d, string nd)
+            public Odontograma(int oid, int odi, string d, string nd)
             {
+                this.oid = oid;
                 this.odi = odi;
                 this.d = d;
                 this.nd = nd;
@@ -155,7 +160,8 @@ namespace AspNetMaker2019.Controllers
 
         public class JsonModel
         {
-            public string json;
+            public string oId;
+            public string detail;
         }
 
         [HttpPost]
@@ -164,12 +170,14 @@ namespace AspNetMaker2019.Controllers
 
             MicroDB.MicroDB db = new MicroDB.MicroDB();
 
+            int oids = (jsonModel!=null)?int.Parse(jsonModel.oId.ToString()):0;
+
             List<Odontograma> odontograma = new List<Odontograma>();
 
-            var objects = JArray.Parse(jsonModel.json); //Leer JSON que entra por POST
+            var objects = JArray.Parse(jsonModel.detail); //Leer JSON que entra por POST
             foreach (JObject root in objects) //Recorrer JSON e insertarlos en el ArrayList
             {
-
+                var oid = root.GetValue("nOdontogramaID");
                 var odi = root.GetValue("nOdontogramaDetalleID");
                 var d = root.GetValue("sDescripcion");
                 var nd = root.GetValue("sNombreDiente");
@@ -178,7 +186,7 @@ namespace AspNetMaker2019.Controllers
                 string ds = d.ToString();
                 string nds = nd.ToString();
 
-                Odontograma o = new Odontograma(odis, ds, nds);
+                Odontograma o = new Odontograma(oids, odis, ds, nds);
                 odontograma.Add(o);
                 
             }
@@ -198,21 +206,21 @@ namespace AspNetMaker2019.Controllers
             //    Sin embargo, para evitar cualquier inconsistencia, se creará un nuevo id para este.
 
 
-            var consulta = db.ExecuteReaderList("select * from vwOdontogramaDetalle");
+            var consulta = db.ExecuteReaderList("select * from vwOdontogramaDetalle where nOdontogramaID="+oids);
             foreach (var i in consulta)
             {
                 Odontograma item = odontograma.Where(c => c.d.Equals(i["sDescripcion"]) && c.nd.Equals(i["sNombreDiente"]) && c.odi == int.Parse(i["nOdontogramaDetalleID"].ToString())).FirstOrDefault();
                 //Si existe en el array...
                 if (item != null)
-                {
+                {     
                     //Actualizar sNombreDiente en la BD con el odi especifico
-                    string strSQL = string.Format("Exec spGrabarOdontogramaDetalle {0}, '{1}', '{2}', 0; ", item.odi, item.nd, item.d);
+                    string strSQL = string.Format("Exec spGrabarOdontogramaDetalle {0}, {1}, '{2}', '{3}', 0; ", item.oid, item.odi, item.nd, item.d);
                     db.ExecuteSqlCommand(strSQL);
                 }
                 else
                 {
                     //Desactivar el simbolo con el odi especifico
-                    string strSQL = string.Format("Exec spGrabarOdontogramaDetalle {0}, '{1}', '{2}', 1; ", i["nOdontogramaDetalleID"], i["sNombreDiente"], i["sDescripcion"]);
+                    string strSQL = string.Format("Exec spGrabarOdontogramaDetalle {0}, {1}, '{2}', '{3}', 1; ", i["nOdontogramaID"], i["nOdontogramaDetalleID"], i["sNombreDiente"], i["sDescripcion"]);
                     db.ExecuteSqlCommand(strSQL);
                 }
             }
@@ -223,7 +231,7 @@ namespace AspNetMaker2019.Controllers
                 //Si no existe en la BD...
                 if (consulta.Where(c => int.Parse(c["nOdontogramaDetalleID"].ToString()) == i.odi && c["sDescripcion"].Equals(i.d) && c["sNombreDiente"].Equals(i.nd)).ToList().Count == 0) {
                     //Insertar registro nuevo
-                    string strSQL = string.Format("Exec spGrabarOdontogramaDetalle {0}, '{1}', '{2}', 0; ", i.odi, i.nd, i.d);
+                    string strSQL = string.Format("Exec spGrabarOdontogramaDetalle {0}, {1}, '{2}', '{3}', 0; ", i.oid, i.odi, i.nd, i.d);
                     db.ExecuteSqlCommand(strSQL);
                 }
             }
