@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -90,7 +91,7 @@ if (!Empty(Expediente_List.DbMasterFilter) && Expediente_List.CurrentMasterTable
 }
 }
 @{ Expediente_List.RenderOtherOptions(); }
-@{
+@if (Security.CanSearch) {
 if (!Expediente_List.IsExport() && Empty(Expediente_List.CurrentAction)) { // Begin search form
 <form name="fExpedientelistsrch" id="fExpedientelistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
 <div id="fExpedientelistsrch-search-panel" class="ew-search-panel collapse@(!Empty(Expediente_List.SearchWhere) ? " show" : " show")">

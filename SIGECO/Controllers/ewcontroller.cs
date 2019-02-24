@@ -61,6 +61,45 @@ namespace AspNetMaker2019.Controllers
 		[Route("Home/ewemail")]
 		public IActionResult ewemail() => View();
 
+		// personaldata
+		[Route("PersonalData/{cmd?}")]
+		[Route("Home/PersonalData/{cmd?}")]
+		public async Task<IActionResult> PersonalData()
+		{
+
+			// Create page object
+			_personaldata = new __personaldata(this);
+
+			// Run the page
+			return await _personaldata.Run();
+		}
+
+		// login
+		[Route("login")]
+		[Route("Home/login")]
+		public async Task<IActionResult> login()
+		{
+
+			// Create page object
+			_login = new __login(this);
+
+			// Run the page
+			return await _login.Run();
+		}
+
+		// logout
+		[Route("logout")]
+		[Route("Home/logout")]
+		public async Task<IActionResult> logout()
+		{
+
+			// Create page object
+			_logout = new __logout(this);
+
+			// Run the page
+			return await _logout.Run();
+		}
+
 		// index
 		[Route("")]
 		[Route("Index")]

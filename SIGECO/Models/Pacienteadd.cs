@@ -373,6 +373,9 @@ namespace AspNetMaker2019.Models {
 				if (Paciente == null || Paciente is _Paciente)
 					Paciente = this;
 
+				// Table object (Usuario)
+				Usuario = Usuario ?? new _Usuario();
+
 				// Start time
 				StartTime = Environment.TickCount;
 
@@ -381,6 +384,10 @@ namespace AspNetMaker2019.Models {
 
 				// Open connection
 				Conn = Connection; // DN
+
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
 			}
 
 			#pragma warning disable 1998
@@ -560,6 +567,39 @@ namespace AspNetMaker2019.Models {
 
 				// Is modal
 				IsModal = Param<bool>("modal");
+
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+					if (!Security.IsLoggedIn)
+						await Security.AutoLogin();
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loading();
+					Security.LoadCurrentUserLevel(ProjectID + TableName);
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loaded();
+					if (!Security.CanAdd) {
+						Security.SaveLastUrl();
+						FailureMessage = DeniedMessage(); // Set no permission
+						if (IsApi())
+							return new JsonBoolResult(new { success = false, error = DeniedMessage(), version = Config.ProductVersion }, false);
+						if (Security.CanList)
+							return Terminate(GetUrl("Pacientelist"));
+						else
+							return Terminate(GetUrl("login"));
+					}
+				}
 
 				// Create form object
 				CurrentForm = new HttpForm();
@@ -1567,7 +1607,9 @@ namespace AspNetMaker2019.Models {
 					if (detailTblVar.Contains("Expediente") && Expediente.DetailAdd) {
 						Expediente.nPacienteID.SessionValue = Convert.ToString(nPacienteID.CurrentValue); // Set master key
 						Expediente_Grid = Expediente_Grid ?? new _Expediente_Grid(); // Get detail page object
+						Security.LoadCurrentUserLevel(ProjectID + "Expediente"); // Load user level of detail table
 						result = await Expediente_Grid.GridInsert();
+						Security.LoadCurrentUserLevel(ProjectID + TableName); // Restore user level of master table
 					}
 				}
 

@@ -8,3 +8,13 @@ C:\Users\User\Documents\ASPNETMaker\Projects\MicroDB\bin\Debug\Newtonsoft.Json.d
 C:\Users\User\Documents\ASPNETMaker\Projects\MicroDB\bin\Debug\Newtonsoft.Json.pdb
 C:\Users\User\Documents\ASPNETMaker\Projects\MicroDB\bin\Debug\Newtonsoft.Json.xml
 C:\Users\User\Documents\ASPNETMaker\Projects\MicroDB\obj\Debug\MicroDB.csproj.CopyComplete
+C:\Users\User\Documents\SIGECO\MicroDB\bin\Debug\MicroDB.dll
+C:\Users\User\Documents\SIGECO\MicroDB\bin\Debug\MicroDB.pdb
+C:\Users\User\Documents\SIGECO\MicroDB\bin\Debug\Newtonsoft.Json.dll
+C:\Users\User\Documents\SIGECO\MicroDB\bin\Debug\Newtonsoft.Json.pdb
+C:\Users\User\Documents\SIGECO\MicroDB\bin\Debug\Newtonsoft.Json.xml
+C:\Users\User\Documents\SIGECO\MicroDB\obj\Debug\MicroDB.csprojAssemblyReference.cache
+C:\Users\User\Documents\SIGECO\MicroDB\obj\Debug\MicroDB.csproj.CoreCompileInputs.cache
+C:\Users\User\Documents\SIGECO\MicroDB\obj\Debug\MicroDB.csproj.CopyComplete
+C:\Users\User\Documents\SIGECO\MicroDB\obj\Debug\MicroDB.dll
+C:\Users\User\Documents\SIGECO\MicroDB\obj\Debug\MicroDB.pdb

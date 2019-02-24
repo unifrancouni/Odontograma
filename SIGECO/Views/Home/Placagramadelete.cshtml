@@ -1,0 +1,159 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetupLoginStatus(); // Setup login status
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Placagrama_Delete.Page_Render();
+
+	// Check action result
+	if (Placagrama_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fPlacagramadelete = currentForm = new ew.Form("fPlacagramadelete", "delete");
+
+// Form_CustomValidate event
+fPlacagramadelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPlacagramadelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPlacagramadelete.lists["x_nExpedienteID"] = @Html.Raw(Placagrama_Delete.nExpedienteID.Lookup.ToClientList());
+fPlacagramadelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Placagrama_Delete.nExpedienteID.LookupOptions()));
+fPlacagramadelete.lists["x_nEstadoID"] = @Html.Raw(Placagrama_Delete.nEstadoID.Lookup.ToClientList());
+fPlacagramadelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Placagrama_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Placagrama_Delete.ShowPageHeader()
+@Placagrama_Delete.ShowMessages()
+<form name="fPlacagramadelete" id="fPlacagramadelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Placagrama_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in Placagrama_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (Placagrama.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<th class="@Html.Raw(Placagrama.nExpedienteID.HeaderCellClass)"><span id="elh_Placagrama_nExpedienteID" class="Placagrama_nExpedienteID">@Html.Raw(Placagrama.nExpedienteID.Caption)</span></th>
+} @* nExpedienteID.Visible (end) *@
+@if (Placagrama.sObservaciones.Visible) { // sObservaciones (begin)
+		<th class="@Html.Raw(Placagrama.sObservaciones.HeaderCellClass)"><span id="elh_Placagrama_sObservaciones" class="Placagrama_sObservaciones">@Html.Raw(Placagrama.sObservaciones.Caption)</span></th>
+} @* sObservaciones.Visible (end) *@
+@if (Placagrama.dFechaPlacagrama.Visible) { // dFechaPlacagrama (begin)
+		<th class="@Html.Raw(Placagrama.dFechaPlacagrama.HeaderCellClass)"><span id="elh_Placagrama_dFechaPlacagrama" class="Placagrama_dFechaPlacagrama">@Html.Raw(Placagrama.dFechaPlacagrama.Caption)</span></th>
+} @* dFechaPlacagrama.Visible (end) *@
+@if (Placagrama.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(Placagrama.nEstadoID.HeaderCellClass)"><span id="elh_Placagrama_nEstadoID" class="Placagrama_nEstadoID">@Html.Raw(Placagrama.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ Placagrama_Delete.RecordCount = 0; }
+@while (Placagrama_Delete.Recordset != null && await Placagrama_Delete.Recordset.ReadAsync()) { // DN
+	Placagrama_Delete.RecordCount++;
+	Placagrama_Delete.RowCnt++;
+
+	// Set row properties
+	Placagrama_Delete.ResetAttributes();
+	Placagrama_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await Placagrama_Delete.LoadRowValues(Placagrama_Delete.Recordset);
+
+	// Render row
+	await Placagrama_Delete.RenderRow();
+	<tr @Html.Raw(Placagrama_Delete.RowAttributes)>
+@if (Placagrama.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<td @Html.Raw(Placagrama.nExpedienteID.CellAttributes)>
+<span id="el@(Placagrama_Delete.RowCnt)_Placagrama_nExpedienteID" class="Placagrama_nExpedienteID">
+<span @Html.Raw(Placagrama.nExpedienteID.ViewAttributes)>
+@Html.Raw(Placagrama.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+} @* nExpedienteID.Visible (end) *@
+@if (Placagrama.sObservaciones.Visible) { // sObservaciones (begin)
+		<td @Html.Raw(Placagrama.sObservaciones.CellAttributes)>
+<span id="el@(Placagrama_Delete.RowCnt)_Placagrama_sObservaciones" class="Placagrama_sObservaciones">
+<span @Html.Raw(Placagrama.sObservaciones.ViewAttributes)>
+@Html.Raw(Placagrama.sObservaciones.GetViewValue())</span>
+</span>
+</td>
+} @* sObservaciones.Visible (end) *@
+@if (Placagrama.dFechaPlacagrama.Visible) { // dFechaPlacagrama (begin)
+		<td @Html.Raw(Placagrama.dFechaPlacagrama.CellAttributes)>
+<span id="el@(Placagrama_Delete.RowCnt)_Placagrama_dFechaPlacagrama" class="Placagrama_dFechaPlacagrama">
+<span @Html.Raw(Placagrama.dFechaPlacagrama.ViewAttributes)>
+@Html.Raw(Placagrama.dFechaPlacagrama.GetViewValue())</span>
+</span>
+</td>
+} @* dFechaPlacagrama.Visible (end) *@
+@if (Placagrama.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(Placagrama.nEstadoID.CellAttributes)>
+<span id="el@(Placagrama_Delete.RowCnt)_Placagrama_nEstadoID" class="Placagrama_nEstadoID">
+<span @Html.Raw(Placagrama.nEstadoID.ViewAttributes)>
+@Html.Raw(Placagrama.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ Placagrama_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Placagrama_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@Placagrama_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

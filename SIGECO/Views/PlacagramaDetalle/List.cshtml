@@ -1,0 +1,79 @@
+@{
+
+    // Layout
+    //Layout = "_Layout2";
+    Layout = null;
+
+}
+
+
+<div id="info_paciente">
+    <table class="MsoTableGrid" style="background:#7030A0;border-collapse:collapse;border:none;mso-border-alt:&#10; solid white .25pt;mso-border-themecolor:background1;mso-yfti-tbllook:1184;&#10; mso-padding-alt:0cm 5.4pt 0cm 5.4pt;mso-border-insideh:.25pt solid white;&#10; mso-border-insideh-themecolor:background1;mso-border-insidev:.25pt solid white;&#10; mso-border-insidev-themecolor:background1" border="1" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr style="mso-yfti-irow:0;mso-yfti-firstrow:yes;mso-yfti-lastrow:yes">
+                <td width="113" valign="top" style="width:84.9pt;border:solid white 1.0pt;&#10;  mso-border-themecolor:background1;mso-border-alt:solid white .25pt;&#10;  mso-border-themecolor:background1;padding:0cm 5.4pt 0cm 5.4pt">
+                    <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:&#10;  normal">
+                        <span style="color:white;mso-themecolor:background1">
+                            No. Expediente
+                            <o:p></o:p>
+                        </span>
+                    </p>
+                </td>
+                <td width="38" valign="top" style="width:1.0cm;border:solid white 1.0pt;&#10;  mso-border-themecolor:background1;border-left:none;mso-border-left-alt:solid white .25pt;&#10;  mso-border-left-themecolor:background1;mso-border-alt:solid white .25pt;&#10;  mso-border-themecolor:background1;padding:0cm 5.4pt 0cm 5.4pt">
+                    <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:&#10;  normal">
+                        <span style="color:white;mso-themecolor:background1">
+                            @ViewBag.nCodigoExpediente
+                            <o:p></o:p>
+                        </span>
+                    </p>
+                </td>
+                <td width="66" valign="top" style="width:49.65pt;border:solid white 1.0pt;&#10;  mso-border-themecolor:background1;border-left:none;mso-border-left-alt:solid white .25pt;&#10;  mso-border-left-themecolor:background1;mso-border-alt:solid white .25pt;&#10;  mso-border-themecolor:background1;padding:0cm 5.4pt 0cm 5.4pt">
+                    <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:&#10;  normal">
+                        <span style="color:white;mso-themecolor:background1">
+                            Nombre
+                            <o:p></o:p>
+                        </span>
+                    </p>
+                </td>
+                <td width="300" valign="top" style="width:406.5pt;border:solid white 1.0pt;&#10;  mso-border-themecolor:background1;border-left:none;mso-border-left-alt:solid white .25pt;&#10;  mso-border-left-themecolor:background1;mso-border-alt:solid white .25pt;&#10;  mso-border-themecolor:background1;padding:0cm 5.4pt 0cm 5.4pt">
+                    <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:&#10;  normal">
+                        <span class="SpellE">
+                            <span style="color:white;mso-themecolor:background1">
+                                @ViewBag.NombrePaciente | @ViewBag.sCedula
+                            </span>
+                        </span><span style="color:white;mso-themecolor:background1"><o:p></o:p></span>
+                    </p>
+                </td>
+                <td width="61" valign="top" style="width:45.85pt;border:solid white 1.0pt;&#10;  mso-border-themecolor:background1;border-left:none;mso-border-left-alt:solid white .25pt;&#10;  mso-border-left-themecolor:background1;mso-border-alt:solid white .25pt;&#10;  mso-border-themecolor:background1;padding:0cm 5.4pt 0cm 5.4pt">
+                    <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:&#10;  normal">
+                        <span style="color:white;mso-themecolor:background1">
+                            Fecha
+                            <o:p></o:p>
+                        </span>
+                    </p>
+                </td>
+                <td width="135" valign="top" style="width:101.35pt;border:solid white 1.0pt;&#10;  mso-border-themecolor:background1;border-left:none;mso-border-left-alt:solid white .25pt;&#10;  mso-border-left-themecolor:background1;mso-border-alt:solid white .25pt;&#10;  mso-border-themecolor:background1;padding:0cm 5.4pt 0cm 5.4pt">
+                    <p class="MsoNormal" style="margin-bottom:0cm;margin-bottom:.0001pt;line-height:&#10;  normal">
+                        <span class="SpellE">
+                            <span style="color:white;mso-themecolor:background1">
+                                @ViewBag.dFechaPlacagrama
+                            </span>
+                        </span><span style="color:white;mso-themecolor:background1"><o:p></o:p></span>
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<input id="iOdi" type="hidden" value="@ViewBag.Id" />
+
+<div id="placagrama"></div>
+
+<script src="~/js/us/phaser.min.js"></script>
+<script src="~/js/us/webfont.js"></script>
+<script src="~/js/us/placagrama.js"></script>
+<script src="~/js/jquery-3.3.1.min.js"></script>
+
+
+

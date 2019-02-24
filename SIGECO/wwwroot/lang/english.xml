@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<ew-language date="2019/2/1" version="16.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
+<ew-language date="2019/2/21" version="16.0.0" id="en" name="English" desc="English" author="e.World Technology Ltd.">
   <!--
 	*** Important Notes:
 	1. Language ID should follow: https://developers.google.com/recaptcha/docs/language,
@@ -703,6 +703,9 @@
   <project>
     <phrase id="bodytitle" value="SIGECO" />
     <phrase id="footertext" value="&amp;copy;2019 e.World Technology Ltd. All rights reserved." />
+    <menu id="88">
+      <phrase id="menutext" value="vw Odontograma Info Paciente" />
+    </menu>
     <menu id="87">
       <phrase id="menutext" value="vw Paciente Expediente" />
     </menu>
@@ -742,13 +745,13 @@
     <menu id="6">
       <phrase id="menutext" value="Examen Complementario" />
     </menu>
-    <menu id="82">
+    <menu id="8">
       <phrase id="menutext" value="Odontograma" />
     </menu>
-    <menu id="83">
-      <phrase id="menutext" value="Periodontorama" />
+    <menu id="11">
+      <phrase id="menutext" value="Periodontograma" />
     </menu>
-    <menu id="84">
+    <menu id="13">
       <phrase id="menutext" value="Placagrama" />
     </menu>
     <menu id="80">
@@ -769,29 +772,17 @@
     <menu id="5">
       <phrase id="menutext" value="Diente" />
     </menu>
-    <menu id="8">
-      <phrase id="menutext" value="Odontograma" />
-    </menu>
     <menu id="9">
       <phrase id="menutext" value="Odontograma Detalle" />
     </menu>
-    <menu id="11">
-      <phrase id="menutext" value="Periodontograma" />
-    </menu>
     <menu id="12">
       <phrase id="menutext" value="Periodontograma Detalle" />
-    </menu>
-    <menu id="13">
-      <phrase id="menutext" value="Placagrama" />
     </menu>
     <menu id="14">
       <phrase id="menutext" value="Placagrama Detalle" />
     </menu>
     <menu id="15">
       <phrase id="menutext" value="Simbolo" />
-    </menu>
-    <menu id="16">
-      <phrase id="menutext" value="sysdiagrams" />
     </menu>
     <menu id="19">
       <phrase id="menutext" value="Usuario" />
@@ -1000,14 +991,8 @@
       <field id="dfechacreacion">
         <phrase id="fldcaption" value="d Fecha Creacion" />
       </field>
-      <field id="susuariocreacion">
-        <phrase id="fldcaption" value="s Usuario Creacion" />
-      </field>
       <field id="dfechamodificacion">
         <phrase id="fldcaption" value="d Fecha Modificacion" />
-      </field>
-      <field id="susuariomodificacion">
-        <phrase id="fldcaption" value="s Usuario Modificacion" />
       </field>
     </table>
     <table id="examencomplementario">
@@ -1132,14 +1117,8 @@
       <field id="dfechacreacion">
         <phrase id="fldcaption" value="d Fecha Creacion" />
       </field>
-      <field id="susuariocreacion">
-        <phrase id="fldcaption" value="s Usuario Creacion" />
-      </field>
       <field id="dfechamodificacion">
         <phrase id="fldcaption" value="d Fecha Modificacion" />
-      </field>
-      <field id="susuariomodificacion">
-        <phrase id="fldcaption" value="s Usuario Modificacion" />
       </field>
     </table>
     <table id="paciente">
@@ -1206,25 +1185,22 @@
         <phrase id="fldcaption" value="n Periodontograma ID" />
       </field>
       <field id="nexpedienteid">
-        <phrase id="fldcaption" value="n Expediente ID" />
+        <phrase id="fldcaption" value="Expediente" />
       </field>
       <field id="dfechaperiodontograma">
-        <phrase id="fldcaption" value="d Fecha Periodontograma" />
+        <phrase id="fldcaption" value="Fecha Realización" />
+      </field>
+      <field id="sobservaciones">
+        <phrase id="fldcaption" value="Observaciones" />
       </field>
       <field id="nestadoid">
-        <phrase id="fldcaption" value="n Estado ID" />
+        <phrase id="fldcaption" value="Estado" />
       </field>
       <field id="dfechacreacion">
         <phrase id="fldcaption" value="d Fecha Creacion" />
       </field>
-      <field id="susuariocreacion">
-        <phrase id="fldcaption" value="s Usuario Creacion" />
-      </field>
       <field id="dfechamodificacion">
         <phrase id="fldcaption" value="d Fecha Modificacion" />
-      </field>
-      <field id="susuariomodificacion">
-        <phrase id="fldcaption" value="s Usuario Modificacion" />
       </field>
     </table>
     <table id="periodontogramadetalle">
@@ -1241,14 +1217,8 @@
       <field id="dfechacreacion">
         <phrase id="fldcaption" value="d Fecha Creacion" />
       </field>
-      <field id="susuariocreacion">
-        <phrase id="fldcaption" value="s Usuario Creacion" />
-      </field>
       <field id="dfechamodificacion">
         <phrase id="fldcaption" value="d Fecha Modificacion" />
-      </field>
-      <field id="susuariomodificacion">
-        <phrase id="fldcaption" value="s Usuario Modificacion" />
       </field>
     </table>
     <table id="placagrama">
@@ -1257,25 +1227,22 @@
         <phrase id="fldcaption" value="n Placagrama ID" />
       </field>
       <field id="nexpedienteid">
-        <phrase id="fldcaption" value="n Expediente ID" />
+        <phrase id="fldcaption" value="Expediente" />
+      </field>
+      <field id="sobservaciones">
+        <phrase id="fldcaption" value="Observaciones" />
       </field>
       <field id="dfechaplacagrama">
-        <phrase id="fldcaption" value="d Fecha Placagrama" />
+        <phrase id="fldcaption" value="Fecha Realización" />
       </field>
       <field id="nestadoid">
-        <phrase id="fldcaption" value="n Estado ID" />
+        <phrase id="fldcaption" value="Estado" />
       </field>
       <field id="dfechacreacion">
         <phrase id="fldcaption" value="d Fecha Creacion" />
       </field>
-      <field id="susuariocreacion">
-        <phrase id="fldcaption" value="s Usuario Creacion" />
-      </field>
       <field id="dfechamodificacion">
         <phrase id="fldcaption" value="d Fecha Modificacion" />
-      </field>
-      <field id="susuariomodificacion">
-        <phrase id="fldcaption" value="s Usuario Modificacion" />
       </field>
     </table>
     <table id="placagramadetalle">
@@ -1298,14 +1265,8 @@
       <field id="dfechacreacion">
         <phrase id="fldcaption" value="d Fecha Creacion" />
       </field>
-      <field id="susuariocreacion">
-        <phrase id="fldcaption" value="s Usuario Creacion" />
-      </field>
       <field id="dfechamodificacion">
         <phrase id="fldcaption" value="d Fecha Modificacion" />
-      </field>
-      <field id="susuariomodificacion">
-        <phrase id="fldcaption" value="s Usuario Modificacion" />
       </field>
     </table>
     <table id="simbolo">
@@ -1325,32 +1286,14 @@
       <field id="dfechacreacion">
         <phrase id="fldcaption" value="d Fecha Creacion" />
       </field>
-      <field id="susuariocreacion">
-        <phrase id="fldcaption" value="s Usuario Creacion" />
-      </field>
       <field id="dfechamodificacion">
         <phrase id="fldcaption" value="d Fecha Modificacion" />
       </field>
-      <field id="susuariomodificacion">
-        <phrase id="fldcaption" value="s Usuario Modificacion" />
+      <field id="tipo">
+        <phrase id="fldcaption" value="tipo" />
       </field>
-    </table>
-    <table id="sysdiagrams">
-      <phrase id="tblcaption" value="sysdiagrams" />
-      <field id="name">
-        <phrase id="fldcaption" value="name" />
-      </field>
-      <field id="principal_id">
-        <phrase id="fldcaption" value="principal id" />
-      </field>
-      <field id="diagram_id">
-        <phrase id="fldcaption" value="diagram id" />
-      </field>
-      <field id="version">
-        <phrase id="fldcaption" value="version" />
-      </field>
-      <field id="definition">
-        <phrase id="fldcaption" value="definition" />
+      <field id="sdescripcionlarga">
+        <phrase id="fldcaption" value="s Descripcion Larga" />
       </field>
     </table>
     <table id="tratamiento">
@@ -1407,10 +1350,20 @@
         <phrase id="fldcaption" value="n Usuario Id" />
       </field>
       <field id="semail">
-        <phrase id="fldcaption" value="s Email" />
+        <phrase id="fldcaption" value="Correo" />
       </field>
       <field id="spassword">
-        <phrase id="fldcaption" value="s Password" />
+        <phrase id="fldcaption" value="Contraseña" />
+      </field>
+      <field id="susername">
+        <phrase id="fldcaption" value="Nombre Usuario" />
+      </field>
+      <field id="nactivo">
+        <phrase id="fldcaption" value="Activo" />
+        <phrase id="fldtagvalue1" value="1" />
+        <phrase id="fldtagcaption1" value="Activo" />
+        <phrase id="fldtagvalue2" value="0" />
+        <phrase id="fldtagcaption2" value="Inactivo" />
       </field>
     </table>
     <table id="validacionsimboloodontograma">
@@ -1507,6 +1460,9 @@
       <field id="sdescripcion">
         <phrase id="fldcaption" value="s Descripcion" />
       </field>
+      <field id="nodontogramaid">
+        <phrase id="fldcaption" value="n Odontograma ID" />
+      </field>
     </table>
     <table id="vwsimbolosincompatibles">
       <phrase id="tblcaption" value="vw Simbolos Incompatibles" />
@@ -1539,6 +1495,30 @@
       </field>
       <field id="scedula">
         <phrase id="fldcaption" value="s Cedula" />
+      </field>
+    </table>
+    <table id="vwodontogramainfopaciente">
+      <phrase id="tblcaption" value="vw Odontograma Info Paciente" />
+      <field id="nodontogramaid">
+        <phrase id="fldcaption" value="n Odontograma ID" />
+      </field>
+      <field id="npacienteid">
+        <phrase id="fldcaption" value="n Paciente ID" />
+      </field>
+      <field id="nexpedienteid">
+        <phrase id="fldcaption" value="n Expediente ID" />
+      </field>
+      <field id="ncodigoexpediente">
+        <phrase id="fldcaption" value="n Codigo Expediente" />
+      </field>
+      <field id="nombrepaciente">
+        <phrase id="fldcaption" value="Nombre Paciente" />
+      </field>
+      <field id="scedula">
+        <phrase id="fldcaption" value="s Cedula" />
+      </field>
+      <field id="dfechaodontograma">
+        <phrase id="fldcaption" value="d Fecha Odontograma" />
       </field>
     </table>
   </project>

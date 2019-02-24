@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -88,7 +89,7 @@ if (!Empty(ValorCatalogo_List.DbMasterFilter) && ValorCatalogo_List.CurrentMaste
 }
 }
 @{ ValorCatalogo_List.RenderOtherOptions(); }
-@{
+@if (Security.CanSearch) {
 if (!ValorCatalogo_List.IsExport() && Empty(ValorCatalogo_List.CurrentAction)) { // Begin search form
 <form name="fValorCatalogolistsrch" id="fValorCatalogolistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
 <div id="fValorCatalogolistsrch-search-panel" class="ew-search-panel collapse@(!Empty(ValorCatalogo_List.SearchWhere) ? " show" : " show")">

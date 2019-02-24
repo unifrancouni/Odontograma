@@ -418,6 +418,9 @@ namespace AspNetMaker2019.Models {
 				MultiDeleteUrl = "Tratamientodelete";
 				MultiUpdateUrl = "Tratamientoupdate";
 
+				// Table object (Usuario)
+				Usuario = Usuario ?? new _Usuario();
+
 				// Start time
 				StartTime = Environment.TickCount;
 
@@ -426,6 +429,10 @@ namespace AspNetMaker2019.Models {
 
 				// Open connection
 				Conn = Connection; // DN
+
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
 
 				// List options
 				ListOptions = new ListOptions { TableVar = TableVar };
@@ -637,6 +644,36 @@ namespace AspNetMaker2019.Models {
 				// Header
 				Header(Config.Cache);
 
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+					if (!Security.IsLoggedIn)
+						await Security.AutoLogin();
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loading();
+					Security.LoadCurrentUserLevel(ProjectID + TableName);
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loaded();
+					if (!Security.CanList) {
+						Security.SaveLastUrl();
+						FailureMessage = DeniedMessage(); // Set no permission
+						if (IsApi())
+							return new JsonBoolResult(new { success = false, error = DeniedMessage(), version = Config.ProductVersion }, false);
+						return Terminate(GetUrl("Index"));
+					}
+				}
+
 				// Get export parameters
 				string custom = "";
 				if (!Empty(Param("export"))) {
@@ -835,6 +872,8 @@ namespace AspNetMaker2019.Models {
 
 				// Build filter
 				filter = "";
+				if (!Security.CanList)
+					filter = "(0=1)"; // Filter all records
 				AddFilter(ref filter, DbDetailFilter);
 				AddFilter(ref filter, SearchWhere);
 
@@ -873,6 +912,8 @@ namespace AspNetMaker2019.Models {
 
 				// Set no record found message
 				if (Empty(CurrentAction) && TotalRecords == 0) {
+					if (!Security.CanList)
+						WarningMessage = DeniedMessage();
 					if (SearchWhere == "0=101")
 						WarningMessage = Language.Phrase("EnterSearchCriteria");
 					else
@@ -1100,6 +1141,8 @@ namespace AspNetMaker2019.Models {
 			// Return basic search WHERE clause based on search keyword and type
 			protected string BasicSearchWhere(bool def = false) {
 				string searchStr = "";
+				if (!Security.CanSearch)
+					return "";
 				string searchKeyword = def ? BasicSearch.KeywordDefault : BasicSearch.Keyword;
 				string searchType = def ? BasicSearch.TypeDefault : BasicSearch.Type;
 
@@ -1234,25 +1277,25 @@ namespace AspNetMaker2019.Models {
 				// "view"
 				item = ListOptions.Add("view");
 				item.CssClass = "text-nowrap";
-				item.Visible = true;
+				item.Visible = Security.CanView;
 				item.OnLeft = true;
 
 				// "edit"
 				item = ListOptions.Add("edit");
 				item.CssClass = "text-nowrap";
-				item.Visible = true;
+				item.Visible = Security.CanEdit;
 				item.OnLeft = true;
 
 				// "copy"
 				item = ListOptions.Add("copy");
 				item.CssClass = "text-nowrap";
-				item.Visible = true;
+				item.Visible = Security.CanAdd;
 				item.OnLeft = true;
 
 				// "delete"
 				item = ListOptions.Add("delete");
 				item.CssClass = "text-nowrap";
-				item.Visible = true;
+				item.Visible = Security.CanDelete;
 				item.OnLeft = true;
 
 				// List actions
@@ -1305,7 +1348,7 @@ namespace AspNetMaker2019.Models {
 				// "view"
 				listOption = ListOptions["view"];
 				string viewcaption = HtmlTitle(Language.Phrase("ViewLink"));
-				isVisible = true;
+				isVisible = Security.CanView;
 				if (isVisible) {
 					listOption.Body = "<a class=\"ew-row-link ew-view\" title=\"" + viewcaption + "\" data-caption=\"" + viewcaption + "\" href=\"" + HtmlEncode(AppPath(ViewUrl)) + "\">" + Language.Phrase("ViewLink") + "</a>";
 				} else {
@@ -1315,7 +1358,7 @@ namespace AspNetMaker2019.Models {
 				// "edit"
 				listOption = ListOptions["edit"];
 				string editcaption = HtmlTitle(Language.Phrase("EditLink"));
-				isVisible = true;
+				isVisible = Security.CanEdit;
 				if (isVisible) {
 					listOption.Body = "<a class=\"ew-row-link ew-edit\" title=\"" + editcaption + "\" data-caption=\"" + editcaption + "\" href=\"" + HtmlEncode(AppPath(EditUrl)) + "\">" + Language.Phrase("EditLink") + "</a>";
 				} else {
@@ -1325,7 +1368,7 @@ namespace AspNetMaker2019.Models {
 				// "copy"
 				listOption = ListOptions["copy"];
 				string copycaption = HtmlTitle(Language.Phrase("CopyLink"));
-				isVisible = true;
+				isVisible = Security.CanAdd;
 				if (isVisible) {
 					listOption.Body = "<a class=\"ew-row-link ew-copy\" title=\"" + copycaption + "\" data-caption=\"" + copycaption + "\" href=\"" + HtmlEncode(AppPath(CopyUrl)) + "\">" + Language.Phrase("CopyLink") + "</a>";
 				} else {
@@ -1334,7 +1377,7 @@ namespace AspNetMaker2019.Models {
 
 				// "delete"
 				listOption = ListOptions["delete"];
-				isVisible = true;
+				isVisible = Security.CanDelete;
 				if (isVisible)
 					listOption.Body = "<a class=\"ew-row-link ew-delete\"" + "" + " title=\"" + HtmlTitle(Language.Phrase("DeleteLink")) + "\" data-caption=\"" + HtmlTitle(Language.Phrase("DeleteLink")) + "\" href=\"" + HtmlEncode(AppPath(DeleteUrl)) + "\">" + Language.Phrase("DeleteLink") + "</a>";
 				else
@@ -1387,7 +1430,7 @@ namespace AspNetMaker2019.Models {
 				item = option.Add("add");
 				string addcaption = HtmlTitle(Language.Phrase("AddLink"));
 				item.Body = "<a class=\"ew-add-edit ew-add\" title=\"" + addcaption + "\" data-caption=\"" + addcaption + "\" href=\"" + HtmlEncode(AppPath(AddUrl)) + "\">" + Language.Phrase("AddLink") + "</a>";
-				item.Visible = (AddUrl != "");
+				item.Visible = (AddUrl != "" && Security.CanAdd);
 				option = options["action"];
 
 				// Set up options default
@@ -1553,6 +1596,10 @@ namespace AspNetMaker2019.Models {
 				// Hide search options
 				if (IsExport() || !Empty(CurrentAction))
 					SearchOptions.HideAllOptions();
+				if (!Security.CanSearch) {
+					SearchOptions.HideAllOptions();
+					FilterOptions.HideAllOptions();
+				}
 			}
 
 			// Set up list options

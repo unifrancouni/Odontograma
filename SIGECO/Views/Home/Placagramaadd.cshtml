@@ -1,0 +1,213 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetupLoginStatus(); // Setup login status
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Placagrama_Add.Page_Render();
+
+	// Check action result
+	if (Placagrama_Add.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "add";
+var fPlacagramaadd = currentForm = new ew.Form("fPlacagramaadd", "add");
+
+// Validate form
+fPlacagramaadd.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (Placagrama_Add.nExpedienteID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nExpedienteID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Placagrama.nExpedienteID.RequiredErrorMessage.Replace("%s", Placagrama.nExpedienteID.Caption)))");
+		</text>
+	}
+	@if (Placagrama_Add.sObservaciones.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sObservaciones");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Placagrama.sObservaciones.RequiredErrorMessage.Replace("%s", Placagrama.sObservaciones.Caption)))");
+		</text>
+	}
+	@if (Placagrama_Add.dFechaPlacagrama.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaPlacagrama");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Placagrama.dFechaPlacagrama.RequiredErrorMessage.Replace("%s", Placagrama.dFechaPlacagrama.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaPlacagrama");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Placagrama.dFechaPlacagrama.ErrorMessage))");
+	@if (Placagrama_Add.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Placagrama.nEstadoID.RequiredErrorMessage.Replace("%s", Placagrama.nEstadoID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fPlacagramaadd.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPlacagramaadd.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPlacagramaadd.lists["x_nExpedienteID"] = @Html.Raw(Placagrama_Add.nExpedienteID.Lookup.ToClientList());
+fPlacagramaadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Placagrama_Add.nExpedienteID.LookupOptions()));
+fPlacagramaadd.lists["x_nEstadoID"] = @Html.Raw(Placagrama_Add.nEstadoID.Lookup.ToClientList());
+fPlacagramaadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Placagrama_Add.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Placagrama_Add.ShowPageHeader()
+@Placagrama_Add.ShowMessages()
+<form name="fPlacagramaadd" id="fPlacagramaadd" class="@Placagrama_Add.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (Placagrama_Add.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="t" value="Placagrama">
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(Placagrama_Add.IsModal)">
+<div class="ew-add-div"><!-- page* -->
+@if (Placagrama.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	<div id="r_nExpedienteID" class="form-group row">
+		<label id="elh_Placagrama_nExpedienteID" for="x_nExpedienteID" class="@Placagrama_Add.LeftColumnClass">@Html.Raw(Placagrama.nExpedienteID.Caption)@Html.Raw(Placagrama.nExpedienteID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Placagrama_Add.RightColumnClass"><div @Html.Raw(Placagrama.nExpedienteID.CellAttributes)>
+<span id="el_Placagrama_nExpedienteID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(Placagrama.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Placagrama.nExpedienteID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Placagrama.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((Placagrama.nExpedienteID.ReadOnly || Placagrama.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Placagrama.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
+<input type="hidden" data-table="Placagrama" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@Placagrama.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Placagrama.nExpedienteID.CurrentValue"@Html.Raw(Placagrama.nExpedienteID.EditAttributes)>
+</span>
+@Html.Raw(Placagrama.nExpedienteID.CustomMessage)</div></div>
+	</div>
+} @* nExpedienteID.Visible (end) *@
+@if (Placagrama.sObservaciones.Visible) { // sObservaciones.Visible (begin)
+	<div id="r_sObservaciones" class="form-group row">
+		<label id="elh_Placagrama_sObservaciones" for="x_sObservaciones" class="@Placagrama_Add.LeftColumnClass">@Html.Raw(Placagrama.sObservaciones.Caption)@Html.Raw(Placagrama.sObservaciones.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Placagrama_Add.RightColumnClass"><div @Html.Raw(Placagrama.sObservaciones.CellAttributes)>
+<span id="el_Placagrama_sObservaciones">
+<input type="text" data-table="Placagrama" data-field="x_sObservaciones" name="x_sObservaciones" id="x_sObservaciones" size="30" maxlength="200" placeholder="@Placagrama.sObservaciones.PlaceHolder" value="@Placagrama.sObservaciones.EditValue" @Html.Raw(Placagrama.sObservaciones.EditAttributes)>
+</span>
+@Html.Raw(Placagrama.sObservaciones.CustomMessage)</div></div>
+	</div>
+} @* sObservaciones.Visible (end) *@
+@if (Placagrama.dFechaPlacagrama.Visible) { // dFechaPlacagrama.Visible (begin)
+	<div id="r_dFechaPlacagrama" class="form-group row">
+		<label id="elh_Placagrama_dFechaPlacagrama" for="x_dFechaPlacagrama" class="@Placagrama_Add.LeftColumnClass">@Html.Raw(Placagrama.dFechaPlacagrama.Caption)@Html.Raw(Placagrama.dFechaPlacagrama.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Placagrama_Add.RightColumnClass"><div @Html.Raw(Placagrama.dFechaPlacagrama.CellAttributes)>
+<span id="el_Placagrama_dFechaPlacagrama">
+<input type="text" data-table="Placagrama" data-field="x_dFechaPlacagrama" name="x_dFechaPlacagrama" id="x_dFechaPlacagrama" placeholder="@Placagrama.dFechaPlacagrama.PlaceHolder" value="@Placagrama.dFechaPlacagrama.EditValue" @Html.Raw(Placagrama.dFechaPlacagrama.EditAttributes)>
+@if (!Placagrama.dFechaPlacagrama.ReadOnly && !Placagrama.dFechaPlacagrama.Disabled && !Placagrama.dFechaPlacagrama.EditAttrs.ContainsKey("readonly") && !Placagrama.dFechaPlacagrama.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fPlacagramaadd", "x_dFechaPlacagrama", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(Placagrama.dFechaPlacagrama.CustomMessage)</div></div>
+	</div>
+} @* dFechaPlacagrama.Visible (end) *@
+@if (Placagrama.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	<div id="r_nEstadoID" class="form-group row">
+		<label id="elh_Placagrama_nEstadoID" for="x_nEstadoID" class="@Placagrama_Add.LeftColumnClass">@Html.Raw(Placagrama.nEstadoID.Caption)@Html.Raw(Placagrama.nEstadoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Placagrama_Add.RightColumnClass"><div @Html.Raw(Placagrama.nEstadoID.CellAttributes)>
+<span id="el_Placagrama_nEstadoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nEstadoID">@(SameString(Placagrama.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Placagrama.nEstadoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Placagrama.nEstadoID.Caption))" class="ew-lookup-btn btn btn-default"@((Placagrama.nEstadoID.ReadOnly || Placagrama.nEstadoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nEstadoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Placagrama.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
+<input type="hidden" data-table="Placagrama" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Placagrama.nEstadoID.DisplayValueSeparatorAttribute" name="x_nEstadoID" id="x_nEstadoID" value="@Placagrama.nEstadoID.CurrentValue"@Html.Raw(Placagrama.nEstadoID.EditAttributes)>
+</span>
+@Html.Raw(Placagrama.nEstadoID.CustomMessage)</div></div>
+	</div>
+} @* nEstadoID.Visible (end) *@
+</div><!-- /page* -->
+@{ Placagrama_Add.CloseRecordset(); }
+@if (!Placagrama_Add.IsModal) {
+<div class="form-group row"><!-- buttons .form-group -->
+	<div class="@Placagrama_Add.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("AddBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Placagrama_Add.ReturnUrl)"> @Html.Raw(Language.Phrase("CancelBtn"))</button>
+	</div><!-- /buttons offset -->
+</div><!-- /buttons .form-group -->
+}
+</form>
+@Placagrama_Add.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

@@ -1066,6 +1066,16 @@ namespace AspNetMaker2019.Models {
 		public static object CurrentUserInfo(string fldname)
 		{
 			object info = null;
+			if (Profile.TryGetValue(fldname, out string value))
+				return value;
+			if (Security != null) {
+				info = Security.CurrentUserInfo(fldname);
+			} else if (!Empty(Config.UserTable) && !IsSysAdmin() && UserTableConn != null) {
+				var user = CurrentUserName();
+				if (!Empty(user))
+					info = UserTableConn.ExecuteScalar("SELECT " + QuotedName(fldname, Config.UserTableDbId) + " FROM " + Config.UserTable + " WHERE " +
+						Config.UserNameFilter.Replace("%u", AdjustSql(user, Config.UserTableDbId)));
+			}
 			if (info == null && IsAuthenticated())
 				info = User.FindFirst(fldname)?.Value;
 			return info;
@@ -10127,8 +10137,9 @@ namespace AspNetMaker2019.Models {
 			public AdvancedSecurityBase() {
 
 				// User table
-				// Init User Level
+				UserTable = UserTable ?? new _Usuario();
 
+				// Init User Level
 				if (IsLoggedIn) {
 					CurrentUserLevelID = SessionUserLevelID;
 					if (IsNumeric(CurrentUserLevelID)) {
@@ -10421,10 +10432,90 @@ namespace AspNetMaker2019.Models {
 						//Session[Config.SessionStatus] = "login"; // To be setup below
 						CurrentUserName = usr; // Load user name
 					}
+					if (!valid) {
+						string adminUserName = Config.AdminUserName;
+						string adminPassword = Config.AdminPassword;
+						if (Config.EncryptionEnabled) {
+							adminUserName = AesDecrypt(Config.AdminUserName, Config.EncryptionKey);
+							adminPassword = AesDecrypt(Config.AdminPassword, Config.EncryptionKey);
+						}
+						if (Config.CaseSensitivePassword) {
+							valid = (!customValid && adminUserName == usr && adminPassword == pwd) ||
+								(customValid && Config.AdminUserName == usr);
+						} else {
+							valid = (!customValid && SameText(adminUserName, usr)
+								&& SameText(adminPassword, pwd)) ||
+								(customValid && SameText(adminUserName, usr));
+						}
+						if (valid) {
+							_isLoggedIn = true;
+							Session[Config.SessionStatus] = "login";
+							Session.SetInt(Config.SessionSysAdmin, 1); // System Administrator
+							CurrentUserName = usr; // Load user name
+							SessionUserID = -1; // System Administrator
 
-					// User Validated event
-					if (customValid)
-						customValid = User_Validated(null);
+							// Sign in // DN
+							if (!User.Identities.Any(identity => identity.IsAuthenticated)) {
+								Claims.Add(new Claim(ClaimTypes.Name, usr));
+								await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+									new ClaimsPrincipal(new ClaimsIdentity(Claims, CookieAuthenticationDefaults.AuthenticationScheme)));
+							}
+						}
+					}
+
+					// Check other users
+					if (!valid) {
+						filter = Config.UserNameFilter.Replace("%u", AdjustSql(usr, Config.UserTableDbId));
+						if (!Empty(Config.UserActivateFilter))
+							filter += " AND " + Config.UserActivateFilter;
+
+						// User table object (Usuario)
+						UserTable = UserTable ?? new _Usuario();
+						UserTableConn = GetConnection(UserTable.DbId);
+
+						// Set up filter (WHERE clause)
+						sql = UserTable.GetSql(filter); // DN
+						using (var rsuser = await UserTableConn.GetDataReaderAsync(sql)) {
+							if (await rsuser.ReadAsync()) {
+								valid = customValid || ComparePassword(Convert.ToString(rsuser[Config.LoginPasswordFieldName]), pwd);
+								if (valid) {
+									_isLoggedIn = true;
+									Session[Config.SessionStatus] = "login";
+									Session.SetInt(Config.SessionSysAdmin, 0); // Non System Administrator
+									CurrentUserName = Convert.ToString(rsuser[Config.LoginUsernameFieldName]); // Load user name
+									SessionUserID = rsuser[Config.UserIdFieldName]; // Load user ID
+									Profile.Assign(GetDictionary(rsuser));
+									Profile.Remove(Config.LoginPasswordFieldName); // Delete password
+
+									// User Validated event
+									valid = User_Validated(rsuser);
+									if (valid) { // Sign in // DN
+										if (!User.Identities.Any(identity => identity.IsAuthenticated)) {
+											Claims.Add(new Claim(ClaimTypes.Name, usr));
+											if (!Empty(Config.UserEmailFieldName))
+												Claims.Add(new Claim(ClaimTypes.Email, Convert.ToString(rsuser[Config.UserEmailFieldName])));
+											await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+												new ClaimsPrincipal(new ClaimsIdentity(Claims, CookieAuthenticationDefaults.AuthenticationScheme)));
+										}
+									}
+								}
+							} else { // User not found in user table
+								if (customValid) { // Grant default permissions
+									SessionUserID = usr; // User name as User ID
+
+									// User Validated event
+									customValid = User_Validated(null);
+									if (customValid) { // Sign in // DN
+										if (!User.Identities.Any(identity => identity.IsAuthenticated)) {
+											Claims.Add(new Claim(ClaimTypes.Name, usr));
+											await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+												new ClaimsPrincipal(new ClaimsIdentity(Claims, CookieAuthenticationDefaults.AuthenticationScheme)));
+										}
+									}
+								}
+							}
+						}
+					}
 					Profile.Save();
 					if (customValid)
 						return customValid;
@@ -10539,8 +10630,12 @@ namespace AspNetMaker2019.Models {
 				}
 			}
 
-			// No user level security
+			// User Level security (Anonymous)
 			public void SetupUserLevel() {
+
+				// Load user level from config file (Anonymous)
+				var tables = new List<string[]>();
+				LoadUserLevelFromConfigFile(UserLevel, UserLevelPriv, tables);
 			}
 
 			// Add user permission
@@ -10782,6 +10877,8 @@ namespace AspNetMaker2019.Models {
 			{
 				get {
 					bool res = IsSysAdmin;
+					if (!res)
+						res = SameString(CurrentUserID, "-1") || UserID.Contains("-1");
 					return res;
 				}
 			}
@@ -10803,6 +10900,133 @@ namespace AspNetMaker2019.Models {
 					UserLevelPriv = Session.GetValue<List<string[]>>(Config.SessionUserLevelPrivArrays);
 				}
 			}
+
+			// Get user email
+			public string CurrentUserEmail
+			{
+				get {
+					var email = User.FindFirst(ClaimTypes.Email)?.Value;
+					if (Empty(email) && !Empty(Config.UserEmailFieldName))
+						email = Convert.ToString(CurrentUserInfo(Config.UserEmailFieldName));
+					return email;
+				}
+			}
+
+			// Get user info
+			public async Task<object> GetUserInfo(string fieldName, object userid)
+			{
+				object Info = null;
+				if (Empty(userid))
+					return Info;
+				try {
+
+					// Get SQL from getSql() method in <UserTable> class
+					string filter = Config.UserIdFilter.Replace("%u", AdjustSql(userid, Config.UserTableDbId));
+					string sql = UserTable.GetSql(filter); // DN
+					var row = await UserTableConn.GetRowAsync(sql);
+					if (row != null)
+						Info = row[fieldName];
+					return Info;
+				} catch {
+					if (Config.Debug)
+						throw;
+					return Info;
+				}
+			}
+
+			// Get user ID value by user login name
+			public object GetUserIDByUserName(string userName)
+			{
+				object userId = "";
+				if (!Empty(userName)) {
+					string filter = Config.UserNameFilter.Replace("%u", AdjustSql(userName, Config.UserTableDbId));
+					string sql = UserTable.GetSql(filter); // DN
+					var row = UserTableConn.GetRow(sql);
+					if (row != null)
+						userId = row[Config.UserIdFieldName];
+				}
+				return userId;
+			}
+
+			// Load user ID
+			public async Task LoadUserID()
+			{
+				if (Empty(CurrentUserID)) {
+
+					// Handle empty User ID here
+				} else if (!SameString(CurrentUserID, "-1")) { // Get first level
+					AddUserID(CurrentUserID);
+					UserTable = UserTable ?? new _Usuario();
+					UserTableConn = GetConnection(UserTable.DbId);
+					string filter = UserTable.GetUserIDFilter(CurrentUserID);
+					string sql = UserTable.GetSql(filter);
+					DbDataReader rsuser;
+					using (rsuser = await UserTableConn.OpenDataReaderAsync(sql)) {
+						while (await rsuser.ReadAsync())
+							AddUserID(rsuser[Config.UserIdFieldName]);
+					}
+				}
+			}
+
+			// Add user name
+			public void AddUserName(string userName) => AddUserID(GetUserIDByUserName(userName));
+
+			// Add user name
+			public void AddUserIDByUserName(string userName) => AddUserName(userName);
+
+			// Add user ID
+			public void AddUserID(object id)
+			{
+				if (Empty(id))
+					return;
+				if (!IsNumeric(id))
+					return;
+	 			string userId = Convert.ToString(id);
+				if (!UserID.Contains(userId))
+					UserID.Add(userId);
+			}
+
+			// Delete user name
+			public void DeleteUserName(string userName) => DeleteUserID(GetUserIDByUserName(userName));
+
+			// Delete user name
+			public void DeleteUserIDByUserName(string userName) => DeleteUserName(userName);
+
+			// Delete user ID
+			public void DeleteUserID(object id)
+			{
+				if (Empty(id))
+					return;
+				if (!IsNumeric(id))
+					return;
+				UserID.Remove(Convert.ToString(id));
+			}
+
+			// User ID list
+			public string UserIDList() =>
+				String.Join(", ", UserID.Select(id => QuotedValue(id, Config.DataTypeNumber, Config.UserTableDbId)));
+
+			// List of allowed user ids for this user
+			public bool IsValidUserID(object id) => IsLoggedIn && UserID.Contains(Convert.ToString(id));
+
+			// Get user info
+			public async Task<object> CurrentUserInfoAsync(string fldname)
+			{
+				object info = null;
+				try {
+					info = await GetUserInfo(fldname, CurrentUserID);
+					if (info == null && IsAuthenticated())
+						info = User.FindFirst(fldname)?.Value;
+					return info;
+				} catch {
+					if (Config.Debug)
+						throw;
+					return info;
+				}
+			}
+
+			// Get user info
+			public object CurrentUserInfo(string fldname) => CurrentUserInfoAsync(fldname).GetAwaiter().GetResult();
 
 			// UserID Loading event
 			public virtual void UserID_Loading() {

@@ -1,0 +1,66 @@
+@{
+
+    Layout = null;
+
+}
+
+<!DOCTYPE html>
+
+<link rel="stylesheet" type="text/css" href="~/Content/fullcalendar/fullcalendar.min.css">
+
+
+<div id="calendario" style="width: 600px; height: 600px;">
+</div>
+
+
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/plugins/moment/moment.js"></script>
+<script src="~/js/plugins/fullcalendar/fullcalendar.min.js"></script>
+<script src="~/js/plugins/fullcalendar/locale-all.js"></script>
+
+
+
+<script>
+
+    var jsonResult = {};
+
+    $.ajax({
+            url: '@Url.Action("DetalleCitas", "Calendar")',
+            type: 'POST',
+            async: false,
+        success: function (data) {
+            debugger
+                jsonResult = data;
+            },
+            error: function (xhr, err) {
+            }
+        });
+
+
+    $('#calendario').fullCalendar({
+        height: 600,
+        locale: 'es',
+        header: { left: 'prev,next,today', center: 'title', right: 'month,agendaWeek,agendaDay' },
+        editable: false,
+        views: {
+            month: {
+                titleFormat: 'MMMM YYYY'
+            },
+            week: {
+                titleFormat: ''
+            },
+            day: {
+                titleFormat: 'MMMM D'
+            }
+        },
+        events: jsonResult,
+        timeFormat: 'ha',
+        axisFormat: 'hh:mm a'
+    });
+</script>
+
+
+
+
+

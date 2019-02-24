@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -83,7 +84,7 @@ fAntecedenteDentallistsrch.filterList = @Html.Raw(await AntecedenteDental_List.G
 </div>
 }
 @{ AntecedenteDental_List.RenderOtherOptions(); }
-@{
+@if (Security.CanSearch) {
 if (!AntecedenteDental_List.IsExport() && Empty(AntecedenteDental_List.CurrentAction)) { // Begin search form
 <form name="fAntecedenteDentallistsrch" id="fAntecedenteDentallistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
 <div id="fAntecedenteDentallistsrch-search-panel" class="ew-search-panel collapse@(!Empty(AntecedenteDental_List.SearchWhere) ? " show" : " show")">

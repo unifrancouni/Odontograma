@@ -161,8 +161,8 @@ namespace AspNetMaker2019.Models {
 		}
 
 		// UserTable
-		public static dynamic UserTable {
-			get => HttpData.Get<dynamic>("_UserTable");
+		public static _Usuario UserTable {
+			get => HttpData.Get<_Usuario>("_UserTable");
 			set => HttpData["_UserTable"] = value;
 		}
 

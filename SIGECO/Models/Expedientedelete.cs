@@ -376,6 +376,9 @@ namespace AspNetMaker2019.Models {
 				// Table object (Paciente)
 				Paciente = Paciente ?? new _Paciente();
 
+				// Table object (Usuario)
+				Usuario = Usuario ?? new _Usuario();
+
 				// Start time
 				StartTime = Environment.TickCount;
 
@@ -384,6 +387,10 @@ namespace AspNetMaker2019.Models {
 
 				// Open connection
 				Conn = Connection; // DN
+
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
 			}
 
 			#pragma warning disable 1998
@@ -541,6 +548,39 @@ namespace AspNetMaker2019.Models {
 
 				// Header
 				Header(Config.Cache);
+
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+					if (!Security.IsLoggedIn)
+						await Security.AutoLogin();
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loading();
+					Security.LoadCurrentUserLevel(ProjectID + TableName);
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loaded();
+					if (!Security.CanDelete) {
+						Security.SaveLastUrl();
+						FailureMessage = DeniedMessage(); // Set no permission
+						if (IsApi())
+							return new JsonBoolResult(new { success = false, error = DeniedMessage(), version = Config.ProductVersion }, false);
+						if (Security.CanList)
+							return Terminate(GetUrl("Expedientelist"));
+						else
+							return Terminate(GetUrl("login"));
+					}
+				}
 				CurrentAction = Param("action"); // Set up current action
 				nExpedienteID.Visible = false;
 				nPacienteID.Visible = false;
@@ -839,6 +879,10 @@ namespace AspNetMaker2019.Models {
 
 			// Delete records (based on current filter)
 			protected async Task<JsonBoolResult> DeleteRows() { // DN
+				if (!Security.CanDelete) {
+					FailureMessage = Language.Phrase("NoDeletePermission"); // No delete permission
+					return JsonBoolResult.FalseResult; // No delete permission
+				}
 				bool result = true;
 				List<Dictionary<string, object>> rsold = null;
 				try {

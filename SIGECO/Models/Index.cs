@@ -345,6 +345,10 @@ namespace AspNetMaker2019.Models {
 
 				// Open connection
 				Conn = Conn ?? GetConnection();
+
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
 			}
 
 			#pragma warning disable 1998
@@ -420,6 +424,22 @@ namespace AspNetMaker2019.Models {
 				// Header
 				Header(Config.Cache);
 
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+				}
+
 				// Global Page Loading event
 				Page_Loading();
 
@@ -437,7 +457,41 @@ namespace AspNetMaker2019.Models {
 				// If session expired, show session expired message
 				if (Get<bool>("expired"))
 					FailureMessage = Language.Phrase("SessionExpired");
+				if (!Security.IsLoggedIn)
+					await Security.AutoLogin();
+				if (Security.AllowList(CurrentProjectID + "Paciente"))
 				return Terminate("Pacientelist"); // Exit and go to default page
+				if (Security.AllowList(CurrentProjectID + "AntecedenteDental"))
+					return Terminate("AntecedenteDentallist");
+				if (Security.AllowList(CurrentProjectID + "AntecedenteFamiliar"))
+					return Terminate("AntecedenteFamiliarlist");
+				if (Security.AllowList(CurrentProjectID + "Catalogo"))
+					return Terminate("Catalogolist");
+				if (Security.AllowList(CurrentProjectID + "Cita"))
+					return Terminate("Citalist");
+				if (Security.AllowList(CurrentProjectID + "ExamenComplementario"))
+					return Terminate("ExamenComplementariolist");
+				if (Security.AllowList(CurrentProjectID + "Expediente"))
+					return Terminate("Expedientelist");
+				if (Security.AllowList(CurrentProjectID + "Odontograma"))
+					return Terminate("Odontogramalist");
+				if (Security.AllowList(CurrentProjectID + "Periodontograma"))
+					return Terminate("Periodontogramalist");
+				if (Security.AllowList(CurrentProjectID + "Placagrama"))
+					return Terminate("Placagramalist");
+				if (Security.AllowList(CurrentProjectID + "Tratamiento"))
+					return Terminate("Tratamientolist");
+				if (Security.AllowList(CurrentProjectID + "TratamientoRealizado"))
+					return Terminate("TratamientoRealizadolist");
+				if (Security.AllowList(CurrentProjectID + "Usuario"))
+					return Terminate("Usuariolist");
+				if (Security.AllowList(CurrentProjectID + "ValorCatalogo"))
+					return Terminate("ValorCatalogolist");
+				if (Security.IsLoggedIn) {
+					FailureMessage = DeniedMessage() + "<br><br><a href=\"" + AppPath("logout") + "\">" + Language.Phrase("BackToLogin") + "</a>";
+				} else {
+					return Terminate("login"); // Exit and go to login page
+				}
 				return PageResult();
 			}
 

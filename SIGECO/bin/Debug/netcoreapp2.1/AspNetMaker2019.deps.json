@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "9cc9ac86556c03dcfb17704e185ae367154bbe31"
+    "signature": "07799e98bee707a8ae53bdde796c1daa9574b02b"
   },
   "compilationOptions": {
     "defines": [
@@ -25,7 +25,6 @@
       "AspNetMaker2019/1.0.0": {
         "dependencies": {
           "AngleSharp": "0.9.11",
-          "Dapper": "1.50.5",
           "HtmlSanitizer": "4.0.199",
           "Magick.NET-Q16-AnyCPU": "7.10.0",
           "MicroDB": "1.0.0",
@@ -73,22 +72,6 @@
         },
         "compile": {
           "lib/netstandard1.0/AngleSharp.dll": {}
-        }
-      },
-      "Dapper/1.50.5": {
-        "dependencies": {
-          "System.Data.SqlClient": "4.5.1",
-          "System.Reflection.Emit.Lightweight": "4.3.0",
-          "System.Reflection.TypeExtensions": "4.5.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Dapper.dll": {
-            "assemblyVersion": "1.50.5.0",
-            "fileVersion": "1.50.5.0"
-          }
-        },
-        "compile": {
-          "lib/netstandard2.0/Dapper.dll": {}
         }
       },
       "HtmlSanitizer/4.0.199": {
@@ -3496,13 +3479,6 @@
       "sha512": "sha512-Mo1+W3kY8k+0+NtLvDUJTWbyzCMlJZ4JKTVuD3iSNExiUuRU943BMZSvDJ/tWQHxI66L0shyhQFqUj9MDZsWLg==",
       "path": "anglesharp/0.9.11",
       "hashPath": "anglesharp.0.9.11.nupkg.sha512"
-    },
-    "Dapper/1.50.5": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-AzAdZ9fEzUtav3Sbc5CMgz5O2oYkc5g1r+g1h/Vn+wqcInII+xtNEfyZryeW90Wq72bxjEBJhe18j+2SrGrc5A==",
-      "path": "dapper/1.50.5",
-      "hashPath": "dapper.1.50.5.nupkg.sha512"
     },
     "HtmlSanitizer/4.0.199": {
       "type": "package",

@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -189,7 +190,7 @@ ew.createDateTimePicker("fCitaedit", "x_dFechaHoraCita", {"ignoreReadonly":true,
 		<label id="elh_Cita_dHora" for="x_dHora" class="@Cita_Edit.LeftColumnClass">@Html.Raw(Cita.dHora.Caption)@Html.Raw(Cita.dHora.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
 		<div class="@Cita_Edit.RightColumnClass"><div @Html.Raw(Cita.dHora.CellAttributes)>
 <span id="el_Cita_dHora">
-<input type="text" data-table="Cita" data-field="x_dHora" name="x_dHora" id="x_dHora" placeholder="@Cita.dHora.PlaceHolder" value="@Cita.dHora.EditValue" @Html.Raw(Cita.dHora.EditAttributes)>
+<input type="time" data-table="Cita" data-field="x_dHora" name="x_dHora" id="x_dHora" placeholder="@Cita.dHora.PlaceHolder" value="@Cita.dHora.EditValue" @Html.Raw(Cita.dHora.EditAttributes)>
 </span>
 @Html.Raw(Cita.dHora.CustomMessage)</div></div>
 	</div>

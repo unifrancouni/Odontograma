@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -87,7 +88,7 @@ fExamenComplementariolistsrch.filterList = @Html.Raw(await ExamenComplementario_
 </div>
 }
 @{ ExamenComplementario_List.RenderOtherOptions(); }
-@{
+@if (Security.CanSearch) {
 if (!ExamenComplementario_List.IsExport() && Empty(ExamenComplementario_List.CurrentAction)) { // Begin search form
 <form name="fExamenComplementariolistsrch" id="fExamenComplementariolistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
 <div id="fExamenComplementariolistsrch-search-panel" class="ew-search-panel collapse@(!Empty(ExamenComplementario_List.SearchWhere) ? " show" : " show")">

@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -81,7 +82,7 @@ fPacientelistsrch.filterList = @Html.Raw(await Paciente_List.GetFilterList());
 </div>
 }
 @{ Paciente_List.RenderOtherOptions(); }
-@{
+@if (Security.CanSearch) {
 if (!Paciente_List.IsExport() && Empty(Paciente_List.CurrentAction)) { // Begin search form
 <form name="fPacientelistsrch" id="fPacientelistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
 <div id="fPacientelistsrch-search-panel" class="ew-search-panel collapse@(!Empty(Paciente_List.SearchWhere) ? " show" : " show")">

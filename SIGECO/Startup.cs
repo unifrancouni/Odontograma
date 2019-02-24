@@ -162,6 +162,7 @@ namespace AspNetMaker2019
 			app.UseStaticFiles(FileOptions);
 			prjSIGECO.Configure(httpContextAccessor, env, Configuration, antiforgery);
 			app.UseSession(); // IMPORTANT: MUST be before UseMvc()
+			app.UseAuthentication();
 			app.UseCors("CorsPolicy");
 			app.UseMvc(routes =>
 			{

@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -48,8 +49,10 @@ fUsuarioview.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
 fUsuarioview.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
-// Form object for search
+fUsuarioview.lists["x_nActivo"] = @Html.Raw(Usuario_View.nActivo.Lookup.ToClientList());
+fUsuarioview.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Usuario_View.nActivo.Options(false))); // DN
 
+// Form object for search
 </script>
 <script>
 
@@ -71,17 +74,6 @@ fUsuarioview.validateRequired = @ConvertToJson(Config.ClientValidate);
 }
 <input type="hidden" name="modal" value="@ConvertToInt(Usuario_View.IsModal)">
 <table class="table table-striped table-sm ew-view-table">
-@if (Usuario.nUsuarioId.Visible) { @* Usuario.nUsuarioId.Visible (begin) *@
-	<tr id="r_nUsuarioId">
-		<td class="@Usuario_View.TableLeftColumnClass"><span id="elh_Usuario_nUsuarioId">@Html.Raw(Usuario.nUsuarioId.Caption)</span></td>
-		<td data-name="nUsuarioId" @Html.Raw(Usuario.nUsuarioId.CellAttributes)>
-<span id="el_Usuario_nUsuarioId">
-<span @Html.Raw(Usuario.nUsuarioId.ViewAttributes)>
-@Html.Raw(Usuario.nUsuarioId.GetViewValue())</span>
-</span>
-</td>
-	</tr>
-} @* Usuario.nUsuarioId.Visible (end) *@
 @if (Usuario.sEmail.Visible) { @* Usuario.sEmail.Visible (begin) *@
 	<tr id="r_sEmail">
 		<td class="@Usuario_View.TableLeftColumnClass"><span id="elh_Usuario_sEmail">@Html.Raw(Usuario.sEmail.Caption)</span></td>
@@ -93,6 +85,28 @@ fUsuarioview.validateRequired = @ConvertToJson(Config.ClientValidate);
 </td>
 	</tr>
 } @* Usuario.sEmail.Visible (end) *@
+@if (Usuario.sUserName.Visible) { @* Usuario.sUserName.Visible (begin) *@
+	<tr id="r_sUserName">
+		<td class="@Usuario_View.TableLeftColumnClass"><span id="elh_Usuario_sUserName">@Html.Raw(Usuario.sUserName.Caption)</span></td>
+		<td data-name="sUserName" @Html.Raw(Usuario.sUserName.CellAttributes)>
+<span id="el_Usuario_sUserName">
+<span @Html.Raw(Usuario.sUserName.ViewAttributes)>
+@Html.Raw(Usuario.sUserName.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Usuario.sUserName.Visible (end) *@
+@if (Usuario.nActivo.Visible) { @* Usuario.nActivo.Visible (begin) *@
+	<tr id="r_nActivo">
+		<td class="@Usuario_View.TableLeftColumnClass"><span id="elh_Usuario_nActivo">@Html.Raw(Usuario.nActivo.Caption)</span></td>
+		<td data-name="nActivo" @Html.Raw(Usuario.nActivo.CellAttributes)>
+<span id="el_Usuario_nActivo">
+<span @Html.Raw(Usuario.nActivo.ViewAttributes)>
+@Html.Raw(Usuario.nActivo.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Usuario.nActivo.Visible (end) *@
 </table>
 @{ Usuario_View.CloseRecordset(); }
 </form>

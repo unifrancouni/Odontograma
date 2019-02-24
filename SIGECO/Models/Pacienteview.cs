@@ -418,6 +418,9 @@ namespace AspNetMaker2019.Models {
 				ExportCsvUrl = currentPageName + keyUrl + "?export=csv";
 				ExportPdfUrl = currentPageName + keyUrl + "?export=pdf";
 
+				// Table object (Usuario)
+				Usuario = Usuario ?? new _Usuario();
+
 				// Start time
 				StartTime = Environment.TickCount;
 
@@ -426,6 +429,10 @@ namespace AspNetMaker2019.Models {
 
 				// Open connection
 				Conn = Connection; // DN
+
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
 
 				// Export options
 				ExportOptions = new ListOptions { Tag = "div", TagClassName = "ew-export-option" };
@@ -619,6 +626,39 @@ namespace AspNetMaker2019.Models {
 				// Is modal
 				IsModal = Param<bool>("modal");
 
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+					if (!Security.IsLoggedIn)
+						await Security.AutoLogin();
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loading();
+					Security.LoadCurrentUserLevel(ProjectID + TableName);
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loaded();
+					if (!Security.CanView) {
+						Security.SaveLastUrl();
+						FailureMessage = DeniedMessage(); // Set no permission
+						if (IsApi())
+							return new JsonBoolResult(new { success = false, error = DeniedMessage(), version = Config.ProductVersion }, false);
+						if (Security.CanList)
+							return Terminate(GetUrl("Pacientelist"));
+						else
+							return Terminate(GetUrl("login"));
+					}
+				}
+
 				// Get export parameters
 				string custom = "";
 				if (!Empty(Param("export"))) {
@@ -810,7 +850,7 @@ namespace AspNetMaker2019.Models {
 					item.Body = "<a class=\"ew-action ew-add\" title=\"" + addcaption + "\" data-caption=\"" + addcaption + "\" href=\"javascript:void(0);\" onclick=\"ew.modalDialogShow({lnk:this,url:'" + HtmlEncode(AppPath(AddUrl)) + "'});\">" + Language.Phrase("ViewPageAddLink") + "</a>";
 				else
 					item.Body = "<a class=\"ew-action ew-add\" title=\"" + addcaption + "\" data-caption=\"" + addcaption + "\" href=\"" + HtmlEncode(AppPath(AddUrl)) + "\">" + Language.Phrase("ViewPageAddLink") + "</a>";
-					item.Visible = (AddUrl != "");
+					item.Visible = (AddUrl != "" && Security.CanAdd);
 
 				// Edit
 				item = option.Add("edit");
@@ -819,7 +859,7 @@ namespace AspNetMaker2019.Models {
 					item.Body = "<a class=\"ew-action ew-edit\" title=\"" + editcaption + "\" data-caption=\"" + editcaption + "\" href=\"javascript:void(0);\" onclick=\"ew.modalDialogShow({lnk:this,url:'" + HtmlEncode(AppPath(EditUrl)) + "'});\">" + Language.Phrase("ViewPageEditLink") + "</a>";
 				else
 					item.Body = "<a class=\"ew-action ew-edit\" title=\"" + editcaption + "\" data-caption=\"" + editcaption + "\" href=\"" + HtmlEncode(AppPath(EditUrl)) + "\">" + Language.Phrase("ViewPageEditLink") + "</a>";
-					item.Visible = (EditUrl != "");
+					item.Visible = (EditUrl != "" && Security.CanEdit);
 
 				// Copy
 				item = option.Add("copy");
@@ -828,7 +868,7 @@ namespace AspNetMaker2019.Models {
 					item.Body = "<a class=\"ew-action ew-copy\" title=\"" + copycaption + "\" data-caption=\"" + copycaption + "\" href=\"javascript:void(0);\" onclick=\"ew.modalDialogShow({lnk:this,url:'" + HtmlEncode(AppPath(CopyUrl)) + "'});\">" + Language.Phrase("ViewPageCopyLink") + "</a>";
 				else
 					item.Body = "<a class=\"ew-action ew-copy\" title=\"" + copycaption + "\" data-caption=\"" + copycaption + "\" href=\"" + HtmlEncode(AppPath(CopyUrl)) + "\">" + Language.Phrase("ViewPageCopyLink") + "</a>";
-					item.Visible = (CopyUrl != "");
+					item.Visible = (CopyUrl != "" && Security.CanAdd);
 
 				// Delete
 				item = option.Add("delete");
@@ -836,7 +876,7 @@ namespace AspNetMaker2019.Models {
 					item.Body = "<a onclick=\"return ew.confirmDelete(this);\" class=\"ew-action ew-delete\" title=\"" + HtmlTitle(Language.Phrase("ViewPageDeleteLink")) + "\" data-caption=\"" + HtmlTitle(Language.Phrase("ViewPageDeleteLink")) + "\" href=\"" + HtmlEncode(UrlAddQuery(AppPath(DeleteUrl), "action=1")) + "\">" + Language.Phrase("ViewPageDeleteLink") + "</a>";
 				else
 					item.Body = "<a class=\"ew-action ew-delete\" title=\"" + HtmlTitle(Language.Phrase("ViewPageDeleteLink")) + "\" data-caption=\"" + HtmlTitle(Language.Phrase("ViewPageDeleteLink")) + "\" href=\"" + HtmlEncode(AppPath(DeleteUrl)) + "\">" + Language.Phrase("ViewPageDeleteLink") + "</a>";
-				item.Visible = (DeleteUrl != "");
+				item.Visible = (DeleteUrl != "" && Security.CanDelete);
 				string body = "";
 				option = options["detail"];
 				string detailTableLink = "";
@@ -851,17 +891,17 @@ namespace AspNetMaker2019.Models {
 				links = "";
 				if (Empty(Expediente_Grid))
 					Expediente_Grid = new _Expediente_Grid();
-				if (Expediente_Grid.DetailView) {
+				if (Expediente_Grid.DetailView && Security.CanView && Security.AllowView(String.Concat(CurrentProjectID, "Expediente"))) {
 					links += "<li><a class=\"ew-row-link ew-detail-view dropdown-item\" data-action=\"view\" data-caption=\"" + HtmlTitle(Language.Phrase("MasterDetailViewLink")) + "\" href=\"" + HtmlEncode(AppPath(GetViewUrl(Config.TableShowDetail + "=Expediente"))) + "\">" + HtmlImageAndText(Language.Phrase("MasterDetailViewLink")) + "</a></li>";
 					if (!Empty(detailViewTblVar)) detailViewTblVar += ",";
 					detailViewTblVar += "Expediente";
 				}
-				if (Expediente_Grid.DetailEdit) {
+				if (Expediente_Grid.DetailEdit && Security.CanEdit && Security.AllowEdit(String.Concat(CurrentProjectID, "Expediente"))) {
 					links += "<li><a class=\"ew-row-link ew-detail-edit dropdown-item\" data-action=\"edit\" data-caption=\"" + HtmlTitle(Language.Phrase("MasterDetailEditLink")) + "\" href=\"" + HtmlEncode(AppPath(GetEditUrl(Config.TableShowDetail + "=Expediente"))) + "\">" + HtmlImageAndText(Language.Phrase("MasterDetailEditLink")) + "</a></li>";
 					if (!Empty(detailEditTblVar)) detailEditTblVar += ",";
 					detailEditTblVar += "Expediente";
 				}
-				if (Expediente_Grid.DetailAdd) {
+				if (Expediente_Grid.DetailAdd && Security.CanAdd && Security.AllowAdd(String.Concat(CurrentProjectID, "Expediente"))) {
 					links += "<li><a class=\"ew-row-link ew-detail-copy dropdown-item\" data-action=\"add\" data-caption=\"" + HtmlTitle(Language.Phrase("MasterDetailCopyLink")) + "\" href=\"" + HtmlEncode(AppPath(GetCopyUrl(Config.TableShowDetail + "=Expediente"))) + "\">" + HtmlImageAndText(Language.Phrase("MasterDetailCopyLink")) + "</a></li>";
 					if (!Empty(detailCopyTblVar)) detailCopyTblVar += ",";
 					detailCopyTblVar += "Expediente";
@@ -872,7 +912,7 @@ namespace AspNetMaker2019.Models {
 				}
 				body = "<div class=\"btn-group btn-group-sm ew-btn-group\">" + body + "</div>";
 				item.Body = body;
-				item.Visible = true;
+				item.Visible = Security.AllowList(String.Concat(CurrentProjectID, "Expediente"));
 				if (item.Visible) {
 					if (!Empty(detailTableLink)) detailTableLink += ",";
 					detailTableLink += "Expediente";

@@ -427,6 +427,10 @@ namespace AspNetMaker2019.Models {
 				// Open connection
 				Conn = Connection; // DN
 
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
+
 				// List options
 				ListOptions = new ListOptions { TableVar = TableVar };
 
@@ -637,6 +641,45 @@ namespace AspNetMaker2019.Models {
 				// Header
 				Header(Config.Cache);
 
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+					if (!Security.IsLoggedIn)
+						await Security.AutoLogin();
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loading();
+					Security.LoadCurrentUserLevel(ProjectID + TableName);
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loaded();
+					if (!Security.CanList) {
+						Security.SaveLastUrl();
+						FailureMessage = DeniedMessage(); // Set no permission
+						if (IsApi())
+							return new JsonBoolResult(new { success = false, error = DeniedMessage(), version = Config.ProductVersion }, false);
+						return Terminate(GetUrl("Index"));
+					}
+					if (Security.IsLoggedIn) {
+						Security.UserID_Loading();
+						await Security.LoadUserID();
+						Security.UserID_Loaded();
+					if (Empty(Security.CurrentUserID)) {
+						FailureMessage = DeniedMessage(); // Set no permission
+						return Terminate();
+					}
+					}
+				}
+
 				// Get export parameters
 				string custom = "";
 				if (!Empty(Param("export"))) {
@@ -682,9 +725,11 @@ namespace AspNetMaker2019.Models {
 
 				// Setup export options
 				SetupExportOptions();
-				nUsuarioId.SetVisibility();
+				nUsuarioId.Visible = false;
 				sEmail.SetVisibility();
 				sPassword.Visible = false;
+				sUserName.SetVisibility();
+				nActivo.SetVisibility();
 				HideFieldsForAddEdit();
 
 				// Global Page Loading event
@@ -713,6 +758,7 @@ namespace AspNetMaker2019.Models {
 				// Set up lookup cache
 				// Search filters
 
+				string srchAdvanced = ""; // Advanced search filter
 				string srchBasic = ""; // Basic search filter
 				string filter = "";
 
@@ -763,9 +809,13 @@ namespace AspNetMaker2019.Models {
 
 					// Get default search criteria
 					AddFilter(ref DefaultSearchWhere, BasicSearchWhere(true));
+					AddFilter(ref DefaultSearchWhere, AdvancedSearchWhere(true));
 
 					// Get basic search values
 					LoadBasicSearchValues();
+
+					// Get and validate search values for advanced search
+					LoadSearchValues(); // Get search values
 
 					// Process filter list
 					var filterResult = await ProcessFilterList();
@@ -776,6 +826,8 @@ namespace AspNetMaker2019.Models {
 							Response.Clear();
 						return Controller.Json(filterResult);
 					}
+					if (!ValidateSearch())
+						FailureMessage = SearchError;
 
 					// Restore search parms from Session if not searching / reset / export
 					if ((IsExport() || Command != "search" && Command != "reset" && Command != "resetall") && Command != "json" && CheckSearchParms())
@@ -790,6 +842,10 @@ namespace AspNetMaker2019.Models {
 					// Get basic search criteria
 					if (Empty(SearchError))
 						srchBasic = BasicSearchWhere();
+
+					// Get search criteria for advanced search
+					if (Empty(SearchError))
+						srchAdvanced = AdvancedSearchWhere();
 				}
 
 				// Restore display records
@@ -810,9 +866,18 @@ namespace AspNetMaker2019.Models {
 					BasicSearch.LoadDefault();
 					if (!Empty(BasicSearch.Keyword))
 						srchBasic = BasicSearchWhere();
+
+					// Load advanced search from default
+					if (LoadAdvancedSearchDefault())
+						srchAdvanced = AdvancedSearchWhere();
 				}
 
 				// Build search criteria
+				AddFilter(ref SearchWhere, srchAdvanced);
+				if (!Empty(srchAdvanced) && Empty(Get(Config.TableBasicSearch))) { //DN
+					srchBasic = ""; //DN
+					BasicSearch.Keyword = ""; //DN
+				} //DN
 				AddFilter(ref SearchWhere, srchBasic);
 
 				// Call Recordset_Searching event
@@ -829,6 +894,8 @@ namespace AspNetMaker2019.Models {
 
 				// Build filter
 				filter = "";
+				if (!Security.CanList)
+					filter = "(0=1)"; // Filter all records
 				AddFilter(ref filter, DbDetailFilter);
 				AddFilter(ref filter, SearchWhere);
 
@@ -867,6 +934,8 @@ namespace AspNetMaker2019.Models {
 
 				// Set no record found message
 				if (Empty(CurrentAction) && TotalRecords == 0) {
+					if (!Security.CanList)
+						WarningMessage = DeniedMessage();
 					if (SearchWhere == "0=101")
 						WarningMessage = Language.Phrase("EnterSearchCriteria");
 					else
@@ -938,9 +1007,9 @@ namespace AspNetMaker2019.Models {
 
 				// Initialize
 				var filters = new JObject(); // DN
-				filters.Merge(JObject.Parse(nUsuarioId.AdvancedSearch.ToJson())); // Field nUsuarioId
 				filters.Merge(JObject.Parse(sEmail.AdvancedSearch.ToJson())); // Field sEmail
-				filters.Merge(JObject.Parse(sPassword.AdvancedSearch.ToJson())); // Field sPassword
+				filters.Merge(JObject.Parse(sUserName.AdvancedSearch.ToJson())); // Field sUserName
+				filters.Merge(JObject.Parse(nActivo.AdvancedSearch.ToJson())); // Field nActivo
 				filters.Merge(JObject.Parse(Usuario.BasicSearch.ToJson()));
 
 				// Return filter list in JSON
@@ -969,16 +1038,6 @@ namespace AspNetMaker2019.Models {
 				Command = "search";
 				string sv;
 
-				// Field nUsuarioId
-				if (filter.TryGetValue("x_nUsuarioId", out sv)) {
-					nUsuarioId.AdvancedSearch.SearchValue = sv;
-					nUsuarioId.AdvancedSearch.SearchOperator = filter["z_nUsuarioId"];
-					nUsuarioId.AdvancedSearch.SearchCondition = filter["v_nUsuarioId"];
-					nUsuarioId.AdvancedSearch.SearchValue2 = filter["y_nUsuarioId"];
-					nUsuarioId.AdvancedSearch.SearchOperator2 = filter["w_nUsuarioId"];
-					nUsuarioId.AdvancedSearch.Save();
-				}
-
 				// Field sEmail
 				if (filter.TryGetValue("x_sEmail", out sv)) {
 					sEmail.AdvancedSearch.SearchValue = sv;
@@ -989,14 +1048,24 @@ namespace AspNetMaker2019.Models {
 					sEmail.AdvancedSearch.Save();
 				}
 
-				// Field sPassword
-				if (filter.TryGetValue("x_sPassword", out sv)) {
-					sPassword.AdvancedSearch.SearchValue = sv;
-					sPassword.AdvancedSearch.SearchOperator = filter["z_sPassword"];
-					sPassword.AdvancedSearch.SearchCondition = filter["v_sPassword"];
-					sPassword.AdvancedSearch.SearchValue2 = filter["y_sPassword"];
-					sPassword.AdvancedSearch.SearchOperator2 = filter["w_sPassword"];
-					sPassword.AdvancedSearch.Save();
+				// Field sUserName
+				if (filter.TryGetValue("x_sUserName", out sv)) {
+					sUserName.AdvancedSearch.SearchValue = sv;
+					sUserName.AdvancedSearch.SearchOperator = filter["z_sUserName"];
+					sUserName.AdvancedSearch.SearchCondition = filter["v_sUserName"];
+					sUserName.AdvancedSearch.SearchValue2 = filter["y_sUserName"];
+					sUserName.AdvancedSearch.SearchOperator2 = filter["w_sUserName"];
+					sUserName.AdvancedSearch.Save();
+				}
+
+				// Field nActivo
+				if (filter.TryGetValue("x_nActivo", out sv)) {
+					nActivo.AdvancedSearch.SearchValue = sv;
+					nActivo.AdvancedSearch.SearchOperator = filter["z_nActivo"];
+					nActivo.AdvancedSearch.SearchCondition = filter["v_nActivo"];
+					nActivo.AdvancedSearch.SearchValue2 = filter["y_nActivo"];
+					nActivo.AdvancedSearch.SearchOperator2 = filter["w_nActivo"];
+					nActivo.AdvancedSearch.Save();
 				}
 				if (filter.TryGetValue(Config.TableBasicSearch, out string keyword))
 					BasicSearch.SessionKeyword = keyword;
@@ -1005,10 +1074,75 @@ namespace AspNetMaker2019.Models {
 				return true;
 			}
 
+			// Advanced search WHERE clause based on QueryString
+			protected string AdvancedSearchWhere(bool def = false) {
+				string where = "";
+				if (!Security.CanSearch)
+					return "";
+				BuildSearchSql(ref where, sEmail, def, false); // sEmail
+				BuildSearchSql(ref where, sUserName, def, false); // sUserName
+				BuildSearchSql(ref where, nActivo, def, false); // nActivo
+
+				// Set up search parm
+				if (!def && !Empty(where) && (new List<string> { "", "reset", "resetall" }).Contains(Command))
+					Command = "search";
+				if (!def && Command == "search") {
+					sEmail.AdvancedSearch.Save(); // sEmail
+					sUserName.AdvancedSearch.Save(); // sUserName
+					nActivo.AdvancedSearch.Save(); // nActivo
+				}
+				return where;
+			}
+
+			// Build search SQL
+			public void BuildSearchSql(ref string where, DbField fld, bool def, bool multiValue) {
+				string fldParm = fld.Param;
+				string fldVal = def ? Convert.ToString(fld.AdvancedSearch.SearchValueDefault) : Convert.ToString(fld.AdvancedSearch.SearchValue);
+				string fldOpr = def ? fld.AdvancedSearch.SearchOperatorDefault : fld.AdvancedSearch.SearchOperator;
+				string fldCond = def ? fld.AdvancedSearch.SearchConditionDefault : fld.AdvancedSearch.SearchCondition;
+				string fldVal2 = def ? Convert.ToString(fld.AdvancedSearch.SearchValue2Default) : Convert.ToString(fld.AdvancedSearch.SearchValue2);
+				string fldOpr2 = def ? fld.AdvancedSearch.SearchOperator2Default : fld.AdvancedSearch.SearchOperator2;
+				string wrk = "";
+				fldOpr = fldOpr.Trim().ToUpper();
+				if (Empty(fldOpr))
+					fldOpr = "=";
+				fldOpr2 = fldOpr2.Trim().ToUpper();
+				if (Empty(fldOpr2))
+					fldOpr2 = "=";
+				if (Config.SearchMultiValueOption == 1)
+					multiValue = false;
+				if (multiValue) {
+					string wrk1 = !Empty(fldVal) ? GetMultiSearchSql(fld, fldOpr, fldVal, DbId) : ""; // Field value 1
+					string wrk2 = !Empty(fldVal2) ? GetMultiSearchSql(fld, fldOpr2, fldVal2, DbId) : ""; // Field value 2
+					wrk = wrk1; // Build final SQL
+					if (!Empty(wrk2))
+						wrk = !Empty(wrk) ? "(" + wrk + ") " + fldCond + " (" + wrk2 + ")" : wrk2;
+				} else {
+					fldVal = ConvertSearchValue(fld, fldVal);
+					fldVal2 = ConvertSearchValue(fld, fldVal2);
+					wrk = GetSearchSql(fld, fldVal, fldOpr, fldCond, fldVal2, fldOpr2, DbId);
+				}
+				AddFilter(ref where, wrk);
+			}
+
+			// Convert search value
+			protected string ConvertSearchValue(DbField fld, string fldVal) {
+				if (fldVal == Config.NullValue || fldVal == Config.NotNullValue)
+					return fldVal;
+				string value = fldVal;
+				if (fld.DataType == Config.DataTypeBoolean) {
+				} else if (fld.DataType == Config.DataTypeDate || fld.DataType == Config.DataTypeTime) {
+					if (!Empty(fldVal))
+						value = UnformatDateTime(fldVal, fld.DateTimeFormat);
+				}
+				return value;
+			}
+
 			// Return basic search SQL
 			protected string BasicSearchSql(List<string> keywords, string type) {
 				string where = "";
 				BuildBasicSearchSql(ref where, sEmail, keywords, type);
+				BuildBasicSearchSql(ref where, sUserName, keywords, type);
 				return where;
 			}
 
@@ -1083,6 +1217,8 @@ namespace AspNetMaker2019.Models {
 			// Return basic search WHERE clause based on search keyword and type
 			protected string BasicSearchWhere(bool def = false) {
 				string searchStr = "";
+				if (!Security.CanSearch)
+					return "";
 				string searchKeyword = def ? BasicSearch.KeywordDefault : BasicSearch.Keyword;
 				string searchType = def ? BasicSearch.TypeDefault : BasicSearch.Type;
 
@@ -1116,6 +1252,12 @@ namespace AspNetMaker2019.Models {
 				// Check basic search
 				if (BasicSearch.IssetSession)
 					return true;
+				if (sEmail.AdvancedSearch.IssetSession)
+					return true;
+				if (sUserName.AdvancedSearch.IssetSession)
+					return true;
+				if (nActivo.AdvancedSearch.IssetSession)
+					return true;
 				return false;
 			}
 
@@ -1126,6 +1268,9 @@ namespace AspNetMaker2019.Models {
 
 				// Clear basic search parameters
 				ResetBasicSearchParms();
+
+				// Clear advanced search parameters
+				ResetAdvancedSearchParms();
 			}
 
 			// Load advanced search default values
@@ -1138,12 +1283,24 @@ namespace AspNetMaker2019.Models {
 				BasicSearch.UnsetSession();
 			}
 
+			// Clear all advanced search parameters
+			protected void ResetAdvancedSearchParms() {
+				sEmail.AdvancedSearch.UnsetSession();
+				sUserName.AdvancedSearch.UnsetSession();
+				nActivo.AdvancedSearch.UnsetSession();
+			}
+
 			// Restore all search parameters
 			protected void RestoreSearchParms() {
 				RestoreSearch = true;
 
 				// Restore basic search values
 				BasicSearch.Load();
+
+				// Restore advanced search values
+				sEmail.AdvancedSearch.Load();
+				sUserName.AdvancedSearch.Load();
+				nActivo.AdvancedSearch.Load();
 			}
 
 			// Set up sort parameters
@@ -1153,8 +1310,9 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(Get("order"))) {
 					CurrentOrder = Get("order");
 					CurrentOrderType = Get("ordertype");
-					UpdateSort(nUsuarioId); // nUsuarioId
 					UpdateSort(sEmail); // sEmail
+					UpdateSort(sUserName); // sUserName
+					UpdateSort(nActivo); // nActivo
 					StartRecordNumber = 1; // Reset start position
 				}
 			}
@@ -1188,8 +1346,9 @@ namespace AspNetMaker2019.Models {
 					if (SameText(Command, "resetsort")) {
 						string orderBy = "";
 						SessionOrderBy = orderBy;
-						nUsuarioId.Sort = "";
 						sEmail.Sort = "";
+						sUserName.Sort = "";
+						nActivo.Sort = "";
 					}
 
 					// Reset start position
@@ -1213,25 +1372,25 @@ namespace AspNetMaker2019.Models {
 				// "view"
 				item = ListOptions.Add("view");
 				item.CssClass = "text-nowrap";
-				item.Visible = true;
+				item.Visible = Security.CanView;
 				item.OnLeft = true;
 
 				// "edit"
 				item = ListOptions.Add("edit");
 				item.CssClass = "text-nowrap";
-				item.Visible = true;
+				item.Visible = Security.CanEdit;
 				item.OnLeft = true;
 
 				// "copy"
 				item = ListOptions.Add("copy");
 				item.CssClass = "text-nowrap";
-				item.Visible = true;
+				item.Visible = Security.CanAdd;
 				item.OnLeft = true;
 
 				// "delete"
 				item = ListOptions.Add("delete");
 				item.CssClass = "text-nowrap";
-				item.Visible = true;
+				item.Visible = Security.CanDelete;
 				item.OnLeft = true;
 
 				// List actions
@@ -1284,7 +1443,7 @@ namespace AspNetMaker2019.Models {
 				// "view"
 				listOption = ListOptions["view"];
 				string viewcaption = HtmlTitle(Language.Phrase("ViewLink"));
-				isVisible = true;
+				isVisible = Security.CanView && ShowOptionLink("view");
 				if (isVisible) {
 					listOption.Body = "<a class=\"ew-row-link ew-view\" title=\"" + viewcaption + "\" data-caption=\"" + viewcaption + "\" href=\"" + HtmlEncode(AppPath(ViewUrl)) + "\">" + Language.Phrase("ViewLink") + "</a>";
 				} else {
@@ -1294,7 +1453,7 @@ namespace AspNetMaker2019.Models {
 				// "edit"
 				listOption = ListOptions["edit"];
 				string editcaption = HtmlTitle(Language.Phrase("EditLink"));
-				isVisible = true;
+				isVisible = Security.CanEdit && ShowOptionLink("edit");
 				if (isVisible) {
 					listOption.Body = "<a class=\"ew-row-link ew-edit\" title=\"" + editcaption + "\" data-caption=\"" + editcaption + "\" href=\"" + HtmlEncode(AppPath(EditUrl)) + "\">" + Language.Phrase("EditLink") + "</a>";
 				} else {
@@ -1304,7 +1463,7 @@ namespace AspNetMaker2019.Models {
 				// "copy"
 				listOption = ListOptions["copy"];
 				string copycaption = HtmlTitle(Language.Phrase("CopyLink"));
-				isVisible = true;
+				isVisible = Security.CanAdd && ShowOptionLink("add");
 				if (isVisible) {
 					listOption.Body = "<a class=\"ew-row-link ew-copy\" title=\"" + copycaption + "\" data-caption=\"" + copycaption + "\" href=\"" + HtmlEncode(AppPath(CopyUrl)) + "\">" + Language.Phrase("CopyLink") + "</a>";
 				} else {
@@ -1313,7 +1472,7 @@ namespace AspNetMaker2019.Models {
 
 				// "delete"
 				listOption = ListOptions["delete"];
-				isVisible = true;
+				isVisible = Security.CanDelete && ShowOptionLink("delete");
 				if (isVisible)
 					listOption.Body = "<a class=\"ew-row-link ew-delete\"" + "" + " title=\"" + HtmlTitle(Language.Phrase("DeleteLink")) + "\" data-caption=\"" + HtmlTitle(Language.Phrase("DeleteLink")) + "\" href=\"" + HtmlEncode(AppPath(DeleteUrl)) + "\">" + Language.Phrase("DeleteLink") + "</a>";
 				else
@@ -1366,7 +1525,7 @@ namespace AspNetMaker2019.Models {
 				item = option.Add("add");
 				string addcaption = HtmlTitle(Language.Phrase("AddLink"));
 				item.Body = "<a class=\"ew-add-edit ew-add\" title=\"" + addcaption + "\" data-caption=\"" + addcaption + "\" href=\"" + HtmlEncode(AppPath(AddUrl)) + "\">" + Language.Phrase("AddLink") + "</a>";
-				item.Visible = (AddUrl != "");
+				item.Visible = (AddUrl != "" && Security.CanAdd);
 				option = options["action"];
 
 				// Set up options default
@@ -1428,6 +1587,8 @@ namespace AspNetMaker2019.Models {
 
 			// Process list action
 			public async Task<string> ProcessListAction() {
+				string userlist = "";
+				string user = "";
 				string errmsg;
 				var filter = GetFilterFromRecordKeys();
 				var userAction = Post("useraction");
@@ -1461,7 +1622,21 @@ namespace AspNetMaker2019.Models {
 						SelectedIndex = 0;
 						foreach (var row in rsuser) {
 							SelectedIndex++;
-							processed = Row_CustomAction(userAction, row);
+							user = Convert.ToString(row[Config.LoginUsernameFieldName]);
+							if (userlist != "")
+								userlist += ",";
+							userlist += user;
+							if (userAction == "resendregisteremail") {
+								processed = false;
+							} else if (userAction == "resetconcurrentuser") {
+								processed = false;
+							} else if (userAction == "resetloginretry") {
+								processed = false;
+							} else if (userAction == "setpasswordexpired") {
+								processed = false;
+							} else {
+								processed = Row_CustomAction(userAction, row);
+							}
 							if (!processed)
 								break;
 						}
@@ -1532,6 +1707,10 @@ namespace AspNetMaker2019.Models {
 				// Hide search options
 				if (IsExport() || !Empty(CurrentAction))
 					SearchOptions.HideAllOptions();
+				if (!Security.CanSearch) {
+					SearchOptions.HideAllOptions();
+					FilterOptions.HideAllOptions();
+				}
 			}
 
 			// Set up list options
@@ -1591,6 +1770,43 @@ namespace AspNetMaker2019.Models {
 					BasicSearch.Type = type;
 			}
 
+			// Load search values for validation // DN
+			protected void LoadSearchValues() {
+
+				// sEmail
+				if (!IsAddOrEdit)
+					if (Query.ContainsKey("x_sEmail"))
+						sEmail.AdvancedSearch.SearchValue = Get("x_sEmail");
+					else
+						sEmail.AdvancedSearch.SearchValue = Get("sEmail"); // Default Value // DN
+				if (!Empty(sEmail.AdvancedSearch.SearchValue) && Command == "")
+					Command = "search";
+				if (Query.ContainsKey("z_sEmail"))
+					sEmail.AdvancedSearch.SearchOperator = Get("z_sEmail");
+
+				// sUserName
+				if (!IsAddOrEdit)
+					if (Query.ContainsKey("x_sUserName"))
+						sUserName.AdvancedSearch.SearchValue = Get("x_sUserName");
+					else
+						sUserName.AdvancedSearch.SearchValue = Get("sUserName"); // Default Value // DN
+				if (!Empty(sUserName.AdvancedSearch.SearchValue) && Command == "")
+					Command = "search";
+				if (Query.ContainsKey("z_sUserName"))
+					sUserName.AdvancedSearch.SearchOperator = Get("z_sUserName");
+
+				// nActivo
+				if (!IsAddOrEdit)
+					if (Query.ContainsKey("x_nActivo"))
+						nActivo.AdvancedSearch.SearchValue = Get("x_nActivo");
+					else
+						nActivo.AdvancedSearch.SearchValue = Get("nActivo"); // Default Value // DN
+				if (!Empty(nActivo.AdvancedSearch.SearchValue) && Command == "")
+					Command = "search";
+				if (Query.ContainsKey("z_nActivo"))
+					nActivo.AdvancedSearch.SearchOperator = Get("z_nActivo");
+			}
+
 			// Load recordset // DN
 			public async Task<DbDataReader> LoadRecordset(int offset = -1, int rowcnt = -1) {
 
@@ -1646,6 +1862,8 @@ namespace AspNetMaker2019.Models {
 				nUsuarioId.SetDbValue(row["nUsuarioId"]);
 				sEmail.SetDbValue(row["sEmail"]);
 				sPassword.SetDbValue(row["sPassword"]);
+				sUserName.SetDbValue(row["sUserName"]);
+				nActivo.SetDbValue((ConvertToBool(row["nActivo"]) ? "1" : "0"));
 			}
 
 			#pragma warning restore 162, 168, 1998
@@ -1656,6 +1874,8 @@ namespace AspNetMaker2019.Models {
 				row.Add("nUsuarioId", System.DBNull.Value);
 				row.Add("sEmail", System.DBNull.Value);
 				row.Add("sPassword", System.DBNull.Value);
+				row.Add("sUserName", System.DBNull.Value);
+				row.Add("nActivo", System.DBNull.Value);
 				return row;
 			}
 
@@ -1702,26 +1922,61 @@ namespace AspNetMaker2019.Models {
 
 				// Common render codes for all row types
 				// nUsuarioId
+
+				nUsuarioId.CellCssStyle = "white-space: nowrap;";
+
 				// sEmail
 				// sPassword
 
 				sPassword.CellCssStyle = "white-space: nowrap;";
-				if (RowType == Config.RowTypeView) { // View row
 
-					// nUsuarioId
-					nUsuarioId.ViewValue = nUsuarioId.CurrentValue;
+				// sUserName
+				// nActivo
+
+				if (RowType == Config.RowTypeView) { // View row
 
 					// sEmail
 					sEmail.ViewValue = sEmail.CurrentValue;
 
-					// nUsuarioId
-					nUsuarioId.HrefValue = "";
-					nUsuarioId.TooltipValue = "";
+					// sUserName
+					sUserName.ViewValue = sUserName.CurrentValue;
+
+					// nActivo
+					if (ConvertToBool(nActivo.CurrentValue)) {
+						nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Activo";
+					} else {
+						nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "Inactivo";
+					}
 
 					// sEmail
 					sEmail.HrefValue = "";
 					sEmail.TooltipValue = "";
+
+					// sUserName
+					sUserName.HrefValue = "";
+					sUserName.TooltipValue = "";
+
+					// nActivo
+					nActivo.HrefValue = "";
+					nActivo.TooltipValue = "";
+				} else if (RowType == Config.RowTypeSearch) { // Search row
+
+					// sEmail
+					sEmail.EditAttrs["class"] = "form-control";
+					sEmail.EditValue = sEmail.AdvancedSearch.SearchValue; // DN
+					sEmail.PlaceHolder = RemoveHtml(sEmail.Caption);
+
+					// sUserName
+					sUserName.EditAttrs["class"] = "form-control";
+					sUserName.EditValue = sUserName.AdvancedSearch.SearchValue; // DN
+					sUserName.PlaceHolder = RemoveHtml(sUserName.Caption);
+
+					// nActivo
+					nActivo.EditAttrs["class"] = "form-control";
+					nActivo.EditValue = nActivo.Options(true);
 				}
+				if (RowType == Config.RowTypeAdd || RowType == Config.RowTypeEdit || RowType == Config.RowTypeSearch) // Add/Edit/Search row
+					SetupFieldTitles();
 
 				// Call Row Rendered event
 				if (RowType != Config.RowTypeAggregateInit)
@@ -1730,12 +1985,39 @@ namespace AspNetMaker2019.Models {
 
 			#pragma warning restore 1998
 
+			// Validate search
+			protected bool ValidateSearch() {
+
+				// Initialize
+				SearchError = "";
+
+				// Check if validation required
+				if (!Config.ServerValidate)
+					return true;
+
+				// Return validate result
+				bool valid = Empty(SearchError);
+
+				// Call Form_CustomValidate event
+				string formCustomError = "";
+				valid = valid && Form_CustomValidate(ref formCustomError);
+				SearchError = AddMessage(SearchError, formCustomError);
+				return valid;
+			}
+
 			// Save data to memory cache
 			public void SetCache<T>(string key, T value, int span) => Cache.Set<T>(key, value, new MemoryCacheEntryOptions()
 				.SetSlidingExpiration(TimeSpan.FromMilliseconds(span))); // Keep in cache for this time, reset time if accessed
 
 			// Gete data from memory cache
 			public void GetCache<T>(string key) => Cache.Get<T>(key);
+
+			// Load advanced search
+			public void LoadAdvancedSearch() {
+				sEmail.AdvancedSearch.Load();
+				sUserName.AdvancedSearch.Load();
+				nActivo.AdvancedSearch.Load();
+			}
 
 			// Get export HTML tag
 			protected string GetExportTag(string type, bool custom = false) {
@@ -1910,6 +2192,13 @@ namespace AspNetMaker2019.Models {
 			}
 
 			#pragma warning restore 168
+
+			// Show link optionally based on User ID
+			protected bool ShowOptionLink(string pageId = "") { // DN
+				if (Security.IsLoggedIn && !Security.IsAdmin && !UserIDAllow(pageId))
+					return Security.IsValidUserID(nUsuarioId.CurrentValue);
+				return true;
+			}
 
 			// Set up Breadcrumb
 			protected void SetupBreadcrumb() {

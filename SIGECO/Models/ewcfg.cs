@@ -95,7 +95,7 @@ namespace AspNetMaker2019.Models {
 			public const string ConfigFileFolder = ProjectName; // Config file name
 			public const string ProjectId = "{9B083C8B-EE2F-4356-BE8D-9A26D5707365}"; // Project ID (GUID)
 			public static string RelatedLanguageFolder = "";
-			public static string RandomKey = "8QPa99zvrkKmUQ76"; // Random key for encryption
+			public static string RandomKey = "89N48xfki3aXZMQk"; // Random key for encryption
 			public static string EncryptionKey = ""; // Encryption key for data protection
 			public static string ProjectStylesheetFilename = "css/prjSIGECO.css"; // Project stylesheet file name (relative to wwwroot)
 			public static string Charset = "utf-8"; // Project charset
@@ -151,7 +151,7 @@ namespace AspNetMaker2019.Models {
 			// to login. Hashed password is irreversible, it will be reset during password recovery.
 
 			public static bool EncryptedPassword { get; set; } = false; // Encrypted password
-			public static bool CaseSensitivePassword { get; set; } = false; // Case Sensitive password
+			public static bool CaseSensitivePassword { get; set; } = true; // Case Sensitive password
 
 			// Remove XSS use HtmlSanitizer
 			// Note: If you want to allow these keywords, remove them from the following array at your own risks.
@@ -312,12 +312,20 @@ namespace AspNetMaker2019.Models {
 			public const string UserTableName = "Usuario";
 			public const string LoginUsernameFieldName = "sEmail";
 			public const string LoginPasswordFieldName = "sPassword";
-			public const string UserIdFieldName = "";
+			public const string UserIdFieldName = "nUsuarioId";
 			public const string ParentUserIdFieldName = "";
 			public const string UserLevelFieldName = "";
 			public const string UserProfileFieldName = "";
-			public const string RegisterActivateFieldName = "";
-			public const string UserEmailFieldName = "";
+			public const string RegisterActivateFieldName = "nActivo";
+			public const string UserEmailFieldName = "sEmail";
+
+			// User table filters
+			public const string UserTableDbId = "DB";
+			public const string UserTable = "[dbo].[Usuario]";
+			public const string UserNameFilter = "([sEmail] = '%u')";
+			public const string UserIdFilter = "([nUsuarioId] = %u)";
+			public const string UserEmailFilter = "([sEmail] = '%e')";
+			public const string UserActivateFilter = "";
 
 			// User Profile Constants
 			public const string UserProfileSessionId = "SessionId";
@@ -497,6 +505,7 @@ namespace AspNetMaker2019.Models {
 				{"vwOdontogramaDetalle", "_vwOdontogramaDetalle"},
 				{"vwSimbolosIncompatibles", "_vwSimbolosIncompatibles"},
 				{"vwPacienteExpediente", "_vwPacienteExpediente"},
+				{"vwOdontogramaInfoPaciente", "_vwOdontogramaInfoPaciente"},
 			};
 
 			// Boolean html attributes

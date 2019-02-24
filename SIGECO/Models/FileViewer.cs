@@ -103,6 +103,13 @@ namespace AspNetMaker2019.Models {
 					width = Config.ThumbnailDefaultWidth;
 					height = Config.ThumbnailDefaultHeight;
 				}
+				if (Security == null)
+					Security = new AdvancedSecurity();
+				bool validRequest = Security.IsLoggedIn; // Logged in
+
+				// Reject invalid request
+				if (!validRequest)
+					return JsonBoolResult.FalseResult;
 
 				// If using session (internal request), file path is always encrypted.
 				// If not (external request), DO NOT support external request for file path.
@@ -153,7 +160,15 @@ namespace AspNetMaker2019.Models {
 				}
 				if (Empty(tableName) || Empty(field) || Empty(recordkey))
 					return JsonBoolResult.FalseResult;
-				bool validRequest = true;
+				bool validRequest = false;
+				if (Security == null)
+					Security = new AdvancedSecurity();
+				validRequest = Security.IsLoggedIn; // Logged in
+				if (validRequest) {
+					Security.UserID_Loading();
+					await Security.LoadUserID();
+					Security.UserID_Loaded();
+				}
 
 				// Reject invalid request
 				if (!validRequest)

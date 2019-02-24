@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -85,7 +86,7 @@ fAntecedenteFamiliarlistsrch.filterList = @Html.Raw(await AntecedenteFamiliar_Li
 </div>
 }
 @{ AntecedenteFamiliar_List.RenderOtherOptions(); }
-@{
+@if (Security.CanSearch) {
 if (!AntecedenteFamiliar_List.IsExport() && Empty(AntecedenteFamiliar_List.CurrentAction)) { // Begin search form
 <form name="fAntecedenteFamiliarlistsrch" id="fAntecedenteFamiliarlistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
 <div id="fAntecedenteFamiliarlistsrch-search-panel" class="ew-search-panel collapse@(!Empty(AntecedenteFamiliar_List.SearchWhere) ? " show" : " show")">

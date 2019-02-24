@@ -1,0 +1,213 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetupLoginStatus(); // Setup login status
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Periodontograma_Add.Page_Render();
+
+	// Check action result
+	if (Periodontograma_Add.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "add";
+var fPeriodontogramaadd = currentForm = new ew.Form("fPeriodontogramaadd", "add");
+
+// Validate form
+fPeriodontogramaadd.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (Periodontograma_Add.nExpedienteID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nExpedienteID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Periodontograma.nExpedienteID.RequiredErrorMessage.Replace("%s", Periodontograma.nExpedienteID.Caption)))");
+		</text>
+	}
+	@if (Periodontograma_Add.dFechaPeriodontograma.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaPeriodontograma");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Periodontograma.dFechaPeriodontograma.RequiredErrorMessage.Replace("%s", Periodontograma.dFechaPeriodontograma.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaPeriodontograma");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(Periodontograma.dFechaPeriodontograma.ErrorMessage))");
+	@if (Periodontograma_Add.sObservaciones.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_sObservaciones");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Periodontograma.sObservaciones.RequiredErrorMessage.Replace("%s", Periodontograma.sObservaciones.Caption)))");
+		</text>
+	}
+	@if (Periodontograma_Add.nEstadoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nEstadoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(Periodontograma.nEstadoID.RequiredErrorMessage.Replace("%s", Periodontograma.nEstadoID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fPeriodontogramaadd.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPeriodontogramaadd.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPeriodontogramaadd.lists["x_nExpedienteID"] = @Html.Raw(Periodontograma_Add.nExpedienteID.Lookup.ToClientList());
+fPeriodontogramaadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Periodontograma_Add.nExpedienteID.LookupOptions()));
+fPeriodontogramaadd.lists["x_nEstadoID"] = @Html.Raw(Periodontograma_Add.nEstadoID.Lookup.ToClientList());
+fPeriodontogramaadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Periodontograma_Add.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Periodontograma_Add.ShowPageHeader()
+@Periodontograma_Add.ShowMessages()
+<form name="fPeriodontogramaadd" id="fPeriodontogramaadd" class="@Periodontograma_Add.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (Periodontograma_Add.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="t" value="Periodontograma">
+<input type="hidden" name="action" id="action" value="insert">
+<input type="hidden" name="modal" value="@ConvertToInt(Periodontograma_Add.IsModal)">
+<div class="ew-add-div"><!-- page* -->
+@if (Periodontograma.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	<div id="r_nExpedienteID" class="form-group row">
+		<label id="elh_Periodontograma_nExpedienteID" for="x_nExpedienteID" class="@Periodontograma_Add.LeftColumnClass">@Html.Raw(Periodontograma.nExpedienteID.Caption)@Html.Raw(Periodontograma.nExpedienteID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Periodontograma_Add.RightColumnClass"><div @Html.Raw(Periodontograma.nExpedienteID.CellAttributes)>
+<span id="el_Periodontograma_nExpedienteID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(Periodontograma.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Periodontograma.nExpedienteID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Periodontograma.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((Periodontograma.nExpedienteID.ReadOnly || Periodontograma.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Periodontograma.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
+<input type="hidden" data-table="Periodontograma" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@Periodontograma.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Periodontograma.nExpedienteID.CurrentValue"@Html.Raw(Periodontograma.nExpedienteID.EditAttributes)>
+</span>
+@Html.Raw(Periodontograma.nExpedienteID.CustomMessage)</div></div>
+	</div>
+} @* nExpedienteID.Visible (end) *@
+@if (Periodontograma.dFechaPeriodontograma.Visible) { // dFechaPeriodontograma.Visible (begin)
+	<div id="r_dFechaPeriodontograma" class="form-group row">
+		<label id="elh_Periodontograma_dFechaPeriodontograma" for="x_dFechaPeriodontograma" class="@Periodontograma_Add.LeftColumnClass">@Html.Raw(Periodontograma.dFechaPeriodontograma.Caption)@Html.Raw(Periodontograma.dFechaPeriodontograma.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Periodontograma_Add.RightColumnClass"><div @Html.Raw(Periodontograma.dFechaPeriodontograma.CellAttributes)>
+<span id="el_Periodontograma_dFechaPeriodontograma">
+<input type="text" data-table="Periodontograma" data-field="x_dFechaPeriodontograma" name="x_dFechaPeriodontograma" id="x_dFechaPeriodontograma" placeholder="@Periodontograma.dFechaPeriodontograma.PlaceHolder" value="@Periodontograma.dFechaPeriodontograma.EditValue" @Html.Raw(Periodontograma.dFechaPeriodontograma.EditAttributes)>
+@if (!Periodontograma.dFechaPeriodontograma.ReadOnly && !Periodontograma.dFechaPeriodontograma.Disabled && !Periodontograma.dFechaPeriodontograma.EditAttrs.ContainsKey("readonly") && !Periodontograma.dFechaPeriodontograma.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fPeriodontogramaadd", "x_dFechaPeriodontograma", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(Periodontograma.dFechaPeriodontograma.CustomMessage)</div></div>
+	</div>
+} @* dFechaPeriodontograma.Visible (end) *@
+@if (Periodontograma.sObservaciones.Visible) { // sObservaciones.Visible (begin)
+	<div id="r_sObservaciones" class="form-group row">
+		<label id="elh_Periodontograma_sObservaciones" for="x_sObservaciones" class="@Periodontograma_Add.LeftColumnClass">@Html.Raw(Periodontograma.sObservaciones.Caption)@Html.Raw(Periodontograma.sObservaciones.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Periodontograma_Add.RightColumnClass"><div @Html.Raw(Periodontograma.sObservaciones.CellAttributes)>
+<span id="el_Periodontograma_sObservaciones">
+<input type="text" data-table="Periodontograma" data-field="x_sObservaciones" name="x_sObservaciones" id="x_sObservaciones" size="30" maxlength="200" placeholder="@Periodontograma.sObservaciones.PlaceHolder" value="@Periodontograma.sObservaciones.EditValue" @Html.Raw(Periodontograma.sObservaciones.EditAttributes)>
+</span>
+@Html.Raw(Periodontograma.sObservaciones.CustomMessage)</div></div>
+	</div>
+} @* sObservaciones.Visible (end) *@
+@if (Periodontograma.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	<div id="r_nEstadoID" class="form-group row">
+		<label id="elh_Periodontograma_nEstadoID" for="x_nEstadoID" class="@Periodontograma_Add.LeftColumnClass">@Html.Raw(Periodontograma.nEstadoID.Caption)@Html.Raw(Periodontograma.nEstadoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@Periodontograma_Add.RightColumnClass"><div @Html.Raw(Periodontograma.nEstadoID.CellAttributes)>
+<span id="el_Periodontograma_nEstadoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nEstadoID">@(SameString(Periodontograma.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Periodontograma.nEstadoID.ViewValue)</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Periodontograma.nEstadoID.Caption))" class="ew-lookup-btn btn btn-default"@((Periodontograma.nEstadoID.ReadOnly || Periodontograma.nEstadoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nEstadoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(Periodontograma.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
+<input type="hidden" data-table="Periodontograma" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Periodontograma.nEstadoID.DisplayValueSeparatorAttribute" name="x_nEstadoID" id="x_nEstadoID" value="@Periodontograma.nEstadoID.CurrentValue"@Html.Raw(Periodontograma.nEstadoID.EditAttributes)>
+</span>
+@Html.Raw(Periodontograma.nEstadoID.CustomMessage)</div></div>
+	</div>
+} @* nEstadoID.Visible (end) *@
+</div><!-- /page* -->
+@{ Periodontograma_Add.CloseRecordset(); }
+@if (!Periodontograma_Add.IsModal) {
+<div class="form-group row"><!-- buttons .form-group -->
+	<div class="@Periodontograma_Add.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("AddBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Periodontograma_Add.ReturnUrl)"> @Html.Raw(Language.Phrase("CancelBtn"))</button>
+	</div><!-- /buttons offset -->
+</div><!-- /buttons .form-group -->
+}
+</form>
+@Periodontograma_Add.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

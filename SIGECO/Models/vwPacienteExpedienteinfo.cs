@@ -1204,6 +1204,19 @@ namespace AspNetMaker2019.Models {
 			// Lookup data from table
 			public async Task<JsonBoolResult> Lookup() {
 				Language = Language ?? new Lang(Config.LanguageFolder, Post("language"));
+				bool validRequest = true;
+				if (Security == null)
+					Security = new AdvancedSecurity();
+				validRequest = Security.IsLoggedIn; // Logged in
+				if (validRequest) {
+					Security.UserID_Loading();
+					await Security.LoadUserID();
+					Security.UserID_Loaded();
+				}
+
+				// Reject invalid request
+				if (!validRequest)
+					return JsonBoolResult.FalseResult;
 
 				// Load lookup parameters
 				bool distinct = Post<bool>("distinct");

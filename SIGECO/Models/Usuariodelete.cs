@@ -381,6 +381,10 @@ namespace AspNetMaker2019.Models {
 
 				// Open connection
 				Conn = Connection; // DN
+
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
 			}
 
 			#pragma warning disable 1998
@@ -538,10 +542,54 @@ namespace AspNetMaker2019.Models {
 
 				// Header
 				Header(Config.Cache);
+
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+					if (!Security.IsLoggedIn)
+						await Security.AutoLogin();
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loading();
+					Security.LoadCurrentUserLevel(ProjectID + TableName);
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loaded();
+					if (!Security.CanDelete) {
+						Security.SaveLastUrl();
+						FailureMessage = DeniedMessage(); // Set no permission
+						if (IsApi())
+							return new JsonBoolResult(new { success = false, error = DeniedMessage(), version = Config.ProductVersion }, false);
+						if (Security.CanList)
+							return Terminate(GetUrl("Usuariolist"));
+						else
+							return Terminate(GetUrl("login"));
+					}
+					if (Security.IsLoggedIn) {
+						Security.UserID_Loading();
+						await Security.LoadUserID();
+						Security.UserID_Loaded();
+					if (Empty(Security.CurrentUserID)) {
+						FailureMessage = DeniedMessage(); // Set no permission
+						return Terminate(GetUrl("Usuariolist"));
+					}
+					}
+				}
 				CurrentAction = Param("action"); // Set up current action
-				nUsuarioId.SetVisibility();
+				nUsuarioId.Visible = false;
 				sEmail.SetVisibility();
 				sPassword.Visible = false;
+				sUserName.SetVisibility();
+				nActivo.SetVisibility();
 				HideFieldsForAddEdit();
 
 				// Do not use lookup cache
@@ -573,6 +621,25 @@ namespace AspNetMaker2019.Models {
 
 				// Set up filter (WHERE Clause)
 				CurrentFilter = filter;
+
+				// Check if valid User ID
+				string sql = GetSql(CurrentFilter);
+				using (Recordset = await Connection.OpenDataReaderAsync(sql)) {
+					if (Recordset != null) {
+						bool res = true;
+						while (await Recordset.ReadAsync()) {
+							await LoadRowValues(Recordset);
+							if (!ShowOptionLink("delete")) {
+								string userIdMsg = Language.Phrase("NoDeletePermission");
+								FailureMessage = userIdMsg;
+								res = false;
+								break;
+							}
+						}
+						if (!res)
+							return Terminate("Usuariolist"); // Return to List page
+					}
+				}
 
 				// Get action
 				if (IsApi()) {
@@ -667,6 +734,8 @@ namespace AspNetMaker2019.Models {
 				nUsuarioId.SetDbValue(row["nUsuarioId"]);
 				sEmail.SetDbValue(row["sEmail"]);
 				sPassword.SetDbValue(row["sPassword"]);
+				sUserName.SetDbValue(row["sUserName"]);
+				nActivo.SetDbValue((ConvertToBool(row["nActivo"]) ? "1" : "0"));
 			}
 
 			#pragma warning restore 162, 168, 1998
@@ -677,6 +746,8 @@ namespace AspNetMaker2019.Models {
 				row.Add("nUsuarioId", System.DBNull.Value);
 				row.Add("sEmail", System.DBNull.Value);
 				row.Add("sPassword", System.DBNull.Value);
+				row.Add("sUserName", System.DBNull.Value);
+				row.Add("nActivo", System.DBNull.Value);
 				return row;
 			}
 
@@ -690,25 +761,43 @@ namespace AspNetMaker2019.Models {
 
 				// Common render codes for all row types
 				// nUsuarioId
+
+				nUsuarioId.CellCssStyle = "white-space: nowrap;";
+
 				// sEmail
 				// sPassword
 
 				sPassword.CellCssStyle = "white-space: nowrap;";
-				if (RowType == Config.RowTypeView) { // View row
 
-					// nUsuarioId
-					nUsuarioId.ViewValue = nUsuarioId.CurrentValue;
+				// sUserName
+				// nActivo
+
+				if (RowType == Config.RowTypeView) { // View row
 
 					// sEmail
 					sEmail.ViewValue = sEmail.CurrentValue;
 
-					// nUsuarioId
-					nUsuarioId.HrefValue = "";
-					nUsuarioId.TooltipValue = "";
+					// sUserName
+					sUserName.ViewValue = sUserName.CurrentValue;
+
+					// nActivo
+					if (ConvertToBool(nActivo.CurrentValue)) {
+						nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Activo";
+					} else {
+						nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "Inactivo";
+					}
 
 					// sEmail
 					sEmail.HrefValue = "";
 					sEmail.TooltipValue = "";
+
+					// sUserName
+					sUserName.HrefValue = "";
+					sUserName.TooltipValue = "";
+
+					// nActivo
+					nActivo.HrefValue = "";
+					nActivo.TooltipValue = "";
 				}
 
 				// Call Row Rendered event
@@ -720,6 +809,10 @@ namespace AspNetMaker2019.Models {
 
 			// Delete records (based on current filter)
 			protected async Task<JsonBoolResult> DeleteRows() { // DN
+				if (!Security.CanDelete) {
+					FailureMessage = Language.Phrase("NoDeletePermission"); // No delete permission
+					return JsonBoolResult.FalseResult; // No delete permission
+				}
 				bool result = true;
 				List<Dictionary<string, object>> rsold = null;
 				try {
@@ -814,6 +907,13 @@ namespace AspNetMaker2019.Models {
 
 			// Gete data from memory cache
 			public void GetCache<T>(string key) => Cache.Get<T>(key);
+
+			// Show link optionally based on User ID
+			protected bool ShowOptionLink(string pageId = "") { // DN
+				if (Security.IsLoggedIn && !Security.IsAdmin && !UserIDAllow(pageId))
+					return Security.IsValidUserID(nUsuarioId.CurrentValue);
+				return true;
+			}
 
 			// Set up Breadcrumb
 			protected void SetupBreadcrumb() {

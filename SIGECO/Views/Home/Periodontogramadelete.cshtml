@@ -1,0 +1,159 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetupLoginStatus(); // Setup login status
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Periodontograma_Delete.Page_Render();
+
+	// Check action result
+	if (Periodontograma_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fPeriodontogramadelete = currentForm = new ew.Form("fPeriodontogramadelete", "delete");
+
+// Form_CustomValidate event
+fPeriodontogramadelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPeriodontogramadelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPeriodontogramadelete.lists["x_nExpedienteID"] = @Html.Raw(Periodontograma_Delete.nExpedienteID.Lookup.ToClientList());
+fPeriodontogramadelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Periodontograma_Delete.nExpedienteID.LookupOptions()));
+fPeriodontogramadelete.lists["x_nEstadoID"] = @Html.Raw(Periodontograma_Delete.nEstadoID.Lookup.ToClientList());
+fPeriodontogramadelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Periodontograma_Delete.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@Periodontograma_Delete.ShowPageHeader()
+@Periodontograma_Delete.ShowMessages()
+<form name="fPeriodontogramadelete" id="fPeriodontogramadelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (Periodontograma_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in Periodontograma_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (Periodontograma.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<th class="@Html.Raw(Periodontograma.nExpedienteID.HeaderCellClass)"><span id="elh_Periodontograma_nExpedienteID" class="Periodontograma_nExpedienteID">@Html.Raw(Periodontograma.nExpedienteID.Caption)</span></th>
+} @* nExpedienteID.Visible (end) *@
+@if (Periodontograma.dFechaPeriodontograma.Visible) { // dFechaPeriodontograma (begin)
+		<th class="@Html.Raw(Periodontograma.dFechaPeriodontograma.HeaderCellClass)"><span id="elh_Periodontograma_dFechaPeriodontograma" class="Periodontograma_dFechaPeriodontograma">@Html.Raw(Periodontograma.dFechaPeriodontograma.Caption)</span></th>
+} @* dFechaPeriodontograma.Visible (end) *@
+@if (Periodontograma.sObservaciones.Visible) { // sObservaciones (begin)
+		<th class="@Html.Raw(Periodontograma.sObservaciones.HeaderCellClass)"><span id="elh_Periodontograma_sObservaciones" class="Periodontograma_sObservaciones">@Html.Raw(Periodontograma.sObservaciones.Caption)</span></th>
+} @* sObservaciones.Visible (end) *@
+@if (Periodontograma.nEstadoID.Visible) { // nEstadoID (begin)
+		<th class="@Html.Raw(Periodontograma.nEstadoID.HeaderCellClass)"><span id="elh_Periodontograma_nEstadoID" class="Periodontograma_nEstadoID">@Html.Raw(Periodontograma.nEstadoID.Caption)</span></th>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ Periodontograma_Delete.RecordCount = 0; }
+@while (Periodontograma_Delete.Recordset != null && await Periodontograma_Delete.Recordset.ReadAsync()) { // DN
+	Periodontograma_Delete.RecordCount++;
+	Periodontograma_Delete.RowCnt++;
+
+	// Set row properties
+	Periodontograma_Delete.ResetAttributes();
+	Periodontograma_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await Periodontograma_Delete.LoadRowValues(Periodontograma_Delete.Recordset);
+
+	// Render row
+	await Periodontograma_Delete.RenderRow();
+	<tr @Html.Raw(Periodontograma_Delete.RowAttributes)>
+@if (Periodontograma.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<td @Html.Raw(Periodontograma.nExpedienteID.CellAttributes)>
+<span id="el@(Periodontograma_Delete.RowCnt)_Periodontograma_nExpedienteID" class="Periodontograma_nExpedienteID">
+<span @Html.Raw(Periodontograma.nExpedienteID.ViewAttributes)>
+@Html.Raw(Periodontograma.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+} @* nExpedienteID.Visible (end) *@
+@if (Periodontograma.dFechaPeriodontograma.Visible) { // dFechaPeriodontograma (begin)
+		<td @Html.Raw(Periodontograma.dFechaPeriodontograma.CellAttributes)>
+<span id="el@(Periodontograma_Delete.RowCnt)_Periodontograma_dFechaPeriodontograma" class="Periodontograma_dFechaPeriodontograma">
+<span @Html.Raw(Periodontograma.dFechaPeriodontograma.ViewAttributes)>
+@Html.Raw(Periodontograma.dFechaPeriodontograma.GetViewValue())</span>
+</span>
+</td>
+} @* dFechaPeriodontograma.Visible (end) *@
+@if (Periodontograma.sObservaciones.Visible) { // sObservaciones (begin)
+		<td @Html.Raw(Periodontograma.sObservaciones.CellAttributes)>
+<span id="el@(Periodontograma_Delete.RowCnt)_Periodontograma_sObservaciones" class="Periodontograma_sObservaciones">
+<span @Html.Raw(Periodontograma.sObservaciones.ViewAttributes)>
+@Html.Raw(Periodontograma.sObservaciones.GetViewValue())</span>
+</span>
+</td>
+} @* sObservaciones.Visible (end) *@
+@if (Periodontograma.nEstadoID.Visible) { // nEstadoID (begin)
+		<td @Html.Raw(Periodontograma.nEstadoID.CellAttributes)>
+<span id="el@(Periodontograma_Delete.RowCnt)_Periodontograma_nEstadoID" class="Periodontograma_nEstadoID">
+<span @Html.Raw(Periodontograma.nEstadoID.ViewAttributes)>
+@Html.Raw(Periodontograma.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+} @* nEstadoID.Visible (end) *@
+	</tr>
+}
+@{ Periodontograma_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(Periodontograma_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@Periodontograma_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

@@ -89,7 +89,7 @@ namespace AspNetMaker2019.Controllers
         {
             MicroDB.MicroDB db = new MicroDB.MicroDB();
 
-            object simbolos = db.ExecuteReader("Exec spGetSimbolos");
+            object simbolos = db.ExecuteReader("Exec spGetSimbolos -1");
 
             return Json(simbolos);
         }

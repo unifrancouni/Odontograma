@@ -345,6 +345,10 @@ namespace AspNetMaker2019.Models {
 
 				// Open connection
 				Conn = Conn ?? GetConnection();
+
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
 			}
 
 			#pragma warning disable 1998

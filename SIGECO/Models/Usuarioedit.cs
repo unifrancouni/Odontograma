@@ -381,6 +381,10 @@ namespace AspNetMaker2019.Models {
 
 				// Open connection
 				Conn = Connection; // DN
+
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
 			}
 
 			#pragma warning disable 1998
@@ -566,12 +570,56 @@ namespace AspNetMaker2019.Models {
 				// Is modal
 				IsModal = Param<bool>("modal");
 
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+					if (!Security.IsLoggedIn)
+						await Security.AutoLogin();
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loading();
+					Security.LoadCurrentUserLevel(ProjectID + TableName);
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loaded();
+					if (!Security.CanEdit) {
+						Security.SaveLastUrl();
+						FailureMessage = DeniedMessage(); // Set no permission
+						if (IsApi())
+							return new JsonBoolResult(new { success = false, error = DeniedMessage(), version = Config.ProductVersion }, false);
+						if (Security.CanList)
+							return Terminate(GetUrl("Usuariolist"));
+						else
+							return Terminate(GetUrl("login"));
+					}
+					if (Security.IsLoggedIn) {
+						Security.UserID_Loading();
+						await Security.LoadUserID();
+						Security.UserID_Loaded();
+					if (Empty(Security.CurrentUserID)) {
+						FailureMessage = DeniedMessage(); // Set no permission
+						return Terminate(GetUrl("Usuariolist"));
+					}
+					}
+				}
+
 				// Create form object
 				CurrentForm = new HttpForm();
 				CurrentAction = Param("action"); // Set up current action
-				nUsuarioId.SetVisibility();
+				nUsuarioId.Visible = false;
 				sEmail.SetVisibility();
 				sPassword.SetVisibility();
+				sUserName.SetVisibility();
+				nActivo.SetVisibility();
 				HideFieldsForAddEdit();
 
 				// Do not use lookup cache
@@ -780,11 +828,6 @@ namespace AspNetMaker2019.Models {
 			protected async Task LoadFormValues() {
 				string val;
 
-				// Check field name 'nUsuarioId' first before field var 'x_nUsuarioId'
-				val = CurrentForm.GetValue("nUsuarioId", "x_nUsuarioId");
-				if (!nUsuarioId.IsDetailKey)
-					nUsuarioId.FormValue = val;
-
 				// Check field name 'sEmail' first before field var 'x_sEmail'
 				val = CurrentForm.GetValue("sEmail", "x_sEmail");
 				if (!sEmail.IsDetailKey) {
@@ -802,6 +845,29 @@ namespace AspNetMaker2019.Models {
 					else
 						sPassword.FormValue = val;
 				}
+
+				// Check field name 'sUserName' first before field var 'x_sUserName'
+				val = CurrentForm.GetValue("sUserName", "x_sUserName");
+				if (!sUserName.IsDetailKey) {
+					if (IsApi() && val == null)
+						sUserName.Visible = false; // Disable update for API request
+					else
+						sUserName.FormValue = val;
+				}
+
+				// Check field name 'nActivo' first before field var 'x_nActivo'
+				val = CurrentForm.GetValue("nActivo", "x_nActivo");
+				if (!nActivo.IsDetailKey) {
+					if (IsApi() && val == null)
+						nActivo.Visible = false; // Disable update for API request
+					else
+						nActivo.FormValue = val;
+				}
+
+				// Check field name 'nUsuarioId' first before field var 'x_nUsuarioId'
+				val = CurrentForm.GetValue("nUsuarioId", "x_nUsuarioId");
+				if (!nUsuarioId.IsDetailKey)
+					nUsuarioId.FormValue = val;
 			}
 
 			#pragma warning restore 1998
@@ -811,6 +877,8 @@ namespace AspNetMaker2019.Models {
 				nUsuarioId.CurrentValue = nUsuarioId.FormValue;
 				sEmail.CurrentValue = sEmail.FormValue;
 				sPassword.CurrentValue = sPassword.FormValue;
+				sUserName.CurrentValue = sUserName.FormValue;
+				nActivo.CurrentValue = nActivo.FormValue;
 			}
 
 			// Load row based on key values
@@ -837,6 +905,13 @@ namespace AspNetMaker2019.Models {
 					if (Config.Debug)
 						throw;
 				}
+
+				// Check if valid User ID
+				if (res) {
+					res = ShowOptionLink("edit");
+					if (!res)
+						FailureMessage = DeniedMessage();
+				}
 				return res;
 			}
 
@@ -858,6 +933,8 @@ namespace AspNetMaker2019.Models {
 				nUsuarioId.SetDbValue(row["nUsuarioId"]);
 				sEmail.SetDbValue(row["sEmail"]);
 				sPassword.SetDbValue(row["sPassword"]);
+				sUserName.SetDbValue(row["sUserName"]);
+				nActivo.SetDbValue((ConvertToBool(row["nActivo"]) ? "1" : "0"));
 			}
 
 			#pragma warning restore 162, 168, 1998
@@ -868,6 +945,8 @@ namespace AspNetMaker2019.Models {
 				row.Add("nUsuarioId", System.DBNull.Value);
 				row.Add("sEmail", System.DBNull.Value);
 				row.Add("sPassword", System.DBNull.Value);
+				row.Add("sUserName", System.DBNull.Value);
+				row.Add("nActivo", System.DBNull.Value);
 				return row;
 			}
 
@@ -916,11 +995,10 @@ namespace AspNetMaker2019.Models {
 				// nUsuarioId
 				// sEmail
 				// sPassword
+				// sUserName
+				// nActivo
 
 				if (RowType == Config.RowTypeView) { // View row
-
-					// nUsuarioId
-					nUsuarioId.ViewValue = nUsuarioId.CurrentValue;
 
 					// sEmail
 					sEmail.ViewValue = sEmail.CurrentValue;
@@ -928,9 +1006,15 @@ namespace AspNetMaker2019.Models {
 					// sPassword
 					sPassword.ViewValue = Language.Phrase("PasswordMask");
 
-					// nUsuarioId
-					nUsuarioId.HrefValue = "";
-					nUsuarioId.TooltipValue = "";
+					// sUserName
+					sUserName.ViewValue = sUserName.CurrentValue;
+
+					// nActivo
+					if (ConvertToBool(nActivo.CurrentValue)) {
+						nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Activo";
+					} else {
+						nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "Inactivo";
+					}
 
 					// sEmail
 					sEmail.HrefValue = "";
@@ -939,11 +1023,15 @@ namespace AspNetMaker2019.Models {
 					// sPassword
 					sPassword.HrefValue = "";
 					sPassword.TooltipValue = "";
-				} else if (RowType == Config.RowTypeEdit) { // Edit row
 
-					// nUsuarioId
-					nUsuarioId.EditAttrs["class"] = "form-control";
-					nUsuarioId.EditValue = nUsuarioId.CurrentValue;
+					// sUserName
+					sUserName.HrefValue = "";
+					sUserName.TooltipValue = "";
+
+					// nActivo
+					nActivo.HrefValue = "";
+					nActivo.TooltipValue = "";
+				} else if (RowType == Config.RowTypeEdit) { // Edit row
 
 					// sEmail
 					sEmail.EditAttrs["class"] = "form-control";
@@ -955,16 +1043,28 @@ namespace AspNetMaker2019.Models {
 					sPassword.EditValue = sPassword.CurrentValue; // DN
 					sPassword.PlaceHolder = RemoveHtml(sPassword.Caption);
 
+					// sUserName
+					sUserName.EditAttrs["class"] = "form-control";
+					sUserName.EditValue = sUserName.CurrentValue; // DN
+					sUserName.PlaceHolder = RemoveHtml(sUserName.Caption);
+
+					// nActivo
+					nActivo.EditAttrs["class"] = "form-control";
+					nActivo.EditValue = nActivo.Options(true);
+
 					// Edit refer script
-					// nUsuarioId
-
-					nUsuarioId.HrefValue = "";
-
 					// sEmail
+
 					sEmail.HrefValue = "";
 
 					// sPassword
 					sPassword.HrefValue = "";
+
+					// sUserName
+					sUserName.HrefValue = "";
+
+					// nActivo
+					nActivo.HrefValue = "";
 				}
 				if (RowType == Config.RowTypeAdd || RowType == Config.RowTypeEdit || RowType == Config.RowTypeSearch) // Add/Edit/Search row
 					SetupFieldTitles();
@@ -998,6 +1098,14 @@ namespace AspNetMaker2019.Models {
 				if (sPassword.Required) {
 					if (!sPassword.IsDetailKey && Empty(sPassword.FormValue))
 						FormError = AddMessage(FormError, sPassword.RequiredErrorMessage.Replace("%s", sPassword.Caption));
+				}
+				if (sUserName.Required) {
+					if (!sUserName.IsDetailKey && Empty(sUserName.FormValue))
+						FormError = AddMessage(FormError, sUserName.RequiredErrorMessage.Replace("%s", sUserName.Caption));
+				}
+				if (nActivo.Required) {
+					if (!nActivo.IsDetailKey && Empty(nActivo.FormValue))
+						FormError = AddMessage(FormError, nActivo.RequiredErrorMessage.Replace("%s", nActivo.Caption));
 				}
 
 				// Return validate result
@@ -1044,7 +1152,13 @@ namespace AspNetMaker2019.Models {
 				sEmail.SetDbValue(rsnew, sEmail.CurrentValue, "", sEmail.ReadOnly);
 
 				// sPassword
-				sPassword.SetDbValue(rsnew, sPassword.CurrentValue, "", sPassword.ReadOnly);
+				sPassword.SetDbValue(rsnew, sPassword.CurrentValue, "", sPassword.ReadOnly || (Config.EncryptedPassword && SameString(rsold["sPassword"], sPassword.CurrentValue)));
+
+				// sUserName
+				sUserName.SetDbValue(rsnew, sUserName.CurrentValue, "", sUserName.ReadOnly);
+
+				// nActivo
+				nActivo.SetDbValue(rsnew, SameString(nActivo.CurrentValue, "1") ? "1" : "0", 0, nActivo.ReadOnly); // DN1204
 
 				// Call Row Updating event
 				bool updateRow = Row_Updating(rsold, rsnew);
@@ -1097,6 +1211,13 @@ namespace AspNetMaker2019.Models {
 
 			// Gete data from memory cache
 			public void GetCache<T>(string key) => Cache.Get<T>(key);
+
+			// Show link optionally based on User ID
+			protected bool ShowOptionLink(string pageId = "") { // DN
+				if (Security.IsLoggedIn && !Security.IsAdmin && !UserIDAllow(pageId))
+					return Security.IsValidUserID(nUsuarioId.CurrentValue);
+				return true;
+			}
 
 			// Set up Breadcrumb
 			protected void SetupBreadcrumb() {

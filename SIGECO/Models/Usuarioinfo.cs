@@ -97,6 +97,8 @@ namespace AspNetMaker2019.Models {
 			public readonly DbField<SqlDbType> nUsuarioId;
 			public readonly DbField<SqlDbType> sEmail;
 			public readonly DbField<SqlDbType> sPassword;
+			public readonly DbField<SqlDbType> sUserName;
+			public readonly DbField<SqlDbType> nActivo;
 
 			// Constructor
 			public _Usuario() {
@@ -147,7 +149,7 @@ namespace AspNetMaker2019.Models {
 					IsAutoIncrement = true, // Autoincrement field
 					IsPrimaryKey = true, // Primary key field
 					Nullable = false, // NOT NULL field
-					Sortable = true, // Allow sort
+					Sortable = false, // Allow sort
 					DefaultErrorMessage = Language.Phrase("IncorrectInteger"),
 					IsUpload = false
 				};
@@ -205,6 +207,70 @@ namespace AspNetMaker2019.Models {
 				};
 				sPassword.Init(this); // DN
 				Fields.Add("sPassword", sPassword);
+
+				// sUserName
+				sUserName = new DbField<SqlDbType> {
+					TableVar = "Usuario",
+					TableName = "Usuario",
+					FieldVar = "x_sUserName",
+					Name = "sUserName",
+					Expression = "[sUserName]",
+					BasicSearchExpression = "[sUserName]",
+					Type = 200,
+					DbType = SqlDbType.VarChar,
+					DateTimeFormat = -1,
+					VirtualExpression = "[sUserName]",
+					IsVirtual = false,
+					ForceSelection = false,
+					SelectMultiple = false,
+					VirtualSearch = false,
+					ViewTag = "FORMATTED TEXT",
+					HtmlTag = "TEXT",
+					Nullable = false, // NOT NULL field
+					Required = true, // Required field
+					Sortable = true, // Allow sort
+					IsUpload = false
+				};
+				sUserName.Init(this); // DN
+				Fields.Add("sUserName", sUserName);
+
+				// nActivo
+				nActivo = new DbField<SqlDbType> {
+					TableVar = "Usuario",
+					TableName = "Usuario",
+					FieldVar = "x_nActivo",
+					Name = "nActivo",
+					Expression = "[nActivo]",
+					BasicSearchExpression = "[nActivo]",
+					Type = 11,
+					DbType = SqlDbType.Bit,
+					DateTimeFormat = -1,
+					VirtualExpression = "[nActivo]",
+					IsVirtual = false,
+					ForceSelection = false,
+					SelectMultiple = false,
+					VirtualSearch = false,
+					ViewTag = "FORMATTED TEXT",
+					HtmlTag = "SELECT",
+					Nullable = false, // NOT NULL field
+					Required = true, // Required field
+					Sortable = true, // Allow sort
+					UsePleaseSelect = true, // Use PleaseSelect by default
+					PleaseSelectText = Language.Phrase("PleaseSelect"), // PleaseSelect text
+					DataType = Config.DataTypeBoolean,
+					OptionCount = 2,
+					IsUpload = false
+				};
+				nActivo.Init(this); // DN
+				switch (CurrentLanguage) {
+					case "en":
+						nActivo.Lookup = new Lookup("nActivo", "Usuario", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						break;
+					default:
+						nActivo.Lookup = new Lookup("nActivo", "Usuario", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						break;
+				}
+				Fields.Add("nActivo", nActivo);
 			}
 
 			// Set Field Visibility
@@ -320,12 +386,15 @@ namespace AspNetMaker2019.Models {
 
 			// Apply User ID filters
 			public string ApplyUserIDFilters(string filter) {
+				if (!Empty(Security.CurrentUserID) && !Security.IsAdmin) { // Non system admin
+					filter = AddUserIDFilter(filter);
+				}
 				return filter;
 			}
 
 			// Check if User ID security allows view all
 			public bool UserIDAllow(string id = "") {
-				int allow = Config.UserIdAllow;
+				int allow = UserIdAllowSecurity;
 				switch (id) {
 					case "add":
 					case "copy":
@@ -423,6 +492,7 @@ namespace AspNetMaker2019.Models {
 			public string CurrentSql {
 				get {
 					string filter = CurrentFilter;
+					filter = ApplyUserIDFilters(filter); // Add User ID filter
 					string sort = SessionOrderBy;
 					return GetSql(filter, sort);
 				}
@@ -436,6 +506,7 @@ namespace AspNetMaker2019.Models {
 					string filter = UseSessionForListSql ? SessionWhere : "";
 					AddFilter(ref filter, CurrentFilter);
 					Recordset_Selecting(ref filter);
+					filter = ApplyUserIDFilters(filter); // Add User ID filter
 					select = SqlSelect;
 					sort = UseSessionForListSql ? SessionOrderBy : "";
 					return BuildSelectSql(select, SqlWhere, SqlGroupBy, SqlHaving, SqlOrderBy, filter, sort);
@@ -542,6 +613,13 @@ namespace AspNetMaker2019.Models {
 
 			// Convert value to object for parameter
 			public object ParameterValue(DbField fld, object value) {
+				if (Config.EncryptedPassword && SameString(fld.Name, Config.LoginPasswordFieldName)) {
+					if (Config.CaseSensitivePassword) {
+						return EncryptPassword(Convert.ToString(value));
+					} else {
+						return EncryptPassword(Convert.ToString(value).ToLower());
+					}
+				}
 				if (((DbField<SqlDbType>)fld).DbType == SqlDbType.Bit) {
 					return ConvertToBool(value);
 				}
@@ -589,6 +667,8 @@ namespace AspNetMaker2019.Models {
 				nUsuarioId.SetDbValue(row["nUsuarioId"], false);
 				sEmail.SetDbValue(row["sEmail"], false);
 				sPassword.SetDbValue(row["sPassword"], false);
+				sUserName.SetDbValue(row["sUserName"], false);
+				nActivo.SetDbValue((ConvertToBool(row["nActivo"]) ? "1" : "0"), false);
 			}
 			public void DeleteUploadedFiles(Dictionary<string, object> row) {
 				LoadDbValues(row);
@@ -818,6 +898,8 @@ namespace AspNetMaker2019.Models {
 				nUsuarioId.SetDbValue(rs["nUsuarioId"]);
 				sEmail.SetDbValue(rs["sEmail"]);
 				sPassword.SetDbValue(rs["sPassword"]);
+				sUserName.SetDbValue(rs["sUserName"]);
+				nActivo.SetDbValue(ConvertToBool(rs["nActivo"]) ? "1" : "0");
 			}
 
 			#pragma warning disable 1998
@@ -830,12 +912,18 @@ namespace AspNetMaker2019.Models {
 
 				// Common render codes
 				// nUsuarioId
+
+				nUsuarioId.CellCssStyle = "white-space: nowrap;";
+
 				// sEmail
 				// sPassword
 
 				sPassword.CellCssStyle = "white-space: nowrap;";
 
+				// sUserName
+				// nActivo
 				// nUsuarioId
+
 				nUsuarioId.ViewValue = nUsuarioId.CurrentValue;
 
 				// sEmail
@@ -843,6 +931,16 @@ namespace AspNetMaker2019.Models {
 
 				// sPassword
 				sPassword.ViewValue = Language.Phrase("PasswordMask");
+
+				// sUserName
+				sUserName.ViewValue = sUserName.CurrentValue;
+
+				// nActivo
+				if (ConvertToBool(nActivo.CurrentValue)) {
+					nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Activo";
+				} else {
+					nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "Inactivo";
+				}
 
 				// nUsuarioId
 				nUsuarioId.HrefValue = "";
@@ -855,6 +953,14 @@ namespace AspNetMaker2019.Models {
 				// sPassword
 				sPassword.HrefValue = "";
 				sPassword.TooltipValue = "";
+
+				// sUserName
+				sUserName.HrefValue = "";
+				sUserName.TooltipValue = "";
+
+				// nActivo
+				nActivo.HrefValue = "";
+				nActivo.TooltipValue = "";
 
 				// Call Row Rendered event
 				Row_Rendered();
@@ -886,6 +992,15 @@ namespace AspNetMaker2019.Models {
 				sPassword.EditAttrs["class"] = "form-control ew-password-strength";
 				sPassword.EditValue = sPassword.CurrentValue; // DN
 				sPassword.PlaceHolder = RemoveHtml(sPassword.Caption);
+
+				// sUserName
+				sUserName.EditAttrs["class"] = "form-control";
+				sUserName.EditValue = sUserName.CurrentValue; // DN
+				sUserName.PlaceHolder = RemoveHtml(sUserName.Caption);
+
+				// nActivo
+				nActivo.EditAttrs["class"] = "form-control";
+				nActivo.EditValue = nActivo.Options(true);
 
 				// Call Row Rendered event
 				Row_Rendered();
@@ -922,11 +1037,13 @@ namespace AspNetMaker2019.Models {
 					if (doc.Horizontal) { // Horizontal format, write header
 						doc.BeginExportRow();
 						if (exportType == "view") {
-							doc.ExportCaption(nUsuarioId);
 							doc.ExportCaption(sEmail);
+							doc.ExportCaption(sUserName);
+							doc.ExportCaption(nActivo);
 						} else {
-							doc.ExportCaption(nUsuarioId);
 							doc.ExportCaption(sEmail);
+							doc.ExportCaption(sUserName);
+							doc.ExportCaption(nActivo);
 						}
 						doc.EndExportRow();
 					}
@@ -964,11 +1081,13 @@ namespace AspNetMaker2019.Models {
 						if (!doc.ExportCustom) {
 							doc.BeginExportRow(rowcnt); // Allow CSS styles if enabled
 							if (exportType == "view") {
-								await doc.ExportField(nUsuarioId);
 								await doc.ExportField(sEmail);
+								await doc.ExportField(sUserName);
+								await doc.ExportField(nActivo);
 							} else {
-								await doc.ExportField(nUsuarioId);
 								await doc.ExportField(sEmail);
+								await doc.ExportField(sUserName);
+								await doc.ExportField(nActivo);
 							}
 							doc.EndExportRow(rowcnt);
 						}
@@ -982,11 +1101,67 @@ namespace AspNetMaker2019.Models {
 					doc.ExportTableFooter();
 			}
 
+			// User ID filter
+			public string GetUserIDFilter(object userid) {
+				string userIdFilter = "[nUsuarioId] = " + QuotedValue(userid, Config.DataTypeNumber, Config.UserTableDbId);
+				return userIdFilter;
+			}
+
+			// Add User ID filter
+			public string AddUserIDFilter(string filter = "") {
+				string filterWrk = "";
+				var id = (CurrentPageID() == "list") ? CurrentAction : CurrentPageID();
+				if (!UserIDAllow(id) && !Security.IsAdmin) {
+					filterWrk = Security.UserIDList();
+					if (!Empty(filterWrk))
+						filterWrk = "[nUsuarioId] IN (" + filterWrk + ")";
+					AddFilter(ref filterWrk, filter);
+				}
+
+				// Call User ID Filtering event
+				UserID_Filtering(ref filterWrk);
+				AddFilter(ref filter, filterWrk);
+				return filter;
+			}
+
+			// User ID subquery
+			public string GetUserIDSubquery(DbField fld, DbField masterfld) {
+				string wrk = "";
+				string sql = "SELECT " + masterfld.Expression + " FROM [dbo].[Usuario]";
+				string filter = AddUserIDFilter();
+				if (!Empty(filter))
+					sql += " WHERE " + filter;
+
+				// Use subquery
+				if (Config.UseSubqueryForMasterUserId) { // Use subquery
+					wrk = sql;
+				} else { // List all values
+					var list = Connection.GetRowsAsync(sql).GetAwaiter().GetResult();
+					wrk = String.Join(",", list.Select(d => QuotedValue(d.Values.First(), masterfld.DataType, Config.UserTableDbId)));
+				}
+				if (!Empty(wrk))
+					wrk = fld.Expression + " IN (" + wrk + ")";
+				return wrk;
+			}
+
 			#pragma warning disable 219
 
 			// Lookup data from table
 			public async Task<JsonBoolResult> Lookup() {
 				Language = Language ?? new Lang(Config.LanguageFolder, Post("language"));
+				bool validRequest = true;
+				if (Security == null)
+					Security = new AdvancedSecurity();
+				validRequest = Security.IsLoggedIn; // Logged in
+				if (validRequest) {
+					Security.UserID_Loading();
+					await Security.LoadUserID();
+					Security.UserID_Loaded();
+				}
+
+				// Reject invalid request
+				if (!validRequest)
+					return JsonBoolResult.FalseResult;
 
 				// Load lookup parameters
 				bool distinct = Post<bool>("distinct");

@@ -427,6 +427,10 @@ namespace AspNetMaker2019.Models {
 				// Open connection
 				Conn = Connection; // DN
 
+				// User table object (Usuario)
+				UserTable = UserTable ?? new _Usuario();
+				UserTableConn = UserTableConn ?? GetConnection(UserTable.DbId);
+
 				// Export options
 				ExportOptions = new ListOptions { Tag = "div", TagClassName = "ew-export-option" };
 
@@ -619,6 +623,48 @@ namespace AspNetMaker2019.Models {
 				// Is modal
 				IsModal = Param<bool>("modal");
 
+				// User profile
+				Profile = new UserProfile();
+
+				// Security
+				Security = new AdvancedSecurity(); // DN
+				bool validRequest = false;
+
+				// Check security for API request
+				if (IsApi() && !Security.IsLoggedIn) {
+					var authResult = await HttpContext.AuthenticateAsync(JwtBearerDefaults.AuthenticationScheme);
+					if (authResult.Succeeded && authResult.Principal.Identity.IsAuthenticated)
+						Security.LoginUser(ClaimValue(ClaimTypes.Name), ClaimValue("userid"), ClaimValue("parentuserid"), ConvertToInt(ClaimValue("userlevelid")));
+				}
+				if (!validRequest) {
+					if (!Security.IsLoggedIn)
+						await Security.AutoLogin();
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loading();
+					Security.LoadCurrentUserLevel(ProjectID + TableName);
+					if (Security.IsLoggedIn)
+						Security.TablePermission_Loaded();
+					if (!Security.CanView) {
+						Security.SaveLastUrl();
+						FailureMessage = DeniedMessage(); // Set no permission
+						if (IsApi())
+							return new JsonBoolResult(new { success = false, error = DeniedMessage(), version = Config.ProductVersion }, false);
+						if (Security.CanList)
+							return Terminate(GetUrl("Usuariolist"));
+						else
+							return Terminate(GetUrl("login"));
+					}
+					if (Security.IsLoggedIn) {
+						Security.UserID_Loading();
+						await Security.LoadUserID();
+						Security.UserID_Loaded();
+					if (Empty(Security.CurrentUserID)) {
+						FailureMessage = DeniedMessage(); // Set no permission
+						return Terminate(GetUrl("Usuariolist"));
+					}
+					}
+				}
+
 				// Get export parameters
 				string custom = "";
 				if (!Empty(Param("export"))) {
@@ -661,9 +707,11 @@ namespace AspNetMaker2019.Models {
 
 				// Setup export options
 				SetupExportOptions();
-				nUsuarioId.SetVisibility();
+				nUsuarioId.Visible = false;
 				sEmail.SetVisibility();
 				sPassword.Visible = false;
+				sUserName.SetVisibility();
+				nActivo.SetVisibility();
 				HideFieldsForAddEdit();
 
 				// Do not use lookup cache
@@ -792,7 +840,7 @@ namespace AspNetMaker2019.Models {
 					item.Body = "<a class=\"ew-action ew-add\" title=\"" + addcaption + "\" data-caption=\"" + addcaption + "\" href=\"javascript:void(0);\" onclick=\"ew.modalDialogShow({lnk:this,url:'" + HtmlEncode(AppPath(AddUrl)) + "'});\">" + Language.Phrase("ViewPageAddLink") + "</a>";
 				else
 					item.Body = "<a class=\"ew-action ew-add\" title=\"" + addcaption + "\" data-caption=\"" + addcaption + "\" href=\"" + HtmlEncode(AppPath(AddUrl)) + "\">" + Language.Phrase("ViewPageAddLink") + "</a>";
-					item.Visible = (AddUrl != "");
+					item.Visible = (AddUrl != "" && Security.CanAdd);
 
 				// Edit
 				item = option.Add("edit");
@@ -801,7 +849,7 @@ namespace AspNetMaker2019.Models {
 					item.Body = "<a class=\"ew-action ew-edit\" title=\"" + editcaption + "\" data-caption=\"" + editcaption + "\" href=\"javascript:void(0);\" onclick=\"ew.modalDialogShow({lnk:this,url:'" + HtmlEncode(AppPath(EditUrl)) + "'});\">" + Language.Phrase("ViewPageEditLink") + "</a>";
 				else
 					item.Body = "<a class=\"ew-action ew-edit\" title=\"" + editcaption + "\" data-caption=\"" + editcaption + "\" href=\"" + HtmlEncode(AppPath(EditUrl)) + "\">" + Language.Phrase("ViewPageEditLink") + "</a>";
-					item.Visible = (EditUrl != "");
+					item.Visible = (EditUrl != "" && Security.CanEdit&& ShowOptionLink("edit"));
 
 				// Copy
 				item = option.Add("copy");
@@ -810,7 +858,7 @@ namespace AspNetMaker2019.Models {
 					item.Body = "<a class=\"ew-action ew-copy\" title=\"" + copycaption + "\" data-caption=\"" + copycaption + "\" href=\"javascript:void(0);\" onclick=\"ew.modalDialogShow({lnk:this,url:'" + HtmlEncode(AppPath(CopyUrl)) + "'});\">" + Language.Phrase("ViewPageCopyLink") + "</a>";
 				else
 					item.Body = "<a class=\"ew-action ew-copy\" title=\"" + copycaption + "\" data-caption=\"" + copycaption + "\" href=\"" + HtmlEncode(AppPath(CopyUrl)) + "\">" + Language.Phrase("ViewPageCopyLink") + "</a>";
-					item.Visible = (CopyUrl != "");
+					item.Visible = (CopyUrl != "" && Security.CanAdd && ShowOptionLink("add"));
 
 				// Delete
 				item = option.Add("delete");
@@ -818,7 +866,7 @@ namespace AspNetMaker2019.Models {
 					item.Body = "<a onclick=\"return ew.confirmDelete(this);\" class=\"ew-action ew-delete\" title=\"" + HtmlTitle(Language.Phrase("ViewPageDeleteLink")) + "\" data-caption=\"" + HtmlTitle(Language.Phrase("ViewPageDeleteLink")) + "\" href=\"" + HtmlEncode(UrlAddQuery(AppPath(DeleteUrl), "action=1")) + "\">" + Language.Phrase("ViewPageDeleteLink") + "</a>";
 				else
 					item.Body = "<a class=\"ew-action ew-delete\" title=\"" + HtmlTitle(Language.Phrase("ViewPageDeleteLink")) + "\" data-caption=\"" + HtmlTitle(Language.Phrase("ViewPageDeleteLink")) + "\" href=\"" + HtmlEncode(AppPath(DeleteUrl)) + "\">" + Language.Phrase("ViewPageDeleteLink") + "</a>";
-				item.Visible = (DeleteUrl != "");
+				item.Visible = (DeleteUrl != "" && Security.CanDelete && ShowOptionLink("delete"));
 
 				// Set up action default
 				option = options["action"];
@@ -926,6 +974,8 @@ namespace AspNetMaker2019.Models {
 				nUsuarioId.SetDbValue(row["nUsuarioId"]);
 				sEmail.SetDbValue(row["sEmail"]);
 				sPassword.SetDbValue(row["sPassword"]);
+				sUserName.SetDbValue(row["sUserName"]);
+				nActivo.SetDbValue((ConvertToBool(row["nActivo"]) ? "1" : "0"));
 			}
 
 			#pragma warning restore 162, 168, 1998
@@ -936,6 +986,8 @@ namespace AspNetMaker2019.Models {
 				row.Add("nUsuarioId", System.DBNull.Value);
 				row.Add("sEmail", System.DBNull.Value);
 				row.Add("sPassword", System.DBNull.Value);
+				row.Add("sUserName", System.DBNull.Value);
+				row.Add("nActivo", System.DBNull.Value);
 				return row;
 			}
 
@@ -952,22 +1004,35 @@ namespace AspNetMaker2019.Models {
 				// nUsuarioId
 				// sEmail
 				// sPassword
+				// sUserName
+				// nActivo
 
 				if (RowType == Config.RowTypeView) { // View row
-
-					// nUsuarioId
-					nUsuarioId.ViewValue = nUsuarioId.CurrentValue;
 
 					// sEmail
 					sEmail.ViewValue = sEmail.CurrentValue;
 
-					// nUsuarioId
-					nUsuarioId.HrefValue = "";
-					nUsuarioId.TooltipValue = "";
+					// sUserName
+					sUserName.ViewValue = sUserName.CurrentValue;
+
+					// nActivo
+					if (ConvertToBool(nActivo.CurrentValue)) {
+						nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Activo";
+					} else {
+						nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "Inactivo";
+					}
 
 					// sEmail
 					sEmail.HrefValue = "";
 					sEmail.TooltipValue = "";
+
+					// sUserName
+					sUserName.HrefValue = "";
+					sUserName.TooltipValue = "";
+
+					// nActivo
+					nActivo.HrefValue = "";
+					nActivo.TooltipValue = "";
 				}
 
 				// Call Row Rendered event
@@ -1153,6 +1218,13 @@ namespace AspNetMaker2019.Models {
 			}
 
 			#pragma warning restore 168
+
+			// Show link optionally based on User ID
+			protected bool ShowOptionLink(string pageId = "") { // DN
+				if (Security.IsLoggedIn && !Security.IsAdmin && !UserIDAllow(pageId))
+					return Security.IsValidUserID(nUsuarioId.CurrentValue);
+				return true;
+			}
 
 			// Set up Breadcrumb
 			protected void SetupBreadcrumb() {

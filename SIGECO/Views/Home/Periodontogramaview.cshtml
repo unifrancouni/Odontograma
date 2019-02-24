@@ -1,0 +1,136 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetupLoginStatus(); // Setup login status
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	Periodontograma_View.Page_Render();
+
+	// Check action result
+	if (Periodontograma_View.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+	string sqlWrk, filterWrk, whereWrk, curVal;
+
+	#pragma warning restore 168
+
+}
+@if (!Periodontograma.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "view";
+var fPeriodontogramaview = currentForm = new ew.Form("fPeriodontogramaview", "view");
+
+// Form_CustomValidate event
+fPeriodontogramaview.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPeriodontogramaview.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPeriodontogramaview.lists["x_nExpedienteID"] = @Html.Raw(Periodontograma_View.nExpedienteID.Lookup.ToClientList());
+fPeriodontogramaview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Periodontograma_View.nExpedienteID.LookupOptions()));
+fPeriodontogramaview.lists["x_nEstadoID"] = @Html.Raw(Periodontograma_View.nEstadoID.Lookup.ToClientList());
+fPeriodontogramaview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Periodontograma_View.nEstadoID.LookupOptions()));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!Periodontograma.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+	@Periodontograma_View.ExportOptions.RenderBody()
+	@Periodontograma_View.OtherOptions.RenderBody()
+	<div class="clearfix"></div>
+</div>
+}
+@Periodontograma_View.ShowPageHeader()
+@Periodontograma_View.ShowMessages()
+<form name="fPeriodontogramaview" id="fPeriodontogramaview" class="form-inline ew-form ew-view-form" method="post">
+@if (Periodontograma_View.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="modal" value="@ConvertToInt(Periodontograma_View.IsModal)">
+<table class="table table-striped table-sm ew-view-table">
+@if (Periodontograma.nExpedienteID.Visible) { @* Periodontograma.nExpedienteID.Visible (begin) *@
+	<tr id="r_nExpedienteID">
+		<td class="@Periodontograma_View.TableLeftColumnClass"><span id="elh_Periodontograma_nExpedienteID">@Html.Raw(Periodontograma.nExpedienteID.Caption)</span></td>
+		<td data-name="nExpedienteID" @Html.Raw(Periodontograma.nExpedienteID.CellAttributes)>
+<span id="el_Periodontograma_nExpedienteID">
+<span @Html.Raw(Periodontograma.nExpedienteID.ViewAttributes)>
+@Html.Raw(Periodontograma.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Periodontograma.nExpedienteID.Visible (end) *@
+@if (Periodontograma.dFechaPeriodontograma.Visible) { @* Periodontograma.dFechaPeriodontograma.Visible (begin) *@
+	<tr id="r_dFechaPeriodontograma">
+		<td class="@Periodontograma_View.TableLeftColumnClass"><span id="elh_Periodontograma_dFechaPeriodontograma">@Html.Raw(Periodontograma.dFechaPeriodontograma.Caption)</span></td>
+		<td data-name="dFechaPeriodontograma" @Html.Raw(Periodontograma.dFechaPeriodontograma.CellAttributes)>
+<span id="el_Periodontograma_dFechaPeriodontograma">
+<span @Html.Raw(Periodontograma.dFechaPeriodontograma.ViewAttributes)>
+@Html.Raw(Periodontograma.dFechaPeriodontograma.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Periodontograma.dFechaPeriodontograma.Visible (end) *@
+@if (Periodontograma.sObservaciones.Visible) { @* Periodontograma.sObservaciones.Visible (begin) *@
+	<tr id="r_sObservaciones">
+		<td class="@Periodontograma_View.TableLeftColumnClass"><span id="elh_Periodontograma_sObservaciones">@Html.Raw(Periodontograma.sObservaciones.Caption)</span></td>
+		<td data-name="sObservaciones" @Html.Raw(Periodontograma.sObservaciones.CellAttributes)>
+<span id="el_Periodontograma_sObservaciones">
+<span @Html.Raw(Periodontograma.sObservaciones.ViewAttributes)>
+@Html.Raw(Periodontograma.sObservaciones.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Periodontograma.sObservaciones.Visible (end) *@
+@if (Periodontograma.nEstadoID.Visible) { @* Periodontograma.nEstadoID.Visible (begin) *@
+	<tr id="r_nEstadoID">
+		<td class="@Periodontograma_View.TableLeftColumnClass"><span id="elh_Periodontograma_nEstadoID">@Html.Raw(Periodontograma.nEstadoID.Caption)</span></td>
+		<td data-name="nEstadoID" @Html.Raw(Periodontograma.nEstadoID.CellAttributes)>
+<span id="el_Periodontograma_nEstadoID">
+<span @Html.Raw(Periodontograma.nEstadoID.ViewAttributes)>
+@Html.Raw(Periodontograma.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	</tr>
+} @* Periodontograma.nEstadoID.Visible (end) *@
+</table>
+@{ Periodontograma_View.CloseRecordset(); }
+</form>
+@Periodontograma_View.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!Periodontograma.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

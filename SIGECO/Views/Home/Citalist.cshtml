@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -83,7 +84,7 @@ fCitalistsrch.filterList = @Html.Raw(await Cita_List.GetFilterList());
 </div>
 }
 @{ Cita_List.RenderOtherOptions(); }
-@{
+@if (Security.CanSearch) {
 if (!Cita_List.IsExport() && Empty(Cita_List.CurrentAction)) { // Begin search form
 <form name="fCitalistsrch" id="fCitalistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
 <div id="fCitalistsrch-search-panel" class="ew-search-panel collapse@(!Empty(Cita_List.SearchWhere) ? " show" : " show")">
