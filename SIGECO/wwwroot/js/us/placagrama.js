@@ -32,7 +32,7 @@ function readTextFile(file, callback) {
 
 //usage:
 readTextFile("http://localhost:52124/Content/Jsons/simbolos_incompatibles_placa.json", function (text) {
-    debugger
+    //debugger
     //var data = JSON.parse(text);
     init_config.simbolos_incompatibles = JSON.parse(text);
 });
@@ -54,7 +54,7 @@ function preload() {
         success: function (data) {
             if (data != null) {
                 if (data.length != 0) {
-                    debugger
+                    //debugger
                     init_config.simbolos = data;
                 }
             }
@@ -102,6 +102,10 @@ var grupo_simbolos;
 var grupo_tools;
 var save_button;
 var print_button;
+var descriptionText;
+var dientes_afectados = [];
+var dientes_ausentes = 0;
+var indice_oleary = 0;
 
 function create() {
 
@@ -143,6 +147,41 @@ function create() {
 
     llenarPanel(0);
 
+    //Porcentaje % de placas (Índice de O'Leary)
+    //Texto descriptivo de %
+    descriptionText = game.add.text(T * (xEmp + 13), T * (yEmp - 1), 'Indice de O\'Leary: 100%');
+    descriptionText.font = 'Arial';
+    descriptionText.fontSize = 15;
+
+    //Función que calcula el índice O'Leary
+    IndiceOleary();
+    
+    //debugger
+    console.log(dientes_afectados);
+    console.log(dientes_ausentes);
+    console.log(indice_oleary.toFixed(2));
+
+}
+
+function IndiceOleary() {
+    //Cálculo
+    dientes_ausentes = 0;
+    dientes_afectados = [];
+    init_config.simbolos.forEach(o => {
+        if (o.sDescripcion.includes("caries"))
+            addElementAsGrupBy(o.sNombreDiente);
+        else
+            dientes_ausentes++;
+    });
+    indice_oleary = (dientes_afectados.length * 100) / (32 - dientes_ausentes);
+    descriptionText.text = 'Indice de O\'Leary: ' + indice_oleary.toFixed(2) + '%';
+}
+
+//Función que agrega a un array sin repetir
+function addElementAsGrupBy(item) {
+    //debugger
+    if (!dientes_afectados.includes(item))
+        dientes_afectados.push(item);
 }
 
 
@@ -217,7 +256,7 @@ function save_up() {
 
     console.log(JSON.stringify(init_config.simbolos));
 
-    debugger
+    //debugger
     var oID = $("#iOdi").val();
     var jsonSend = { oId: oID.toString(), detail: JSON.stringify(init_config.simbolos) };
 
@@ -442,7 +481,11 @@ function ValidationDrop(item) {
         }
         else
             item.bringToTop();
+
     }
+
+    IndiceOleary();
+
 }
 
 function Nombre(item) {
