@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,9 +50,9 @@ fTratamientoRealizadoview.validateRequired = @ConvertToJson(Config.ClientValidat
 
 // Dynamic selection lists
 fTratamientoRealizadoview.lists["x_nExpedienteID"] = @Html.Raw(TratamientoRealizado_View.nExpedienteID.Lookup.ToClientList());
-fTratamientoRealizadoview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_View.nExpedienteID.LookupOptions()));
+fTratamientoRealizadoview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_View.nExpedienteID.LookupOptions));
 fTratamientoRealizadoview.lists["x_nEstadoID"] = @Html.Raw(TratamientoRealizado_View.nEstadoID.Lookup.ToClientList());
-fTratamientoRealizadoview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_View.nEstadoID.LookupOptions()));
+fTratamientoRealizadoview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_View.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

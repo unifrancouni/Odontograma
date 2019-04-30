@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -112,9 +112,9 @@ fTratamientoRealizadoadd.validateRequired = @ConvertToJson(Config.ClientValidate
 
 // Dynamic selection lists
 fTratamientoRealizadoadd.lists["x_nExpedienteID"] = @Html.Raw(TratamientoRealizado_Add.nExpedienteID.Lookup.ToClientList());
-fTratamientoRealizadoadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_Add.nExpedienteID.LookupOptions()));
+fTratamientoRealizadoadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_Add.nExpedienteID.LookupOptions));
 fTratamientoRealizadoadd.lists["x_nEstadoID"] = @Html.Raw(TratamientoRealizado_Add.nEstadoID.Lookup.ToClientList());
-fTratamientoRealizadoadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_Add.nEstadoID.LookupOptions()));
+fTratamientoRealizadoadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_Add.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>
@@ -138,13 +138,13 @@ fTratamientoRealizadoadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(
 		<div class="@TratamientoRealizado_Add.RightColumnClass"><div @Html.Raw(TratamientoRealizado.nExpedienteID.CellAttributes)>
 <span id="el_TratamientoRealizado_nExpedienteID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(TratamientoRealizado.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : TratamientoRealizado.nExpedienteID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@Html.Raw(SameString(TratamientoRealizado.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(TratamientoRealizado.nExpedienteID.ViewValue) : TratamientoRealizado.nExpedienteID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(TratamientoRealizado.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((TratamientoRealizado.nExpedienteID.ReadOnly || TratamientoRealizado.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(TratamientoRealizado.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
-<input type="hidden" data-table="TratamientoRealizado" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@TratamientoRealizado.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@TratamientoRealizado.nExpedienteID.CurrentValue"@Html.Raw(TratamientoRealizado.nExpedienteID.EditAttributes)>
+<input type="hidden" data-table="TratamientoRealizado" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@TratamientoRealizado.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Html.Raw(TratamientoRealizado.nExpedienteID.CurrentValue)"@Html.Raw(TratamientoRealizado.nExpedienteID.EditAttributes)>
 </span>
 @Html.Raw(TratamientoRealizado.nExpedienteID.CustomMessage)</div></div>
 	</div>

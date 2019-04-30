@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -112,7 +112,7 @@ fValorCatalogoedit.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fValorCatalogoedit.lists["x_nCatalogoID"] = @Html.Raw(ValorCatalogo_Edit.nCatalogoID.Lookup.ToClientList());
-fValorCatalogoedit.lists["x_nCatalogoID"].options = @Html.Raw(ConvertToJson(ValorCatalogo_Edit.nCatalogoID.LookupOptions()));
+fValorCatalogoedit.lists["x_nCatalogoID"].options = @Html.Raw(ConvertToJson(ValorCatalogo_Edit.nCatalogoID.LookupOptions));
 fValorCatalogoedit.lists["x_nActivo"] = @Html.Raw(ValorCatalogo_Edit.nActivo.Lookup.ToClientList());
 fValorCatalogoedit.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(ValorCatalogo_Edit.nActivo.Options(false))); // DN
 
@@ -150,13 +150,13 @@ fValorCatalogoedit.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(ValorCat
 } else {
 <span id="el_ValorCatalogo_nCatalogoID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nCatalogoID">@(SameString(ValorCatalogo.nCatalogoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : ValorCatalogo.nCatalogoID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nCatalogoID">@Html.Raw(SameString(ValorCatalogo.nCatalogoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(ValorCatalogo.nCatalogoID.ViewValue) : ValorCatalogo.nCatalogoID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(ValorCatalogo.nCatalogoID.Caption))" class="ew-lookup-btn btn btn-default"@((ValorCatalogo.nCatalogoID.ReadOnly || ValorCatalogo.nCatalogoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nCatalogoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(ValorCatalogo.nCatalogoID.Lookup.GetParamTag("p_x_nCatalogoID"))
-<input type="hidden" data-table="ValorCatalogo" data-field="x_nCatalogoID" data-multiple="0" data-lookup="1" data-value-separator="@ValorCatalogo.nCatalogoID.DisplayValueSeparatorAttribute" name="x_nCatalogoID" id="x_nCatalogoID" value="@ValorCatalogo.nCatalogoID.CurrentValue"@Html.Raw(ValorCatalogo.nCatalogoID.EditAttributes)>
+<input type="hidden" data-table="ValorCatalogo" data-field="x_nCatalogoID" data-multiple="0" data-lookup="1" data-value-separator="@ValorCatalogo.nCatalogoID.DisplayValueSeparatorAttribute" name="x_nCatalogoID" id="x_nCatalogoID" value="@Html.Raw(ValorCatalogo.nCatalogoID.CurrentValue)"@Html.Raw(ValorCatalogo.nCatalogoID.EditAttributes)>
 </span>
 }
 @Html.Raw(ValorCatalogo.nCatalogoID.CustomMessage)</div></div>

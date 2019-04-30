@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -112,9 +112,9 @@ fOdontogramaadd.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fOdontogramaadd.lists["x_nExpedienteID"] = @Html.Raw(Odontograma_Add.nExpedienteID.Lookup.ToClientList());
-fOdontogramaadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Odontograma_Add.nExpedienteID.LookupOptions()));
+fOdontogramaadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Odontograma_Add.nExpedienteID.LookupOptions));
 fOdontogramaadd.lists["x_nEstadoID"] = @Html.Raw(Odontograma_Add.nEstadoID.Lookup.ToClientList());
-fOdontogramaadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Odontograma_Add.nEstadoID.LookupOptions()));
+fOdontogramaadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Odontograma_Add.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>
@@ -138,13 +138,13 @@ fOdontogramaadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Odontogra
 		<div class="@Odontograma_Add.RightColumnClass"><div @Html.Raw(Odontograma.nExpedienteID.CellAttributes)>
 <span id="el_Odontograma_nExpedienteID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(Odontograma.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Odontograma.nExpedienteID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@Html.Raw(SameString(Odontograma.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(Odontograma.nExpedienteID.ViewValue) : Odontograma.nExpedienteID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Odontograma.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((Odontograma.nExpedienteID.ReadOnly || Odontograma.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(Odontograma.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
-<input type="hidden" data-table="Odontograma" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@Odontograma.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Odontograma.nExpedienteID.CurrentValue"@Html.Raw(Odontograma.nExpedienteID.EditAttributes)>
+<input type="hidden" data-table="Odontograma" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@Odontograma.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Html.Raw(Odontograma.nExpedienteID.CurrentValue)"@Html.Raw(Odontograma.nExpedienteID.EditAttributes)>
 </span>
 @Html.Raw(Odontograma.nExpedienteID.CustomMessage)</div></div>
 	</div>
@@ -180,13 +180,13 @@ ew.createDateTimePicker("fOdontogramaadd", "x_dFechaOdontograma", {"ignoreReadon
 		<div class="@Odontograma_Add.RightColumnClass"><div @Html.Raw(Odontograma.nEstadoID.CellAttributes)>
 <span id="el_Odontograma_nEstadoID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nEstadoID">@(SameString(Odontograma.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Odontograma.nEstadoID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nEstadoID">@Html.Raw(SameString(Odontograma.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(Odontograma.nEstadoID.ViewValue) : Odontograma.nEstadoID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Odontograma.nEstadoID.Caption))" class="ew-lookup-btn btn btn-default"@((Odontograma.nEstadoID.ReadOnly || Odontograma.nEstadoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nEstadoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(Odontograma.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
-<input type="hidden" data-table="Odontograma" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Odontograma.nEstadoID.DisplayValueSeparatorAttribute" name="x_nEstadoID" id="x_nEstadoID" value="@Odontograma.nEstadoID.CurrentValue"@Html.Raw(Odontograma.nEstadoID.EditAttributes)>
+<input type="hidden" data-table="Odontograma" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Odontograma.nEstadoID.DisplayValueSeparatorAttribute" name="x_nEstadoID" id="x_nEstadoID" value="@Html.Raw(Odontograma.nEstadoID.CurrentValue)"@Html.Raw(Odontograma.nEstadoID.EditAttributes)>
 </span>
 @Html.Raw(Odontograma.nEstadoID.CustomMessage)</div></div>
 	</div>

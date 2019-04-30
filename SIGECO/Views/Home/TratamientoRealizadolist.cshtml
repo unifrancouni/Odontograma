@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -51,9 +51,9 @@ fTratamientoRealizadolist.validateRequired = @ConvertToJson(Config.ClientValidat
 
 // Dynamic selection lists
 fTratamientoRealizadolist.lists["x_nExpedienteID"] = @Html.Raw(TratamientoRealizado_List.nExpedienteID.Lookup.ToClientList());
-fTratamientoRealizadolist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_List.nExpedienteID.LookupOptions()));
+fTratamientoRealizadolist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_List.nExpedienteID.LookupOptions));
 fTratamientoRealizadolist.lists["x_nEstadoID"] = @Html.Raw(TratamientoRealizado_List.nEstadoID.Lookup.ToClientList());
-fTratamientoRealizadolist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_List.nEstadoID.LookupOptions()));
+fTratamientoRealizadolist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(TratamientoRealizado_List.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>
@@ -265,52 +265,7 @@ while (TratamientoRealizado_List.RecordCount < TratamientoRealizado_List.StopRec
 		<div class="card-footer ew-grid-lower-panel">
 		@if (!TratamientoRealizado_List.IsGridAdd) {
 			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
-@{ TratamientoRealizado_List.Pager = TratamientoRealizado_List.Pager ?? new PrevNextPager(TratamientoRealizado_List.StartRecord, TratamientoRealizado_List.DisplayRecords, TratamientoRealizado_List.TotalRecords, TratamientoRealizado_List.AutoHidePager); }
-@if (TratamientoRealizado_List.Pager.RecordCount > 0 && TratamientoRealizado_List.Pager.Visible) {
-<div class="ew-pager">
-<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
-<div class="ew-prev-next"><div class="input-group input-group-sm">
-<div class="input-group-prepend">
-<!--first page button-->
-	@if (TratamientoRealizado_List.Pager.FirstButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(TratamientoRealizado_List.PageUrl)start=@TratamientoRealizado_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
-	}
-<!--previous page button-->
-	@if (TratamientoRealizado_List.Pager.PrevButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(TratamientoRealizado_List.PageUrl)start=@TratamientoRealizado_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
-	}
-</div>
-<!--current page number-->
-	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@TratamientoRealizado_List.Pager.CurrentPageNumber">
-<div class="input-group-append">
-<!--next page button-->
-	@if (TratamientoRealizado_List.Pager.NextButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(TratamientoRealizado_List.PageUrl)start=@TratamientoRealizado_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
-	}
-<!--last page button-->
-	@if (TratamientoRealizado_List.Pager.LastButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(TratamientoRealizado_List.PageUrl)start=@TratamientoRealizado_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
-	}
-</div>
-</div>
-</div>
-<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@TratamientoRealizado_List.Pager.PageCount</span>
-<div class="clearfix"></div>
-</div>
-}
-@if (TratamientoRealizado_List.Pager.RecordCount > 0) {
-	<div class="ew-pager ew-rec">
-		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(TratamientoRealizado_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(TratamientoRealizado_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(TratamientoRealizado_List.Pager.RecordCount)</span>
-	</div>
-}
+			@TratamientoRealizado_List.Pager.Render()
 			</form>
 		}
 		<div class="ew-list-other-options">

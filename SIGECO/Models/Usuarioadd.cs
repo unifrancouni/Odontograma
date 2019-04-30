@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -120,7 +120,6 @@ namespace AspNetMaker2019.Models {
 
 			// Token
 			public string Token; // DN
-			public int TokenTimeout = 0;
 			public bool CheckToken = Config.CheckToken;
 
 			// Action result // DN
@@ -131,6 +130,9 @@ namespace AspNetMaker2019.Models {
 
 			// Page terminated // DN
 			private bool _terminated = false;
+
+			// Page URL
+			private string _pageUrl = "";
 
 			// Page action result
 			public IActionResult PageResult() {
@@ -167,7 +169,14 @@ namespace AspNetMaker2019.Models {
 			public string PageName => CurrentPageName();
 
 			// Page URL
-			public string PageUrl => CurrentPageName() + "?";
+			public string PageUrl {
+				get {
+					if (_pageUrl == "") {
+						_pageUrl = CurrentPageName() + "?";
+					}
+					return _pageUrl;
+				}
+			}
 
 			// Private properties
 			private string _message = "";
@@ -340,7 +349,7 @@ namespace AspNetMaker2019.Models {
 			public IHtmlContent ShowPageFooter() {
 				string footer = PageFooter;
 				Page_DataRendered(ref footer);
-				if (!Empty(footer)) // Fotoer exists, display
+				if (!Empty(footer)) // Footer exists, display
 					return new HtmlString("<p id=\"ew-page-footer\">" + footer + "</p>");
 				return null;
 			}
@@ -364,7 +373,6 @@ namespace AspNetMaker2019.Models {
 
 				// Initialize
 				CurrentPage = this;
-				TokenTimeout = SessionTimeoutTime();
 
 				// Language object
 				Language = Language ?? new Lang();
@@ -951,6 +959,9 @@ namespace AspNetMaker2019.Models {
 
 				if (RowType == Config.RowTypeView) { // View row
 
+					// nUsuarioId
+					nUsuarioId.ViewValue = nUsuarioId.CurrentValue;
+
 					// sEmail
 					sEmail.ViewValue = sEmail.CurrentValue;
 
@@ -962,9 +973,9 @@ namespace AspNetMaker2019.Models {
 
 					// nActivo
 					if (ConvertToBool(nActivo.CurrentValue)) {
-						nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Activo";
+						nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Yes";
 					} else {
-						nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "Inactivo";
+						nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "No";
 					}
 
 					// sEmail
@@ -986,6 +997,8 @@ namespace AspNetMaker2019.Models {
 
 					// sEmail
 					sEmail.EditAttrs["class"] = "form-control";
+					if (Config.RemoveXss)
+						sEmail.CurrentValue = HtmlDecode(sEmail.CurrentValue);
 					sEmail.EditValue = sEmail.CurrentValue; // DN
 					sEmail.PlaceHolder = RemoveHtml(sEmail.Caption);
 
@@ -996,12 +1009,13 @@ namespace AspNetMaker2019.Models {
 
 					// sUserName
 					sUserName.EditAttrs["class"] = "form-control";
+					if (Config.RemoveXss)
+						sUserName.CurrentValue = HtmlDecode(sUserName.CurrentValue);
 					sUserName.EditValue = sUserName.CurrentValue; // DN
 					sUserName.PlaceHolder = RemoveHtml(sUserName.Caption);
 
 					// nActivo
-					nActivo.EditAttrs["class"] = "form-control";
-					nActivo.EditValue = nActivo.Options(true);
+					nActivo.EditValue = nActivo.Options(false);
 
 					// Add refer script
 					// sEmail
@@ -1055,7 +1069,7 @@ namespace AspNetMaker2019.Models {
 						FormError = AddMessage(FormError, sUserName.RequiredErrorMessage.Replace("%s", sUserName.Caption));
 				}
 				if (nActivo.Required) {
-					if (!nActivo.IsDetailKey && Empty(nActivo.FormValue))
+					if (Empty(nActivo.FormValue))
 						FormError = AddMessage(FormError, nActivo.RequiredErrorMessage.Replace("%s", nActivo.Caption));
 				}
 
@@ -1115,7 +1129,7 @@ namespace AspNetMaker2019.Models {
 					sUserName.SetDbValue(rsnew, sUserName.CurrentValue, "", false);
 
 					// nActivo
-					nActivo.SetDbValue(rsnew, SameString(nActivo.CurrentValue, "1") ? "1" : "0", 0, false); // DN1204
+					nActivo.SetDbValue(rsnew, ConvertToBool(nActivo.CurrentValue, "1", "0"), 0, false); // DN1204
 
 					// nUsuarioId
 				} catch (Exception e) {
@@ -1199,13 +1213,13 @@ namespace AspNetMaker2019.Models {
 					var sql = fld.Lookup.GetSql(false, "", lookupFilter, this);
 
 					// Set up lookup cache
-					if (fld.UseLookupCache && !Empty(sql) && fld.Lookup.Options.Count == 0) {
+					if (fld.UseLookupCache && !Empty(sql) && fld.Lookup.ParentFields.Count == 0 && fld.Lookup.Options.Count == 0) {
 						int totalCnt = await TryGetRecordCount(sql);
 						if (totalCnt > fld.LookupCacheCount) // Total count > cache count, do not cache
 							return;
 						var ar = new Dictionary<string, Dictionary<string, object>>();
 						var values = new List<object>();
-						var conn = GetConnection();
+						var conn = await GetConnectionAsync();
 						List<Dictionary<string, object>> rs = await conn.GetRowsAsync(sql);
 						if (rs != null) {
 							foreach (var row in rs) {

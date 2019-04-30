@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -120,7 +120,6 @@ namespace AspNetMaker2019.Models {
 
 			// Token
 			public string Token; // DN
-			public int TokenTimeout = 0;
 			public bool CheckToken = Config.CheckToken;
 
 			// Action result // DN
@@ -131,6 +130,9 @@ namespace AspNetMaker2019.Models {
 
 			// Page terminated // DN
 			private bool _terminated = false;
+
+			// Page URL
+			private string _pageUrl = "";
 
 			// Page action result
 			public IActionResult PageResult() {
@@ -167,7 +169,14 @@ namespace AspNetMaker2019.Models {
 			public string PageName => CurrentPageName();
 
 			// Page URL
-			public string PageUrl => CurrentPageName() + "?";
+			public string PageUrl {
+				get {
+					if (_pageUrl == "") {
+						_pageUrl = CurrentPageName() + "?";
+					}
+					return _pageUrl;
+				}
+			}
 
 			// Private properties
 			private string _message = "";
@@ -340,7 +349,7 @@ namespace AspNetMaker2019.Models {
 			public IHtmlContent ShowPageFooter() {
 				string footer = PageFooter;
 				Page_DataRendered(ref footer);
-				if (!Empty(footer)) // Fotoer exists, display
+				if (!Empty(footer)) // Footer exists, display
 					return new HtmlString("<p id=\"ew-page-footer\">" + footer + "</p>");
 				return null;
 			}
@@ -364,7 +373,6 @@ namespace AspNetMaker2019.Models {
 
 				// Initialize
 				CurrentPage = this;
-				TokenTimeout = SessionTimeoutTime();
 
 				// Language object
 				Language = Language ?? new Lang();
@@ -1067,17 +1075,17 @@ namespace AspNetMaker2019.Models {
 					if (!Empty(curVal)) {
 						nPacienteID.ViewValue = nPacienteID.LookupCacheOption(curVal);
 						if (nPacienteID.ViewValue == null) { // Lookup from database
-						filterWrk = "[nPacienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+							filterWrk = "[nPacienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 							sqlWrk = nPacienteID.Lookup.GetSql(false, filterWrk, null, this);
-							rswrk = Connection.GetRows(sqlWrk);
-						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-							var listwrk = rswrk[0].Values.ToList();
-							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-							listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-							nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
-						} else {
-							nPacienteID.ViewValue = nPacienteID.CurrentValue;
-						}
+							rswrk = await Connection.GetRowsAsync(sqlWrk);
+							if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+								var listwrk = rswrk[0].Values.ToList();
+								listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+								listwrk[2] = Convert.ToString(listwrk[2]);
+								nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
+							} else {
+								nPacienteID.ViewValue = nPacienteID.CurrentValue;
+							}
 						}
 					} else {
 						nPacienteID.ViewValue = System.DBNull.Value;
@@ -1099,18 +1107,18 @@ namespace AspNetMaker2019.Models {
 					if (!Empty(curVal)) {
 						nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.LookupCacheOption(curVal);
 						if (nGrupoSanguineoID.ViewValue == null) { // Lookup from database
-						filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+							filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 							lookupFilter = () => "nCatalogoID=8";
 							sqlWrk = nGrupoSanguineoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-							rswrk = Connection.GetRows(sqlWrk);
-						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-							var listwrk = rswrk[0].Values.ToList();
-							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-							listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-							nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.DisplayValue(listwrk);
-						} else {
-							nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.CurrentValue;
-						}
+							rswrk = await Connection.GetRowsAsync(sqlWrk);
+							if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+								var listwrk = rswrk[0].Values.ToList();
+								listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+								listwrk[2] = Convert.ToString(listwrk[2]);
+								nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.DisplayValue(listwrk);
+							} else {
+								nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.CurrentValue;
+							}
 						}
 					} else {
 						nGrupoSanguineoID.ViewValue = System.DBNull.Value;
@@ -1131,18 +1139,18 @@ namespace AspNetMaker2019.Models {
 					if (!Empty(curVal)) {
 						nEstadoID.ViewValue = nEstadoID.LookupCacheOption(curVal);
 						if (nEstadoID.ViewValue == null) { // Lookup from database
-						filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+							filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 							lookupFilter = () => "nCatalogoID=9";
 							sqlWrk = nEstadoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-							rswrk = Connection.GetRows(sqlWrk);
-						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-							var listwrk = rswrk[0].Values.ToList();
-							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-							listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-							nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
-						} else {
-							nEstadoID.ViewValue = nEstadoID.CurrentValue;
-						}
+							rswrk = await Connection.GetRowsAsync(sqlWrk);
+							if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+								var listwrk = rswrk[0].Values.ToList();
+								listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+								listwrk[2] = Convert.ToString(listwrk[2]);
+								nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
+							} else {
+								nEstadoID.ViewValue = nEstadoID.CurrentValue;
+							}
 						}
 					} else {
 						nEstadoID.ViewValue = System.DBNull.Value;
@@ -1188,17 +1196,17 @@ namespace AspNetMaker2019.Models {
 					if (!Empty(curVal)) {
 						nPacienteID.ViewValue = nPacienteID.LookupCacheOption(curVal);
 						if (nPacienteID.ViewValue == null) { // Lookup from database
-						filterWrk = "[nPacienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+							filterWrk = "[nPacienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 							sqlWrk = nPacienteID.Lookup.GetSql(false, filterWrk, null, this);
-							rswrk = Connection.GetRows(sqlWrk);
-						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-							var listwrk = rswrk[0].Values.ToList();
-							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-							listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-							nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
-						} else {
-							nPacienteID.ViewValue = nPacienteID.CurrentValue;
-						}
+							rswrk = await Connection.GetRowsAsync(sqlWrk);
+							if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+								var listwrk = rswrk[0].Values.ToList();
+								listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+								listwrk[2] = Convert.ToString(listwrk[2]);
+								nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
+							} else {
+								nPacienteID.ViewValue = nPacienteID.CurrentValue;
+							}
 						}
 					} else {
 						nPacienteID.ViewValue = System.DBNull.Value;
@@ -1220,12 +1228,12 @@ namespace AspNetMaker2019.Models {
 							filterWrk = "[nPacienteID]" + SearchString("=", Convert.ToString(nPacienteID.CurrentValue), Config.DataTypeNumber, "");
 						}
 					sqlWrk = nPacienteID.Lookup.GetSql(true, filterWrk, null, this);
-					rswrk = Connection.GetRows(sqlWrk);
+					rswrk = await Connection.GetRowsAsync(sqlWrk);
 					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
 						var listwrk = rswrk[0].Values.ToList();
 						listwrk[1] = Convert.ToString(HtmlEncode(FormatNumber(listwrk[1], 0, -2, -2, -2)));
 						listwrk[2] = Convert.ToString(HtmlEncode(listwrk[2]));
-						nPacienteID.ViewValue = String.Concat(nPacienteID.ViewValue, nPacienteID.DisplayValue(listwrk));
+						nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
 						foreach (var d in rswrk) {
 							var keys = d.Keys.ToList();
 							d[keys[1]] = FormatNumber(d[keys[1]], 0, -2, -2, -2);
@@ -1249,6 +1257,8 @@ namespace AspNetMaker2019.Models {
 
 					// sACPPESA
 					sACPPESA.EditAttrs["class"] = "form-control";
+					if (Config.RemoveXss)
+						sACPPESA.CurrentValue = HtmlDecode(sACPPESA.CurrentValue);
 					sACPPESA.EditValue = sACPPESA.CurrentValue; // DN
 					sACPPESA.PlaceHolder = RemoveHtml(sACPPESA.Caption);
 
@@ -1270,12 +1280,12 @@ namespace AspNetMaker2019.Models {
 						}
 					lookupFilter = () => "nCatalogoID=8";
 					sqlWrk = nGrupoSanguineoID.Lookup.GetSql(true, filterWrk, lookupFilter, this);
-					rswrk = Connection.GetRows(sqlWrk);
+					rswrk = await Connection.GetRowsAsync(sqlWrk);
 					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
 						var listwrk = rswrk[0].Values.ToList();
 						listwrk[1] = Convert.ToString(HtmlEncode(FormatNumber(listwrk[1], 0, -2, -2, -2)));
 						listwrk[2] = Convert.ToString(HtmlEncode(listwrk[2]));
-						nGrupoSanguineoID.ViewValue = String.Concat(nGrupoSanguineoID.ViewValue, nGrupoSanguineoID.DisplayValue(listwrk));
+						nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.DisplayValue(listwrk);
 						foreach (var d in rswrk) {
 							var keys = d.Keys.ToList();
 							d[keys[1]] = FormatNumber(d[keys[1]], 0, -2, -2, -2);
@@ -1292,6 +1302,8 @@ namespace AspNetMaker2019.Models {
 
 					// sAAAMA
 					sAAAMA.EditAttrs["class"] = "form-control";
+					if (Config.RemoveXss)
+						sAAAMA.CurrentValue = HtmlDecode(sAAAMA.CurrentValue);
 					sAAAMA.EditValue = sAAAMA.CurrentValue; // DN
 					sAAAMA.PlaceHolder = RemoveHtml(sAAAMA.Caption);
 
@@ -1313,12 +1325,12 @@ namespace AspNetMaker2019.Models {
 						}
 					lookupFilter = () => "nCatalogoID=9";
 					sqlWrk = nEstadoID.Lookup.GetSql(true, filterWrk, lookupFilter, this);
-					rswrk = Connection.GetRows(sqlWrk);
+					rswrk = await Connection.GetRowsAsync(sqlWrk);
 					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
 						var listwrk = rswrk[0].Values.ToList();
 						listwrk[1] = Convert.ToString(HtmlEncode(FormatNumber(listwrk[1], 0, -2, -2, -2)));
 						listwrk[2] = Convert.ToString(HtmlEncode(listwrk[2]));
-						nEstadoID.ViewValue = String.Concat(nEstadoID.ViewValue, nEstadoID.DisplayValue(listwrk));
+						nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
 						foreach (var d in rswrk) {
 							var keys = d.Keys.ToList();
 							d[keys[1]] = FormatNumber(d[keys[1]], 0, -2, -2, -2);
@@ -1673,13 +1685,13 @@ namespace AspNetMaker2019.Models {
 					var sql = fld.Lookup.GetSql(false, "", lookupFilter, this);
 
 					// Set up lookup cache
-					if (fld.UseLookupCache && !Empty(sql) && fld.Lookup.Options.Count == 0) {
+					if (fld.UseLookupCache && !Empty(sql) && fld.Lookup.ParentFields.Count == 0 && fld.Lookup.Options.Count == 0) {
 						int totalCnt = await TryGetRecordCount(sql);
 						if (totalCnt > fld.LookupCacheCount) // Total count > cache count, do not cache
 							return;
 						var ar = new Dictionary<string, Dictionary<string, object>>();
 						var values = new List<object>();
-						var conn = GetConnection();
+						var conn = await GetConnectionAsync();
 						List<Dictionary<string, object>> rs = await conn.GetRowsAsync(sql);
 						if (rs != null) {
 							foreach (var row in rs) {

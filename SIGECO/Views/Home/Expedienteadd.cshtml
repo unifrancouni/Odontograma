@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -143,13 +143,13 @@ fExpedienteadd.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fExpedienteadd.lists["x_nPacienteID"] = @Html.Raw(Expediente_Add.nPacienteID.Lookup.ToClientList());
-fExpedienteadd.lists["x_nPacienteID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nPacienteID.LookupOptions()));
+fExpedienteadd.lists["x_nPacienteID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nPacienteID.LookupOptions));
 fExpedienteadd.lists["x_nGrupoSanguineoID"] = @Html.Raw(Expediente_Add.nGrupoSanguineoID.Lookup.ToClientList());
-fExpedienteadd.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nGrupoSanguineoID.LookupOptions()));
+fExpedienteadd.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nGrupoSanguineoID.LookupOptions));
 fExpedienteadd.lists["x_nAAAMA"] = @Html.Raw(Expediente_Add.nAAAMA.Lookup.ToClientList());
 fExpedienteadd.lists["x_nAAAMA"].options = @Html.Raw(ConvertToJson(Expediente_Add.nAAAMA.Options(false))); // DN
 fExpedienteadd.lists["x_nEstadoID"] = @Html.Raw(Expediente_Add.nEstadoID.Lookup.ToClientList());
-fExpedienteadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nEstadoID.LookupOptions()));
+fExpedienteadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_Add.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>
@@ -184,13 +184,13 @@ fExpedienteadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente
 } else {
 <span id="el_Expediente_nPacienteID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nPacienteID">@(SameString(Expediente.nPacienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nPacienteID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nPacienteID">@Html.Raw(SameString(Expediente.nPacienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(Expediente.nPacienteID.ViewValue) : Expediente.nPacienteID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nPacienteID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nPacienteID.ReadOnly || Expediente.nPacienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nPacienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(Expediente.nPacienteID.Lookup.GetParamTag("p_x_nPacienteID"))
-<input type="hidden" data-table="Expediente" data-field="x_nPacienteID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nPacienteID.DisplayValueSeparatorAttribute" name="x_nPacienteID" id="x_nPacienteID" value="@Expediente.nPacienteID.CurrentValue"@Html.Raw(Expediente.nPacienteID.EditAttributes)>
+<input type="hidden" data-table="Expediente" data-field="x_nPacienteID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nPacienteID.DisplayValueSeparatorAttribute" name="x_nPacienteID" id="x_nPacienteID" value="@Html.Raw(Expediente.nPacienteID.CurrentValue)"@Html.Raw(Expediente.nPacienteID.EditAttributes)>
 </span>
 }
 @Html.Raw(Expediente.nPacienteID.CustomMessage)</div></div>
@@ -237,13 +237,13 @@ ew.createDateTimePicker("fExpedienteadd", "x_dFechaExpediente", {"ignoreReadonly
 		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.nGrupoSanguineoID.CellAttributes)>
 <span id="el_Expediente_nGrupoSanguineoID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nGrupoSanguineoID">@(SameString(Expediente.nGrupoSanguineoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nGrupoSanguineoID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nGrupoSanguineoID">@Html.Raw(SameString(Expediente.nGrupoSanguineoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(Expediente.nGrupoSanguineoID.ViewValue) : Expediente.nGrupoSanguineoID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nGrupoSanguineoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nGrupoSanguineoID.ReadOnly || Expediente.nGrupoSanguineoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nGrupoSanguineoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(Expediente.nGrupoSanguineoID.Lookup.GetParamTag("p_x_nGrupoSanguineoID"))
-<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nGrupoSanguineoID.DisplayValueSeparatorAttribute" name="x_nGrupoSanguineoID" id="x_nGrupoSanguineoID" value="@Expediente.nGrupoSanguineoID.CurrentValue"@Html.Raw(Expediente.nGrupoSanguineoID.EditAttributes)>
+<input type="hidden" data-table="Expediente" data-field="x_nGrupoSanguineoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nGrupoSanguineoID.DisplayValueSeparatorAttribute" name="x_nGrupoSanguineoID" id="x_nGrupoSanguineoID" value="@Html.Raw(Expediente.nGrupoSanguineoID.CurrentValue)"@Html.Raw(Expediente.nGrupoSanguineoID.EditAttributes)>
 </span>
 @Html.Raw(Expediente.nGrupoSanguineoID.CustomMessage)</div></div>
 	</div>
@@ -278,13 +278,13 @@ ew.createDateTimePicker("fExpedienteadd", "x_dFechaExpediente", {"ignoreReadonly
 		<div class="@Expediente_Add.RightColumnClass"><div @Html.Raw(Expediente.nEstadoID.CellAttributes)>
 <span id="el_Expediente_nEstadoID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nEstadoID">@(SameString(Expediente.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Expediente.nEstadoID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nEstadoID">@Html.Raw(SameString(Expediente.nEstadoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(Expediente.nEstadoID.ViewValue) : Expediente.nEstadoID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Expediente.nEstadoID.Caption))" class="ew-lookup-btn btn btn-default"@((Expediente.nEstadoID.ReadOnly || Expediente.nEstadoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nEstadoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(Expediente.nEstadoID.Lookup.GetParamTag("p_x_nEstadoID"))
-<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nEstadoID.DisplayValueSeparatorAttribute" name="x_nEstadoID" id="x_nEstadoID" value="@Expediente.nEstadoID.CurrentValue"@Html.Raw(Expediente.nEstadoID.EditAttributes)>
+<input type="hidden" data-table="Expediente" data-field="x_nEstadoID" data-multiple="0" data-lookup="1" data-value-separator="@Expediente.nEstadoID.DisplayValueSeparatorAttribute" name="x_nEstadoID" id="x_nEstadoID" value="@Html.Raw(Expediente.nEstadoID.CurrentValue)"@Html.Raw(Expediente.nEstadoID.EditAttributes)>
 </span>
 @Html.Raw(Expediente.nEstadoID.CustomMessage)</div></div>
 	</div>

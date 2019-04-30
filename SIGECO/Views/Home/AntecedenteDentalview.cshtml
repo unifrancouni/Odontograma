@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,7 +50,7 @@ fAntecedenteDentalview.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fAntecedenteDentalview.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteDental_View.nExpedienteID.Lookup.ToClientList());
-fAntecedenteDentalview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nExpedienteID.LookupOptions()));
+fAntecedenteDentalview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nExpedienteID.LookupOptions));
 fAntecedenteDentalview.lists["x_nTratamientoQuirurgico"] = @Html.Raw(AntecedenteDental_View.nTratamientoQuirurgico.Lookup.ToClientList());
 fAntecedenteDentalview.lists["x_nTratamientoQuirurgico"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nTratamientoQuirurgico.Options(false))); // DN
 fAntecedenteDentalview.lists["x_nTratamientoRestauracion"] = @Html.Raw(AntecedenteDental_View.nTratamientoRestauracion.Lookup.ToClientList());
@@ -68,7 +68,7 @@ fAntecedenteDentalview.lists["x_nColocadoAnestesia"].options = @Html.Raw(Convert
 fAntecedenteDentalview.lists["x_nReaccionAlergicaAnestesia"] = @Html.Raw(AntecedenteDental_View.nReaccionAlergicaAnestesia.Lookup.ToClientList());
 fAntecedenteDentalview.lists["x_nReaccionAlergicaAnestesia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nReaccionAlergicaAnestesia.Options(false))); // DN
 fAntecedenteDentalview.lists["x_nEstadoID"] = @Html.Raw(AntecedenteDental_View.nEstadoID.Lookup.ToClientList());
-fAntecedenteDentalview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nEstadoID.LookupOptions()));
+fAntecedenteDentalview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_View.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

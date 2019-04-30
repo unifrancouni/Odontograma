@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -119,7 +119,6 @@ namespace AspNetMaker2019.Models {
 
 			// Token
 			public string Token; // DN
-			public int TokenTimeout = 0;
 			public bool CheckToken = Config.CheckToken;
 
 			// Action result // DN
@@ -130,6 +129,9 @@ namespace AspNetMaker2019.Models {
 
 			// Page terminated // DN
 			private bool _terminated = false;
+
+			// Page URL
+			private string _pageUrl = "";
 
 			// Page action result
 			public IActionResult PageResult() {
@@ -162,7 +164,14 @@ namespace AspNetMaker2019.Models {
 			public string PageName => CurrentPageName();
 
 			// Page URL
-			public string PageUrl => CurrentPageName() + "?";
+			public string PageUrl {
+				get {
+					if (_pageUrl == "") {
+						_pageUrl = CurrentPageName() + "?";
+					}
+					return _pageUrl;
+				}
+			}
 
 			// Private properties
 			private string _message = "";
@@ -335,7 +344,7 @@ namespace AspNetMaker2019.Models {
 			public IHtmlContent ShowPageFooter() {
 				string footer = PageFooter;
 				Page_DataRendered(ref footer);
-				if (!Empty(footer)) // Fotoer exists, display
+				if (!Empty(footer)) // Footer exists, display
 					return new HtmlString("<p id=\"ew-page-footer\">" + footer + "</p>");
 				return null;
 			}
@@ -359,7 +368,6 @@ namespace AspNetMaker2019.Models {
 
 				// Initialize
 				CurrentPage = this;
-				TokenTimeout = 48 * 60 * 60; // 48 hours for login
 
 				// Language object
 				Language = Language ?? new Lang();

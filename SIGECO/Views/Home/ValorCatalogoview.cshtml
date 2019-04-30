@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,7 +50,7 @@ fValorCatalogoview.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fValorCatalogoview.lists["x_nCatalogoID"] = @Html.Raw(ValorCatalogo_View.nCatalogoID.Lookup.ToClientList());
-fValorCatalogoview.lists["x_nCatalogoID"].options = @Html.Raw(ConvertToJson(ValorCatalogo_View.nCatalogoID.LookupOptions()));
+fValorCatalogoview.lists["x_nCatalogoID"].options = @Html.Raw(ConvertToJson(ValorCatalogo_View.nCatalogoID.LookupOptions));
 fValorCatalogoview.lists["x_nActivo"] = @Html.Raw(ValorCatalogo_View.nActivo.Lookup.ToClientList());
 fValorCatalogoview.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(ValorCatalogo_View.nActivo.Options(false))); // DN
 

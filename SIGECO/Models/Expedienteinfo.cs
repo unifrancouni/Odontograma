@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models (Table)
 namespace AspNetMaker2019.Models {
@@ -192,10 +192,10 @@ namespace AspNetMaker2019.Models {
 				nPacienteID.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nPacienteID.Lookup = new Lookup("nPacienteID", "Paciente", true, "nPacienteID", new List<string> {"nCodigo", "sCedula", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nPacienteID.Lookup = new Lookup<DbField>("nPacienteID", "Paciente", true, "nPacienteID", new List<string> {"nCodigo", "sCedula", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 					default:
-						nPacienteID.Lookup = new Lookup("nPacienteID", "Paciente", true, "nPacienteID", new List<string> {"nCodigo", "sCedula", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nPacienteID.Lookup = new Lookup<DbField>("nPacienteID", "Paciente", true, "nPacienteID", new List<string> {"nCodigo", "sCedula", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 				}
 				Fields.Add("nPacienteID", nPacienteID);
@@ -307,10 +307,10 @@ namespace AspNetMaker2019.Models {
 				nGrupoSanguineoID.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nGrupoSanguineoID.Lookup = new Lookup("nGrupoSanguineoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nGrupoSanguineoID.Lookup = new Lookup<DbField>("nGrupoSanguineoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 					default:
-						nGrupoSanguineoID.Lookup = new Lookup("nGrupoSanguineoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nGrupoSanguineoID.Lookup = new Lookup<DbField>("nGrupoSanguineoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 				}
 				nGrupoSanguineoID.GetSelectFilter = () => "nCatalogoID=8";
@@ -347,10 +347,10 @@ namespace AspNetMaker2019.Models {
 				nAAAMA.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nAAAMA.Lookup = new Lookup("nAAAMA", "Expediente", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nAAAMA.Lookup = new Lookup<DbField>("nAAAMA", "Expediente", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nAAAMA.Lookup = new Lookup("nAAAMA", "Expediente", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nAAAMA.Lookup = new Lookup<DbField>("nAAAMA", "Expediente", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nAAAMA", nAAAMA);
@@ -408,10 +408,10 @@ namespace AspNetMaker2019.Models {
 				nEstadoID.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nEstadoID.Lookup = new Lookup("nEstadoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nEstadoID.Lookup = new Lookup<DbField>("nEstadoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 					default:
-						nEstadoID.Lookup = new Lookup("nEstadoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nEstadoID.Lookup = new Lookup<DbField>("nEstadoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 				}
 				nEstadoID.GetSelectFilter = () => "nCatalogoID=9";
@@ -912,28 +912,6 @@ namespace AspNetMaker2019.Models {
 				LoadDbValues(row);
 			}
 
-			// Record filter WHERE clause
-			private string _sqlKeyFilter => "[nExpedienteID] = @nExpedienteID@";
-
-			#pragma warning disable 168
-
-			// Get record filter
-			public string GetRecordFilter(Dictionary<string, object> row = null)
-			{
-				string keyFilter = _sqlKeyFilter;
-				object val, result;
-				val = !Empty(row) ? (row.TryGetValue("nExpedienteID", out result) ? result : null) : nExpedienteID.CurrentValue;
-				if (!IsNumeric(val))
-					return "0=1"; // Invalid key
-				if (val == null)
-					return "0=1"; // Invalid key
-				else
-					keyFilter = keyFilter.Replace("@nExpedienteID@", AdjustSql(val, DbId)); // Replace key value
-				return keyFilter;
-			}
-
-			#pragma warning restore 168
-
 			// Return URL
 			public string ReturnUrl {
 				get {
@@ -1135,6 +1113,28 @@ namespace AspNetMaker2019.Models {
 
 			#pragma warning restore 618
 
+			// Record filter WHERE clause
+			private string _sqlKeyFilter => "[nExpedienteID] = @nExpedienteID@";
+
+			#pragma warning disable 168
+
+			// Get record filter
+			public string GetRecordFilter(Dictionary<string, object> row = null)
+			{
+				string keyFilter = _sqlKeyFilter;
+				object val, result;
+				val = !Empty(row) ? (row.TryGetValue("nExpedienteID", out result) ? result : null) : nExpedienteID.CurrentValue;
+				if (!IsNumeric(val))
+					return "0=1"; // Invalid key
+				if (val == null)
+					return "0=1"; // Invalid key
+				else
+					keyFilter = keyFilter.Replace("@nExpedienteID@", AdjustSql(val, DbId)); // Replace key value
+				return keyFilter;
+			}
+
+			#pragma warning restore 168
+
 			// Load row values from recordset
 			public void LoadListRowValues(DbDataReader rs) {
 				nExpedienteID.SetDbValue(rs["nExpedienteID"]);
@@ -1188,17 +1188,17 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(curVal)) {
 					nPacienteID.ViewValue = nPacienteID.LookupCacheOption(curVal);
 					if (nPacienteID.ViewValue == null) { // Lookup from database
-					filterWrk = "[nPacienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+						filterWrk = "[nPacienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 						sqlWrk = nPacienteID.Lookup.GetSql(false, filterWrk, null, this);
-						rswrk = Connection.GetRows(sqlWrk);
-					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-						var listwrk = rswrk[0].Values.ToList();
-						listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-						listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-						nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
-					} else {
-						nPacienteID.ViewValue = nPacienteID.CurrentValue;
-					}
+						rswrk = await Connection.GetRowsAsync(sqlWrk);
+						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+							var listwrk = rswrk[0].Values.ToList();
+							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+							listwrk[2] = Convert.ToString(listwrk[2]);
+							nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
+						} else {
+							nPacienteID.ViewValue = nPacienteID.CurrentValue;
+						}
 					}
 				} else {
 					nPacienteID.ViewValue = System.DBNull.Value;
@@ -1220,18 +1220,18 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(curVal)) {
 					nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.LookupCacheOption(curVal);
 					if (nGrupoSanguineoID.ViewValue == null) { // Lookup from database
-					filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+						filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 						lookupFilter = () => "nCatalogoID=8";
 						sqlWrk = nGrupoSanguineoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-						rswrk = Connection.GetRows(sqlWrk);
-					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-						var listwrk = rswrk[0].Values.ToList();
-						listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-						listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-						nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.DisplayValue(listwrk);
-					} else {
-						nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.CurrentValue;
-					}
+						rswrk = await Connection.GetRowsAsync(sqlWrk);
+						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+							var listwrk = rswrk[0].Values.ToList();
+							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+							listwrk[2] = Convert.ToString(listwrk[2]);
+							nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.DisplayValue(listwrk);
+						} else {
+							nGrupoSanguineoID.ViewValue = nGrupoSanguineoID.CurrentValue;
+						}
 					}
 				} else {
 					nGrupoSanguineoID.ViewValue = System.DBNull.Value;
@@ -1252,18 +1252,18 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(curVal)) {
 					nEstadoID.ViewValue = nEstadoID.LookupCacheOption(curVal);
 					if (nEstadoID.ViewValue == null) { // Lookup from database
-					filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+						filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 						lookupFilter = () => "nCatalogoID=9";
 						sqlWrk = nEstadoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-						rswrk = Connection.GetRows(sqlWrk);
-					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-						var listwrk = rswrk[0].Values.ToList();
-						listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-						listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-						nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
-					} else {
-						nEstadoID.ViewValue = nEstadoID.CurrentValue;
-					}
+						rswrk = await Connection.GetRowsAsync(sqlWrk);
+						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+							var listwrk = rswrk[0].Values.ToList();
+							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+							listwrk[2] = Convert.ToString(listwrk[2]);
+							nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
+						} else {
+							nEstadoID.ViewValue = nEstadoID.CurrentValue;
+						}
 					}
 				} else {
 					nEstadoID.ViewValue = System.DBNull.Value;
@@ -1350,17 +1350,17 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(curVal)) {
 					nPacienteID.ViewValue = nPacienteID.LookupCacheOption(curVal);
 					if (nPacienteID.ViewValue == null) { // Lookup from database
-					filterWrk = "[nPacienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+						filterWrk = "[nPacienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 						sqlWrk = nPacienteID.Lookup.GetSql(false, filterWrk, null, this);
-						rswrk = Connection.GetRows(sqlWrk);
-					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-						var listwrk = rswrk[0].Values.ToList();
-						listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-						listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-						nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
-					} else {
-						nPacienteID.ViewValue = nPacienteID.CurrentValue;
-					}
+						rswrk = await Connection.GetRowsAsync(sqlWrk);
+						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+							var listwrk = rswrk[0].Values.ToList();
+							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+							listwrk[2] = Convert.ToString(listwrk[2]);
+							nPacienteID.ViewValue = nPacienteID.DisplayValue(listwrk);
+						} else {
+							nPacienteID.ViewValue = nPacienteID.CurrentValue;
+						}
 					}
 				} else {
 					nPacienteID.ViewValue = System.DBNull.Value;
@@ -1380,6 +1380,8 @@ namespace AspNetMaker2019.Models {
 
 				// sACPPESA
 				sACPPESA.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sACPPESA.CurrentValue = HtmlDecode(sACPPESA.CurrentValue);
 				sACPPESA.EditValue = sACPPESA.CurrentValue; // DN
 				sACPPESA.PlaceHolder = RemoveHtml(sACPPESA.Caption);
 
@@ -1392,6 +1394,8 @@ namespace AspNetMaker2019.Models {
 
 				// sAAAMA
 				sAAAMA.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sAAAMA.CurrentValue = HtmlDecode(sAAAMA.CurrentValue);
 				sAAAMA.EditValue = sAAAMA.CurrentValue; // DN
 				sAAAMA.PlaceHolder = RemoveHtml(sAAAMA.Caption);
 
@@ -1591,7 +1595,7 @@ namespace AspNetMaker2019.Models {
 				}
 
 				// Create lookup object and output JSON
-				var lookup = new Lookup(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
+				var lookup = new Lookup<DbField>(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
 				for (int i = 0; i < filterFields.Count; i++) { // Set up filter operators
 					if (!Empty(filterOperators[i]))
 						lookup.SetFilterOperator(filterFields[i], filterOperators[i]);

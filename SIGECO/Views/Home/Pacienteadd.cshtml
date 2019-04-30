@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -185,7 +185,7 @@ fPacienteadd.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fPacienteadd.lists["x_nGeneroID"] = @Html.Raw(Paciente_Add.nGeneroID.Lookup.ToClientList());
-fPacienteadd.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_Add.nGeneroID.LookupOptions()));
+fPacienteadd.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_Add.nGeneroID.LookupOptions));
 fPacienteadd.lists["x_nActivo"] = @Html.Raw(Paciente_Add.nActivo.Lookup.ToClientList());
 fPacienteadd.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Paciente_Add.nActivo.Options(false))); // DN
 
@@ -251,13 +251,13 @@ fPacienteadd.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Paciente_Add.n
 		<div class="@Paciente_Add.RightColumnClass"><div @Html.Raw(Paciente.nGeneroID.CellAttributes)>
 <span id="el_Paciente_nGeneroID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nGeneroID">@(SameString(Paciente.nGeneroID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Paciente.nGeneroID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nGeneroID">@Html.Raw(SameString(Paciente.nGeneroID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(Paciente.nGeneroID.ViewValue) : Paciente.nGeneroID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Paciente.nGeneroID.Caption))" class="ew-lookup-btn btn btn-default"@((Paciente.nGeneroID.ReadOnly || Paciente.nGeneroID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nGeneroID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(Paciente.nGeneroID.Lookup.GetParamTag("p_x_nGeneroID"))
-<input type="hidden" data-table="Paciente" data-field="x_nGeneroID" data-multiple="0" data-lookup="1" data-value-separator="@Paciente.nGeneroID.DisplayValueSeparatorAttribute" name="x_nGeneroID" id="x_nGeneroID" value="@Paciente.nGeneroID.CurrentValue"@Html.Raw(Paciente.nGeneroID.EditAttributes)>
+<input type="hidden" data-table="Paciente" data-field="x_nGeneroID" data-multiple="0" data-lookup="1" data-value-separator="@Paciente.nGeneroID.DisplayValueSeparatorAttribute" name="x_nGeneroID" id="x_nGeneroID" value="@Html.Raw(Paciente.nGeneroID.CurrentValue)"@Html.Raw(Paciente.nGeneroID.EditAttributes)>
 </span>
 @Html.Raw(Paciente.nGeneroID.CustomMessage)</div></div>
 	</div>

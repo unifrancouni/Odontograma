@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models (Table)
 namespace AspNetMaker2019.Models {
@@ -705,35 +705,6 @@ namespace AspNetMaker2019.Models {
 				LoadDbValues(row);
 			}
 
-			// Record filter WHERE clause
-			private string _sqlKeyFilter => "[nPacienteID] = @nPacienteID@ AND [nExpedienteID] = @nExpedienteID@";
-
-			#pragma warning disable 168
-
-			// Get record filter
-			public string GetRecordFilter(Dictionary<string, object> row = null)
-			{
-				string keyFilter = _sqlKeyFilter;
-				object val, result;
-				val = !Empty(row) ? (row.TryGetValue("nPacienteID", out result) ? result : null) : nPacienteID.CurrentValue;
-				if (!IsNumeric(val))
-					return "0=1"; // Invalid key
-				if (val == null)
-					return "0=1"; // Invalid key
-				else
-					keyFilter = keyFilter.Replace("@nPacienteID@", AdjustSql(val, DbId)); // Replace key value
-				val = !Empty(row) ? (row.TryGetValue("nExpedienteID", out result) ? result : null) : nExpedienteID.CurrentValue;
-				if (!IsNumeric(val))
-					return "0=1"; // Invalid key
-				if (val == null)
-					return "0=1"; // Invalid key
-				else
-					keyFilter = keyFilter.Replace("@nExpedienteID@", AdjustSql(val, DbId)); // Replace key value
-				return keyFilter;
-			}
-
-			#pragma warning restore 168
-
 			// Return URL
 			public string ReturnUrl {
 				get {
@@ -952,6 +923,35 @@ namespace AspNetMaker2019.Models {
 
 			#pragma warning restore 618
 
+			// Record filter WHERE clause
+			private string _sqlKeyFilter => "[nPacienteID] = @nPacienteID@ AND [nExpedienteID] = @nExpedienteID@";
+
+			#pragma warning disable 168
+
+			// Get record filter
+			public string GetRecordFilter(Dictionary<string, object> row = null)
+			{
+				string keyFilter = _sqlKeyFilter;
+				object val, result;
+				val = !Empty(row) ? (row.TryGetValue("nPacienteID", out result) ? result : null) : nPacienteID.CurrentValue;
+				if (!IsNumeric(val))
+					return "0=1"; // Invalid key
+				if (val == null)
+					return "0=1"; // Invalid key
+				else
+					keyFilter = keyFilter.Replace("@nPacienteID@", AdjustSql(val, DbId)); // Replace key value
+				val = !Empty(row) ? (row.TryGetValue("nExpedienteID", out result) ? result : null) : nExpedienteID.CurrentValue;
+				if (!IsNumeric(val))
+					return "0=1"; // Invalid key
+				if (val == null)
+					return "0=1"; // Invalid key
+				else
+					keyFilter = keyFilter.Replace("@nExpedienteID@", AdjustSql(val, DbId)); // Replace key value
+				return keyFilter;
+			}
+
+			#pragma warning restore 168
+
 			// Load row values from recordset
 			public void LoadListRowValues(DbDataReader rs) {
 				nPacienteID.SetDbValue(rs["nPacienteID"]);
@@ -1066,21 +1066,29 @@ namespace AspNetMaker2019.Models {
 
 				// sNombre
 				sNombre.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sNombre.CurrentValue = HtmlDecode(sNombre.CurrentValue);
 				sNombre.EditValue = sNombre.CurrentValue; // DN
 				sNombre.PlaceHolder = RemoveHtml(sNombre.Caption);
 
 				// sApellido1
 				sApellido1.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sApellido1.CurrentValue = HtmlDecode(sApellido1.CurrentValue);
 				sApellido1.EditValue = sApellido1.CurrentValue; // DN
 				sApellido1.PlaceHolder = RemoveHtml(sApellido1.Caption);
 
 				// sApellido2
 				sApellido2.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sApellido2.CurrentValue = HtmlDecode(sApellido2.CurrentValue);
 				sApellido2.EditValue = sApellido2.CurrentValue; // DN
 				sApellido2.PlaceHolder = RemoveHtml(sApellido2.Caption);
 
 				// sCedula
 				sCedula.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sCedula.CurrentValue = HtmlDecode(sCedula.CurrentValue);
 				sCedula.EditValue = sCedula.CurrentValue; // DN
 				sCedula.PlaceHolder = RemoveHtml(sCedula.Caption);
 
@@ -1265,7 +1273,7 @@ namespace AspNetMaker2019.Models {
 				}
 
 				// Create lookup object and output JSON
-				var lookup = new Lookup(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
+				var lookup = new Lookup<DbField>(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
 				for (int i = 0; i < filterFields.Count; i++) { // Set up filter operators
 					if (!Empty(filterOperators[i]))
 						lookup.SetFilterOperator(filterFields[i], filterOperators[i]);

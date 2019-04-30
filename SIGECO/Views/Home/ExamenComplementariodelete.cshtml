@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -49,13 +49,13 @@ fExamenComplementariodelete.validateRequired = @ConvertToJson(Config.ClientValid
 
 // Dynamic selection lists
 fExamenComplementariodelete.lists["x_nExpedienteID"] = @Html.Raw(ExamenComplementario_Delete.nExpedienteID.Lookup.ToClientList());
-fExamenComplementariodelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nExpedienteID.LookupOptions()));
+fExamenComplementariodelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nExpedienteID.LookupOptions));
 fExamenComplementariodelete.lists["x_nEstudiosRadiologicos"] = @Html.Raw(ExamenComplementario_Delete.nEstudiosRadiologicos.Lookup.ToClientList());
 fExamenComplementariodelete.lists["x_nEstudiosRadiologicos"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nEstudiosRadiologicos.Options(false))); // DN
 fExamenComplementariodelete.lists["x_nEstudiosLaboratorio"] = @Html.Raw(ExamenComplementario_Delete.nEstudiosLaboratorio.Lookup.ToClientList());
 fExamenComplementariodelete.lists["x_nEstudiosLaboratorio"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nEstudiosLaboratorio.Options(false))); // DN
 fExamenComplementariodelete.lists["x_nEstadoID"] = @Html.Raw(ExamenComplementario_Delete.nEstadoID.Lookup.ToClientList());
-fExamenComplementariodelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nEstadoID.LookupOptions()));
+fExamenComplementariodelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Delete.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

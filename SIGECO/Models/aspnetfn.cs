@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -122,10 +122,9 @@ namespace AspNetMaker2019.Models {
 		/// </summary>
 		/// <returns>Whether or not the request is an API request</returns>
 
-		public static bool IsApi(HttpContext context = null) {
-			context = context ?? HttpContext;
-			return context.Request.Path.StartsWithSegments(new PathString(AppPath("api")));
-		}
+		public static bool IsApi(HttpContext context = null) => (Controller != null) ?
+			SameString(Controller.GetType().BaseType.ToString(), Config.ProjectNamespace + ".Controllers.ApiController") :
+			(context ?? HttpContext).Request.Path.StartsWithSegments(new PathString(AppPath("api")));
 
 		/// <summary>
 		/// Get value from Form or Query
@@ -185,7 +184,7 @@ namespace AspNetMaker2019.Models {
 		/// <param name="clear">Clear view output or not</param>
 		/// <returns>View output</returns>
 
-		public static async Task<string> GetViewOutput(bool clear = true) {
+		public static async Task<string> GetViewOutput(string viewName = "", bool clear = true) {
 			if (Controller == null)
 				return null;
 			var context = new ActionContext(HttpContext, Controller.RouteData, new ActionDescriptor());
@@ -194,7 +193,10 @@ namespace AspNetMaker2019.Models {
 			try {
 				using (var memoryStream = new MemoryStream()) {
 					Response.Body = memoryStream;
-					await Controller.View().ExecuteResultAsync(context);
+					if (!Empty(viewName))
+						await Controller.View(viewName).ExecuteResultAsync(context);
+					else
+						await Controller.View().ExecuteResultAsync(context);
 					memoryStream.Seek(0, SeekOrigin.Begin);
 					using (var reader = new StreamReader(memoryStream)) {
 						result = await reader.ReadToEndAsync();
@@ -1643,25 +1645,25 @@ namespace AspNetMaker2019.Models {
 			public void SetProjectPhrase(string id, string value) => Phrases["project"]["phrase"][id.ToLower()]["value"] = value;
 
 			// Get menu phrase
-			public string MenuPhrase(string menuId, string id) => Phrases["project"]["menu"][menuId.ToLower()]["phrase"][id.ToLower()]?["value"] ?? "";
+			public string MenuPhrase(string menuId, string id) => Phrases["project"]["menu"][menuId.ToLower()]?["phrase"][id.ToLower()]?["value"] ?? "";
 
 			// Set menu phrase
 			public void SetMenuPhrase(string menuId, string id, string value) => Phrases["project"]["menu"][menuId.ToLower()]["phrase"][id.ToLower()]["value"] = value;
 
 			// Get table phrase
-			public string TablePhrase(string tblVar, string id) => Phrases["project"]["table"][tblVar.ToLower()]["phrase"][id.ToLower()]?["value"] ?? "";
+			public string TablePhrase(string tblVar, string id) => Phrases["project"]["table"][tblVar.ToLower()]?["phrase"][id.ToLower()]?["value"] ?? "";
 
 			// Set table phrase
 			public void SetTablePhrase(string tblVar, string id, string value) => Phrases["project"]["table"][tblVar.ToLower()]["phrase"][id.ToLower()]["value"] = value;
 
 			// Get field phrase
-			public string FieldPhrase(string tblVar, string fldVar, string id) => Phrases["project"]["table"][tblVar.ToLower()]["field"][fldVar.ToLower()]?["phrase"]?[id.ToLower()]?["value"] ?? "";
+			public string FieldPhrase(string tblVar, string fldVar, string id) => Phrases["project"]["table"][tblVar.ToLower()]?["field"][fldVar.ToLower()]?["phrase"]?[id.ToLower()]?["value"] ?? "";
 
 			// Set field phrase
 			public void SetFieldPhrase(string tblVar, string fldVar, string id, string value) => Phrases["project"]["table"][tblVar.ToLower()]["field"][fldVar.ToLower()]["phrase"][id.ToLower()]["value"] = value;
 
 			// Get chart phrase // DNR
-			public string ChartPhrase(string tblVar, string fldVar, string id) => Phrases["project"]["table"][tblVar.ToLower()]["chart"][fldVar.ToLower()]?["phrase"]?[id.ToLower()]?["value"] ?? "";
+			public string ChartPhrase(string tblVar, string fldVar, string id) => Phrases["project"]["table"][tblVar.ToLower()]?["chart"][fldVar.ToLower()]?["phrase"]?[id.ToLower()]?["value"] ?? "";
 
 			// Set chart phrase // DNR
 			public void SetChartPhrase(string tblVar, string fldVar, string id, string value) => Phrases["project"]["table"][tblVar.ToLower()]["chart"][fldVar.ToLower()]["phrase"][id.ToLower()]["value"] = value;
@@ -2350,7 +2352,7 @@ namespace AspNetMaker2019.Models {
 		}
 
 		/// <summary>
-		/// Class for Pager item
+		/// Pager item class
 		/// </summary>
 
 		public class PagerItem
@@ -2372,10 +2374,10 @@ namespace AspNetMaker2019.Models {
 		}
 
 		/// <summary>
-		/// Class for PrevNext pager
+		/// Pager class
 		/// </summary>
 
-		public class Pager
+		public abstract class Pager
 		{
 			public PagerItem NextButton;
 			public PagerItem FirstButton;
@@ -2385,7 +2387,65 @@ namespace AspNetMaker2019.Models {
 			public int FromIndex;
 			public int ToIndex;
 			public int RecordCount;
+			public int Range;
 			public bool Visible = true;
+			public bool AutoHidePager = true;
+			public bool AutoHidePageSizeSelector = true;
+			public bool UsePageSizeSelector = true;
+			public string PageSizes;
+			public string ItemPhraseId = "Record";
+			private bool PageSizeAll = false;
+
+			// Constructor
+			public Pager(int fromIndex, int pageSize, int recordCount, string pageSizes = "", int range = 10, bool? autoHidePager = null, bool? autoHidePageSizeSelector = null, bool? usePageSizeSelector = null)
+			{
+				AutoHidePager = autoHidePager ?? Config.AutoHidePager;
+				AutoHidePageSizeSelector = autoHidePageSizeSelector ?? Config.AutoHidePageSizeSelector;
+				UsePageSizeSelector = usePageSizeSelector ?? true;
+				FromIndex = fromIndex;
+				PageSize = pageSize;
+				RecordCount = recordCount;
+				Range = range;
+				PageSizes = pageSizes;
+
+				// Handle page size = 0
+				if (PageSize == 0)
+					PageSize = RecordCount;
+
+				// Handle page size = -1 (ALL)
+				if (PageSize == -1) {
+					PageSizeAll = true;
+					PageSize = RecordCount;
+				}
+			}
+
+			// Render
+			public virtual HtmlString Render()
+			{
+				string html = "";
+				if (PageSize >= 1 && RecordCount > 0) {
+
+					// Record nos.
+					html += $@"<div class=""ew-pager ew-rec"">
+	<span>{Language.Phrase(ItemPhraseId)} {FromIndex} {Language.Phrase("To")} {ToIndex} {Language.Phrase("Of")} {RecordCount}</span>
+</div>";
+
+					// Page size selector
+					if (UsePageSizeSelector && !Empty(PageSizes) && (!AutoHidePageSizeSelector || Visible)) {
+						var pageSizes = PageSizes.Split(',');
+						var options = pageSizes.Select(pageSize => {
+							if (Int32.TryParse(pageSize, out int ps) && ps > 0) {
+								return $@"<option value=""{pageSize}""" + (PageSize == ps ? " selected" : "") + $">{pageSize}</option>";
+							} else {
+								return @"<option value=""ALL""" + (PageSizeAll ? " selected" : "") + $">{Language.Phrase("AllRecords")}</option>";
+							}
+						});
+						html += @"<div class=""ew-pager"">";
+						html += $@"<select name=""{Config.TableRecordsPerPage}"" class=""form-control-sm ew-tooltip"" onchange=""this.form.submit();"">{String.Join("\t\t", options)}</select></div>";
+					}
+				}
+				return new HtmlString(html);
+			}
 		}
 
 		/// <summary>
@@ -2395,20 +2455,14 @@ namespace AspNetMaker2019.Models {
 		public class NumericPager : Pager
 		{
 			public List<PagerItem> Items = new List<PagerItem>();
-			public int Range;
 			public int ButtonCount = 0;
-			public bool AutoHidePager = true;
 
 			// Constructor
-			public NumericPager(int fromIndex, int pageSize, int recordCount, int range, bool? autoHidePager = null)
+			public NumericPager(int fromIndex, int pageSize, int recordCount, string pageSizes = "", int range = 10, bool? autoHidePager = null, bool? autoHidePageSizeSelector = null, bool? usePageSizeSelector = null) :
+				base(fromIndex, pageSize, recordCount, pageSizes, range, autoHidePager, autoHidePageSizeSelector, usePageSizeSelector)
 			{
-				AutoHidePager = autoHidePager ?? Config.AutoHidePager;
 				if (AutoHidePager && fromIndex == 1 && recordCount <= pageSize)
 					Visible = false;
-				FromIndex = fromIndex;
-				PageSize = pageSize;
-				RecordCount = recordCount;
-				Range = range;
 				FirstButton = new PagerItem();
 				PrevButton = new PagerItem();
 				NextButton = new PagerItem();
@@ -2419,16 +2473,22 @@ namespace AspNetMaker2019.Models {
 			// Init pager
 			public void Init()
 			{
-				if (FromIndex > RecordCount) FromIndex = RecordCount;
+				if (FromIndex > RecordCount)
+					FromIndex = RecordCount;
 				ToIndex = FromIndex + PageSize - 1;
-				if (ToIndex > RecordCount) ToIndex = RecordCount;
+				if (ToIndex > RecordCount)
+					ToIndex = RecordCount;
 				SetupNumericPager();
 
 				// Update button count
-				if (FirstButton.Enabled) ButtonCount++;
-				if (PrevButton.Enabled) ButtonCount++;
-				if (NextButton.Enabled) ButtonCount++;
-				if (LastButton.Enabled) ButtonCount++;
+				if (FirstButton.Enabled)
+					ButtonCount++;
+				if (PrevButton.Enabled)
+					ButtonCount++;
+				if (NextButton.Enabled)
+					ButtonCount++;
+				if (LastButton.Enabled)
+					ButtonCount++;
 			}
 
 			// Add pager item
@@ -2506,6 +2566,32 @@ namespace AspNetMaker2019.Models {
 					LastButton.Enabled = (FromIndex < tempIndex);
 				}
 			}
+
+			// Render
+			public override HtmlString Render()
+			{
+				string html = "", href = AppPath(CurrentPageName());
+				if (RecordCount > 0 && Visible) {
+					if (FirstButton.Enabled)
+						html += $@"<li class=""page-item""><a class=""page-link"" href=""{href}?start={FirstButton.Start}"">{Language.Phrase("PagerFirst")}</a></li>";
+					if (PrevButton.Enabled)
+						html += $@"<li class=""page-item""><a class=""page-link"" href=""{href}?start={PrevButton.Start}"">{Language.Phrase("PagerPrevious")}</a></li>";
+					foreach (var PagerItem in Items)
+						html += $@"<li class=""page-item{(PagerItem.Enabled ? "" : " active")}""><a class=""page-link"" href=""{(PagerItem.Enabled ? href + "?start=" + PagerItem.Start : "#")}"">{PagerItem.Text}</a></li>";
+					if (NextButton.Enabled)
+						html += $@"<li class=""page-item""><a class=""page-link"" href=""{href}?start={NextButton.Start}"">{Language.Phrase("PagerNext")}</a></li>";
+					if (LastButton.Enabled)
+						html += $@"<li class=""page-item""><a class=""page-link"" href=""{href}?start={LastButton.Start}"">{Language.Phrase("PagerLast")}</a></li>";
+					html = $@"<div class=""ew-pager"">
+	<div class=""ew-numeric-page"">
+		<ul class=""pagination"">
+			{html}
+		</ul>
+	</div>
+</div>";
+				}
+				return new HtmlString(html + base.Render().Value);
+			}
 		}
 
 		/// <summary>
@@ -2516,15 +2602,11 @@ namespace AspNetMaker2019.Models {
 		{
 			public int PageCount;
 			public int CurrentPageNumber;
-			public bool AutoHidePager = true;
 
 			// Constructor
-			public PrevNextPager(int fromIndex, int pageSize, int recordCount, bool? autoHidePager = null)
+			public PrevNextPager(int fromIndex, int pageSize, int recordCount, string pageSizes = "", int range = 10, bool? autoHidePager = null, bool? autoHidePageSizeSelector = null, bool? usePageSizeSelector = null) :
+				base(fromIndex, pageSize, recordCount, pageSizes, range, autoHidePager, autoHidePageSizeSelector, usePageSizeSelector)
 			{
-				AutoHidePager = autoHidePager ?? Config.AutoHidePager;
-				FromIndex = fromIndex;
-				PageSize = (pageSize == 0) ? recordCount : pageSize;
-				RecordCount = recordCount;
 				FirstButton = new PagerItem();
 				PrevButton = new PagerItem();
 				NextButton = new PagerItem();
@@ -2539,11 +2621,13 @@ namespace AspNetMaker2019.Models {
 				if (PageSize > 0) {
 					CurrentPageNumber = (FromIndex - 1) / PageSize + 1;
 					PageCount = (RecordCount - 1) / PageSize + 1;
-					if (AutoHidePager && PageCount == 1		)
+					if (AutoHidePager && PageCount == 1)
 						Visible = false;
-					if (FromIndex > RecordCount) FromIndex = RecordCount;
+					if (FromIndex > RecordCount)
+						FromIndex = RecordCount;
 					ToIndex = FromIndex + PageSize - 1;
-					if (ToIndex > RecordCount) ToIndex = RecordCount;
+					if (ToIndex > RecordCount)
+						ToIndex = RecordCount;
 
 					// First Button
 					tempIndex = 1;
@@ -2559,7 +2643,8 @@ namespace AspNetMaker2019.Models {
 
 					// Next Button
 					tempIndex = FromIndex + PageSize;
-					if (tempIndex > RecordCount) tempIndex = FromIndex;
+					if (tempIndex > RecordCount)
+						tempIndex = FromIndex;
 					NextButton.Start = tempIndex;
 					NextButton.Enabled = (tempIndex != FromIndex);
 
@@ -2568,6 +2653,59 @@ namespace AspNetMaker2019.Models {
 					LastButton.Start = tempIndex;
 					LastButton.Enabled = (tempIndex != FromIndex);
 				}
+			}
+
+			// Render
+			public override HtmlString Render()
+			{
+				string html = "", href = AppPath(CurrentPageName());
+				if (RecordCount > 0 && Visible) {
+					string firstBtn, prevBtn, nextBtn, lastBtn;
+					if (FirstButton.Enabled) {
+						firstBtn = $@"<a class=""btn btn-default"" title=""{Language.Phrase("PagerFirst")}"" data-start=""{FirstButton.Start}"" href=""{href}?start={FirstButton.Start}""><span class=""icon-first ew-icon""></span></a>";
+					} else {
+						firstBtn = $@"<a class=""btn btn-default disabled"" title=""{Language.Phrase("PagerFirst")}""><span class=""icon-first ew-icon""></span></a>";
+					}
+					if (PrevButton.Enabled) {
+						prevBtn = $@"<a class=""btn btn-default"" title=""{Language.Phrase("PagerPrevious")}"" data-start=""{PrevButton.Start}"" href=""{href}?start={PrevButton.Start}""><span class=""icon-prev ew-icon""></span></a>";
+					} else {
+						prevBtn = $@"<a class=""btn btn-default disabled"" title=""{Language.Phrase("PagerPrevious")}""><span class=""icon-prev ew-icon""></span></a>";
+					}
+					if (NextButton.Enabled) {
+						nextBtn = $@"<a class=""btn btn-default"" title=""{Language.Phrase("PagerNext")}"" data-start=""{NextButton.Start}"" href=""{href}?start={NextButton.Start}""><span class=""icon-next ew-icon""></span></a>";
+					} else {
+						nextBtn = $@"<a class=""btn btn-default disabled"" title=""{Language.Phrase("PagerNext")}""><span class=""icon-next ew-icon""></span></a>";
+					}
+					if (LastButton.Enabled) {
+						lastBtn = $@"<a class=""btn btn-default"" title=""{Language.Phrase("PagerLast")}"" data-start=""{LastButton.Start}"" href=""{href}?start={LastButton.Start}""><span class=""icon-last ew-icon""></span></a>";
+					} else {
+						lastBtn = $@"<a class=""btn btn-default disabled"" title=""{Language.Phrase("PagerLast")}""><span class=""icon-last ew-icon""></span></a>";
+					}
+					html += $@"<div class=""ew-pager"">
+	<span>{Language.Phrase("Page")}&nbsp;</span>
+	<div class=""ew-prev-next"">
+		<div class=""input-group input-group-sm"">
+			<div class=""input-group-prepend"">
+				<!-- first page button -->
+				{firstBtn}
+				<!-- previous page button -->
+				{prevBtn}
+			</div>
+			<!-- current page number -->
+			<input class=""form-control"" type=""text"" data-pagesize=""{PageSize}"" data-pagecount=""{PageCount}"" name=""{Config.TablePageNumber}"" value=""{CurrentPageNumber}"">
+			<div class=""input-group-append"">
+				<!-- next page button -->
+				{nextBtn}
+				<!-- last page button -->
+				{lastBtn}
+			</div>
+		</div>
+	</div>
+	<span>&nbsp;{Language.Phrase("Of")}&nbsp;{PageCount}</span>
+	<div class=""clearfix""></div>
+</div>";
+				}
+				return new HtmlString(html + base.Render().Value);
 			}
 		}
 
@@ -3229,7 +3367,7 @@ namespace AspNetMaker2019.Models {
 			public Attributes EditAttrs = new Attributes(); // Edit Attributes
 			public Attributes ViewAttrs = new Attributes(); // View Attributes
 			public Attributes LinkAttrs = new Attributes(); // Link custom attributes
-			public Lookup Lookup = null;
+			public Lookup<DbField> Lookup = null;
 			public int OptionCount = 0;
 			public bool UseLookupCache = Config.UseLookupCache; // Use lookup cache
 			public int LookupCacheCount = Config.LookupCacheCount; // Lookup cache count
@@ -3267,7 +3405,7 @@ namespace AspNetMaker2019.Models {
 			public DbTableBase Table { get; set; } // DN
 
 			// Init // DN
-			public void Init(DbTableBase table) {
+			public virtual void Init(DbTableBase table) {
 				DataType = FieldDataType(Type);
 				Param = FieldVar.Substring(2); // Remove "x_"
 				AdvancedSearch = new AdvancedSearch(TableVar, Param);
@@ -3275,6 +3413,9 @@ namespace AspNetMaker2019.Models {
 					Upload = new HttpUpload(this);
 				Table = table;
 			}
+
+			// Field parm // DN
+			internal string FldParm => FieldVar.Substring(2);
 
 			// Field encryption/decryption required
 			public bool UseEncryption { // DN
@@ -3371,11 +3512,9 @@ namespace AspNetMaker2019.Models {
 				}
 				return res;
 			}
-			public List<Dictionary<string, object>> LookupOptions() {
-				if (!Empty(Lookup) && Lookup.Options.Count > 0)
-					return Lookup.Options.Values.ToList();
-				return new List<Dictionary<string, object>>();
-			}
+
+			// Lookup options
+			public List<Dictionary<string, object>> LookupOptions => Lookup?.Options?.Values.ToList() ?? new List<Dictionary<string, object>>();
 
 			// Field option caption by option value
 			public string OptionCaption(string val) {
@@ -3415,7 +3554,7 @@ namespace AspNetMaker2019.Models {
 			public string OldPhysicalUploadPath => ServerMapPath(OldUploadPath);
 
 			// Get select options HTML // DN
-			public IHtmlContent SelectOptionListHtml(string name = "") {
+			public virtual IHtmlContent SelectOptionListHtml(string name = "") {
 				var str = "";
 				var isEmpty = true;
 				var curValue = CurrentPage.RowType == Config.RowTypeSearch ? (name.StartsWith("y") ? AdvancedSearch.SearchValue2 : AdvancedSearch.SearchValue) : CurrentValue;
@@ -3471,7 +3610,7 @@ namespace AspNetMaker2019.Models {
 			}
 
 			// Get radio buttons HTML // DN
-			public IHtmlContent RadioButtonListHtml(bool isDropdown, string name, int page = -1) {
+			public virtual IHtmlContent RadioButtonListHtml(bool isDropdown, string name, int page = -1) {
 				var isEmpty = true;
 				var curValue = CurrentPage.RowType == Config.RowTypeSearch ? (name.StartsWith("y") ? AdvancedSearch.SearchValue2 : AdvancedSearch.SearchValue) : CurrentValue;
 				var str = "";
@@ -3507,7 +3646,7 @@ namespace AspNetMaker2019.Models {
 			}
 
 			// Get checkboxes HTML // DN
-			public IHtmlContent CheckBoxListHtml(bool isDropdown, string name, int page = -1) {
+			public virtual IHtmlContent CheckBoxListHtml(bool isDropdown, string name, int page = -1) {
 				var isEmpty = true;
 				var curValue = CurrentPage.RowType == Config.RowTypeSearch ? (name.StartsWith("y") ? AdvancedSearch.SearchValue2 : AdvancedSearch.SearchValue) : CurrentValue;
 				var str = "";
@@ -4118,7 +4257,8 @@ namespace AspNetMaker2019.Models {
 		/// Lookup class
 		/// </summary>
 
-		public class Lookup
+		public class Lookup<T>
+			where T : DbField
 		{
 			public string LookupType = "";
 			public Dictionary<string, Dictionary<string, object>> Options = new Dictionary<string, Dictionary<string, object>>();
@@ -4133,22 +4273,23 @@ namespace AspNetMaker2019.Models {
 			public int Offset = -1;
 			public string ModalLookupSearchType = "";
 			public bool KeepCrLf = false;
-			protected string Name = "";
-			protected string LinkTable = "";
-			protected bool Distinct = false;
-			protected string LinkField = "";
-			protected List<string> DisplayFields = new List<string>();
-			protected List<string> ParentFields = new List<string>();
-			protected List<string> ChildFields = new List<string>();
-			protected Dictionary<string, string> FilterFields = new Dictionary<string, string>();
-			protected List<string> FilterFieldVars = new List<string>();
-			protected List<string> AutoFillSourceFields = new List<string>();
-			protected List<string> AutoFillTargetFields = new List<string>();
-			protected DbTable Table;
-			protected bool FormatAutoFill = false;
-			private bool UseParentFilter = false;
-			private Func<string> LookupFilter;
-			private bool SelectOffset = true; // DN // Handle SelectOffset
+			public Func<string> LookupFilter;
+			public string Name = "";
+			public string LinkTable = "";
+			public bool Distinct = false;
+			public string LinkField = "";
+			public List<string> DisplayFields = new List<string>();
+			public List<string> ParentFields = new List<string>();
+			public List<string> ChildFields = new List<string>();
+			public Dictionary<string, string> FilterFields = new Dictionary<string, string>();
+			public List<string> FilterFieldVars = new List<string>();
+			public List<string> AutoFillSourceFields = new List<string>();
+			public List<string> AutoFillTargetFields = new List<string>();
+			public dynamic Table;
+			public bool FormatAutoFill = false;
+			public bool UseParentFilter = false;
+			public bool SelectOffset = true; // DN // Handle SelectOffset
+			public bool UseHtmlDecode = true;
 
 			/// <summary>
 			/// Constructor for the Lookup class
@@ -4202,7 +4343,7 @@ namespace AspNetMaker2019.Models {
 				LookupFilter = lookupFilter; // Save last call
 				if (!Empty(tbl)) {
 					SetUserSql(useParentFilter);
-					if (tbl.Fields.TryGetValue(Name, out DbField fld))
+					if (tbl.Fields.TryGetValue(Name, out T fld))
 						tbl.Lookup_Selecting(fld, ref UserFilter); // Call Lookup Selecting
 					ResetUserSql(useParentFilter);
 				}
@@ -4331,7 +4472,7 @@ namespace AspNetMaker2019.Models {
 			/// </summary>
 			/// <returns>The lookup result as JSON</returns>
 
-			public async Task<JsonBoolResult> ToJson()
+			public virtual async Task<JsonBoolResult> ToJson()
 			{
 				var tbl = GetTable();
 				if (Empty(tbl))
@@ -4350,14 +4491,14 @@ namespace AspNetMaker2019.Models {
 					totalCnt = rs?.Count ?? 0;
 				}
 
-				// Skip offset for MSSQL 2008 //DN
+				// Skip offset for MSSQL 2008 // DN
 				if (offset > 0 && !SelectOffset)
 					rs.RemoveRange(0, offset);
 
 				// Output
 				foreach (var row in rs) {
 					var keys = row.Keys.ToList();
-					DbField field;
+					T field;
 					string key = keys[0];
 					if (tbl.Fields.TryGetValue(LinkField, out field))
 						field.SetDbValue(row[key]);
@@ -4391,8 +4532,8 @@ namespace AspNetMaker2019.Models {
 						for (int i = 1; i < row.Count; i++) {
 							key = keys[i];
 							if (tbl.Fields.TryGetValue(DisplayFields[i - 1], out field)) {
-								string suffix  = (i > 1) ? i.ToString() : "";
-								if (!Empty(field.Lookup))
+								string suffix = (i > 1) ? i.ToString() : "";
+								if (field.Lookup != null || field.HtmlTag == "FILE")
 									row[key] = field.CurrentValue;
 								else
 									row[key] = field.ViewValue;
@@ -4402,8 +4543,10 @@ namespace AspNetMaker2019.Models {
 					}
 				}
 				var result = new Dictionary<string, object> { {"result", "OK"}, {"records", rs}, {"totalRecordCount", totalCnt}, {"version", Config.ProductVersion} };
+				if (Config.RemoveXss && UseHtmlDecode)
+					result["records"] = rs.Select(row => row.ToDictionary(kvp => kvp.Key, kvp => HtmlDecode(kvp.Value)));
 				if (Config.Debug)
-					result.Add("sql", sql);
+					result["sql"] = sql;
 				return new JsonBoolResult(result, true);
 			}
 
@@ -4436,7 +4579,7 @@ namespace AspNetMaker2019.Models {
 					select += " DISTINCT";
 
 				// Set up link field
-				if (!tbl.Fields.TryGetValue(LinkField, out DbField linkField))
+				if (!tbl.Fields.TryGetValue(LinkField, out T linkField))
 					return "";
 				select += " " + linkField.Expression;
 				if (LookupType != "unknown") // Known lookup types
@@ -4448,7 +4591,7 @@ namespace AspNetMaker2019.Models {
 				if (SameText(LookupType, "autofill")) {
 					for (i = 0; i < AutoFillSourceFields.Count; i++) {
 						var autoFillSourceField = AutoFillSourceFields[i];
-						if (!tbl.Fields.TryGetValue(autoFillSourceField, out DbField af)) {
+						if (!tbl.Fields.TryGetValue(autoFillSourceField, out T af)) {
 							select += ", '' AS " + QuotedName("af" + i, dbid);
 						} else {
 							select += ", " + af.Expression + " AS " + QuotedName("af" + i, dbid);
@@ -4461,7 +4604,7 @@ namespace AspNetMaker2019.Models {
 				} else {
 					for (i = 0; i < DisplayFields.Count; i++) {
 						var displayField = DisplayFields[i];
-						if (!tbl.Fields.TryGetValue(displayField, out DbField df)) {
+						if (!tbl.Fields.TryGetValue(displayField, out T df)) {
 							select += ", '' AS " + QuotedName("df" + ((i == 0) ? "" : Convert.ToString(i + 1)), dbid);
 						} else {
 							select += ", " + df.Expression;
@@ -4473,7 +4616,7 @@ namespace AspNetMaker2019.Models {
 					if (!useParentFilter) {
 						i = 0;
 						foreach (var (key, value) in FilterFields) {
-							if (!tbl.Fields.TryGetValue(key, out DbField filterField)) {
+							if (!tbl.Fields.TryGetValue(key, out T filterField)) {
 								select += ", '' AS " + QuotedName("ff" + ((i == 0) ? "" : Convert.ToString(i + 1)), dbid);
 							} else {
 								var filterOpr = value;
@@ -4495,8 +4638,7 @@ namespace AspNetMaker2019.Models {
 					select = UserSelect;
 
 				// Set up WHERE
-				string where = "";
-				where = tbl.ApplyUserIDFilters(where);
+				string where = Convert.ToString(tbl.Invoke("ApplyUserIDFilters", new object[] { "" }));
 
 				// Set up current filter
 				int cnt = FilterValues.Count;
@@ -4512,7 +4654,7 @@ namespace AspNetMaker2019.Models {
 					foreach (var (key, value) in FilterFields) {
 						if (!Empty(key)) {
 							var filterOpr = value;
-							if (!tbl.Fields.TryGetValue(key, out DbField filterField))
+							if (!tbl.Fields.TryGetValue(key, out T filterField))
 								return "";
 							if (cnt <= i) {
 								AddFilter(ref where, "1=0"); // Disallow
@@ -4530,7 +4672,7 @@ namespace AspNetMaker2019.Models {
 
 					// Set up modal lookup search
 					if (SameText(LookupType, "modal")) {
-						var flds = DisplayFields.Where(fieldName => !Empty(fieldName)).Select(fieldName => ((DbField)tbl.Fields[fieldName]).Expression).ToList();
+						var flds = DisplayFields.Where(fieldName => !Empty(fieldName)).Select(fieldName => ((T)tbl.Fields[fieldName]).Expression).ToList();
 						AddFilter(ref where, GetModalSearchFilter(SearchValue, flds));
 					} else if (SameText(LookupType, "autosuggest")) {
 						if (Config.AutoSuggestForAllFields) {
@@ -4584,7 +4726,7 @@ namespace AspNetMaker2019.Models {
 			/// <param name="dbid">Database ID</param>
 			/// <returns>Search filter (SQL "where" part)</returns>
 
-			protected string GetFilter(DbField fld, string opr, string val, string dbid)
+			protected string GetFilter(T fld, string opr, string val, string dbid)
 			{
 				bool validValue = !Empty(val);
 				string[] values = val.Split(Config.LookupFilterValueSeparator);
@@ -4631,13 +4773,12 @@ namespace AspNetMaker2019.Models {
 			/// </summary>
 			/// <returns>Instance of table object</returns>
 
-			protected dynamic GetTable()
+			protected virtual dynamic GetTable()
 			{
 				if (Empty(LinkTable))
 					return null;
-				if (Empty(Table)) {
+				if (Empty(Table))
 					Table = CreateTable(LinkTable);
-				}
 				return Table;
 			}
 
@@ -4676,7 +4817,7 @@ namespace AspNetMaker2019.Models {
 			/// <param name="fld">Field object</param>
 			/// <returns>The WHERE clause</returns>
 
-			protected string GetAutoSuggestFilter(string sv, DbField fld)
+			protected string GetAutoSuggestFilter(string sv, T fld)
 			{
 				if (Config.AutoSuggestForAllFields)
 					return GetCastFieldForLike(fld) + Like(QuotedValue("%" + sv + "%", Config.DataTypeString, Table.DbId));
@@ -4690,7 +4831,7 @@ namespace AspNetMaker2019.Models {
 			/// <param name="fld">Field object</param>
 			/// <returns>The LIKE part of SQL</returns>
 
-			protected string GetCastFieldForLike(DbField fld)
+			protected string GetCastFieldForLike(T fld)
 			{
 				string expr = fld.Expression;
 				if (fld.DataType == Config.DataTypeDate || fld.DataType == Config.DataTypeTime) // Date/Time field
@@ -5813,6 +5954,26 @@ namespace AspNetMaker2019.Models {
 			return null;
 		}
 
+		/// <summary>
+		/// Get connection object
+		/// </summary>
+		/// <param name="dbid">Database ID</param>
+		/// <returns>DatabaseConnection instance</returns>
+
+		public static async Task<dynamic> GetConnectionAsync(string dbid = "DB") { // DN
+			dbid = Db(dbid)["id"];
+			if (dbid != null) {
+				if (Connections.TryGetValue(dbid, out dynamic c)) {
+					return c;
+				} else {
+					var conn = await CreateConnectionAsync(dbid);
+					Connections[dbid] = conn;
+					return conn;
+				}
+			}
+			return null;
+		}
+
 		// Get connection object
 		private static dynamic _GetConnection(string dbid = "DB") { // DN
 			dbid = Db(dbid)["id"];
@@ -6413,7 +6574,7 @@ namespace AspNetMaker2019.Models {
 						await ExecuteAsync("SET search_path TO " + QuotedName(Info["schema"], Info["id"]), c); // Set current schema
 					if (timezone != "")
 						await ExecuteAsync("SET TIME ZONE '" + timezone + "'", c);
-				} else if (IsMySql && timezone != "") { 
+				} else if (IsMySql && timezone != "") {
 					await ExecuteAsync("SET time_zone = '" + timezone + "'", c);
 				}
 				Database_Connected(c);
@@ -6612,7 +6773,7 @@ namespace AspNetMaker2019.Models {
 			public List<Dictionary<string, object>> GetRows(DbDataReader dr)
 			{
 				var rows = new List<Dictionary<string, object>>();
-				while (dr.Read())
+				while (dr != null && dr.Read())
 					rows.Add(GetRow(dr));
 				return rows;
 			}
@@ -6626,7 +6787,7 @@ namespace AspNetMaker2019.Models {
 			public async Task<List<Dictionary<string, object>>> GetRowsAsync(DbDataReader dr)
 			{
 				var rows = new List<Dictionary<string, object>>();
-				while (await dr.ReadAsync())
+				while (dr != null && await dr.ReadAsync())
 					rows.Add(GetRow(dr));
 				return rows;
 			}
@@ -6794,7 +6955,7 @@ namespace AspNetMaker2019.Models {
 			public string TableClass = "table table-bordered ew-db-table";
 
 			/// <summary>
-			/// Get result in HTML table by SQL 
+			/// Get result in HTML table by SQL
 			/// </summary>
 			/// <param name="sql">SQL to execute</param>
 			/// <param name="options">
@@ -9539,7 +9700,7 @@ namespace AspNetMaker2019.Models {
 					request.PathBase.ToString(),
 					request.Path.ToString(),
 					request.QueryString.ToString());
-			} else if (IsAbsoluteUrl(url) || Path.IsPathRooted(url)) {
+			} else if ((IsAbsoluteUrl(url) || Path.IsPathRooted(url)) && !url.StartsWith("/")) {
 				return url;
 			} else {
 				Config.FullUrlProtocols.TryGetValue(type, out string protocol);
@@ -9976,7 +10137,7 @@ namespace AspNetMaker2019.Models {
 		/// </summary>
 		/// <param name="address">URL</param>
 		/// <param name="data"></param>
-		/// <returns>Requested resource as byte[]</returns>		
+		/// <returns>Requested resource as byte[]</returns>
 
 		public static async Task<byte[]> DownloadDataAsync(string address, NameValueCollection data = null) {
 			using (var client = new WebClient()) {
@@ -10471,7 +10632,7 @@ namespace AspNetMaker2019.Models {
 
 						// User table object (Usuario)
 						UserTable = UserTable ?? new _Usuario();
-						UserTableConn = GetConnection(UserTable.DbId);
+						UserTableConn = await GetConnectionAsync(UserTable.DbId);
 
 						// Set up filter (WHERE clause)
 						sql = UserTable.GetSql(filter); // DN
@@ -10957,7 +11118,7 @@ namespace AspNetMaker2019.Models {
 				} else if (!SameString(CurrentUserID, "-1")) { // Get first level
 					AddUserID(CurrentUserID);
 					UserTable = UserTable ?? new _Usuario();
-					UserTableConn = GetConnection(UserTable.DbId);
+					UserTableConn = await GetConnectionAsync(UserTable.DbId);
 					string filter = UserTable.GetUserIDFilter(CurrentUserID);
 					string sql = UserTable.GetSql(filter);
 					DbDataReader rsuser;
@@ -12474,7 +12635,7 @@ namespace AspNetMaker2019.Models {
 		/// <param name="name">Name of the value</param>
 		/// <returns>Value (empty string if name does not exist)</returns>
 
-		public static string Post(string name) => Form[name].ToString(); // StringValues ToString() will return String.Empty if name does not exist		
+		public static string Post(string name) => Form[name].ToString(); // StringValues ToString() will return String.Empty if name does not exist
 
 		/// <summary>
 		/// Get form value as type T

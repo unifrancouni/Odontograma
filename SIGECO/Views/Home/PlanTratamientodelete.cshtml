@@ -1,0 +1,147 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetupLoginStatus(); // Setup login status
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	PlanTratamiento_Delete.Page_Render();
+
+	// Check action result
+	if (PlanTratamiento_Delete.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "delete";
+var fPlanTratamientodelete = currentForm = new ew.Form("fPlanTratamientodelete", "delete");
+
+// Form_CustomValidate event
+fPlanTratamientodelete.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPlanTratamientodelete.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPlanTratamientodelete.lists["x_nExpedienteID"] = @Html.Raw(PlanTratamiento_Delete.nExpedienteID.Lookup.ToClientList());
+fPlanTratamientodelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(PlanTratamiento_Delete.nExpedienteID.LookupOptions));
+fPlanTratamientodelete.autoSuggests["x_nExpedienteID"] = @Html.Raw(ConvertToJson(new Dictionary<string, string> { {"data", "ajax=autosuggest"} }));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@PlanTratamiento_Delete.ShowPageHeader()
+@PlanTratamiento_Delete.ShowMessages()
+<form name="fPlanTratamientodelete" id="fPlanTratamientodelete" class="form-inline ew-form ew-delete-form" action="@AppPath(CurrentPageName())" method="post">
+@if (PlanTratamiento_Delete.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="delete">
+@foreach (string key in PlanTratamiento_Delete.RecordKeys) {
+<input type="hidden" name="key_m" value="@key">
+}
+<div class="card ew-card ew-grid">
+<div class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table class="table ew-table">
+	<thead>
+	<tr class="ew-table-header">
+@if (PlanTratamiento.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<th class="@Html.Raw(PlanTratamiento.nExpedienteID.HeaderCellClass)"><span id="elh_PlanTratamiento_nExpedienteID" class="PlanTratamiento_nExpedienteID">@Html.Raw(PlanTratamiento.nExpedienteID.Caption)</span></th>
+} @* nExpedienteID.Visible (end) *@
+@if (PlanTratamiento.dFechaAsignacion.Visible) { // dFechaAsignacion (begin)
+		<th class="@Html.Raw(PlanTratamiento.dFechaAsignacion.HeaderCellClass)"><span id="elh_PlanTratamiento_dFechaAsignacion" class="PlanTratamiento_dFechaAsignacion">@Html.Raw(PlanTratamiento.dFechaAsignacion.Caption)</span></th>
+} @* dFechaAsignacion.Visible (end) *@
+@if (PlanTratamiento.sObservaciones.Visible) { // sObservaciones (begin)
+		<th class="@Html.Raw(PlanTratamiento.sObservaciones.HeaderCellClass)"><span id="elh_PlanTratamiento_sObservaciones" class="PlanTratamiento_sObservaciones">@Html.Raw(PlanTratamiento.sObservaciones.Caption)</span></th>
+} @* sObservaciones.Visible (end) *@
+	</tr>
+	</thead>
+	<tbody>
+@{ PlanTratamiento_Delete.RecordCount = 0; }
+@while (PlanTratamiento_Delete.Recordset != null && await PlanTratamiento_Delete.Recordset.ReadAsync()) { // DN
+	PlanTratamiento_Delete.RecordCount++;
+	PlanTratamiento_Delete.RowCnt++;
+
+	// Set row properties
+	PlanTratamiento_Delete.ResetAttributes();
+	PlanTratamiento_Delete.RowType = Config.RowTypeView; // View
+
+	// Get the field contents
+	await PlanTratamiento_Delete.LoadRowValues(PlanTratamiento_Delete.Recordset);
+
+	// Render row
+	await PlanTratamiento_Delete.RenderRow();
+	<tr @Html.Raw(PlanTratamiento_Delete.RowAttributes)>
+@if (PlanTratamiento.nExpedienteID.Visible) { // nExpedienteID (begin)
+		<td @Html.Raw(PlanTratamiento.nExpedienteID.CellAttributes)>
+<span id="el@(PlanTratamiento_Delete.RowCnt)_PlanTratamiento_nExpedienteID" class="PlanTratamiento_nExpedienteID">
+<span @Html.Raw(PlanTratamiento.nExpedienteID.ViewAttributes)>
+@Html.Raw(PlanTratamiento.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+} @* nExpedienteID.Visible (end) *@
+@if (PlanTratamiento.dFechaAsignacion.Visible) { // dFechaAsignacion (begin)
+		<td @Html.Raw(PlanTratamiento.dFechaAsignacion.CellAttributes)>
+<span id="el@(PlanTratamiento_Delete.RowCnt)_PlanTratamiento_dFechaAsignacion" class="PlanTratamiento_dFechaAsignacion">
+<span @Html.Raw(PlanTratamiento.dFechaAsignacion.ViewAttributes)>
+@Html.Raw(PlanTratamiento.dFechaAsignacion.GetViewValue())</span>
+</span>
+</td>
+} @* dFechaAsignacion.Visible (end) *@
+@if (PlanTratamiento.sObservaciones.Visible) { // sObservaciones (begin)
+		<td @Html.Raw(PlanTratamiento.sObservaciones.CellAttributes)>
+<span id="el@(PlanTratamiento_Delete.RowCnt)_PlanTratamiento_sObservaciones" class="PlanTratamiento_sObservaciones">
+<span @Html.Raw(PlanTratamiento.sObservaciones.ViewAttributes)>
+@Html.Raw(PlanTratamiento.sObservaciones.GetViewValue())</span>
+</span>
+</td>
+} @* sObservaciones.Visible (end) *@
+	</tr>
+}
+@{ PlanTratamiento_Delete.CloseRecordset(); }
+</tbody>
+</table>
+</div>
+</div>
+<div>
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("DeleteBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(PlanTratamiento_Delete.ReturnUrl)">@Language.Phrase("CancelBtn")</button>
+</div>
+</form>
+@PlanTratamiento_Delete.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models (Table)
 namespace AspNetMaker2019.Models {
@@ -242,10 +242,10 @@ namespace AspNetMaker2019.Models {
 				nActivo.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nActivo.Lookup = new Lookup("nActivo", "Catalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nActivo.Lookup = new Lookup<DbField>("nActivo", "Catalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nActivo.Lookup = new Lookup("nActivo", "Catalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nActivo.Lookup = new Lookup<DbField>("nActivo", "Catalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nActivo", nActivo);
@@ -276,10 +276,10 @@ namespace AspNetMaker2019.Models {
 				nCatalogoUsuario.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nCatalogoUsuario.Lookup = new Lookup("nCatalogoUsuario", "Catalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nCatalogoUsuario.Lookup = new Lookup<DbField>("nCatalogoUsuario", "Catalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nCatalogoUsuario.Lookup = new Lookup("nCatalogoUsuario", "Catalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nCatalogoUsuario.Lookup = new Lookup<DbField>("nCatalogoUsuario", "Catalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nCatalogoUsuario", nCatalogoUsuario);
@@ -758,28 +758,6 @@ namespace AspNetMaker2019.Models {
 				LoadDbValues(row);
 			}
 
-			// Record filter WHERE clause
-			private string _sqlKeyFilter => "[nCatalogoID] = @nCatalogoID@";
-
-			#pragma warning disable 168
-
-			// Get record filter
-			public string GetRecordFilter(Dictionary<string, object> row = null)
-			{
-				string keyFilter = _sqlKeyFilter;
-				object val, result;
-				val = !Empty(row) ? (row.TryGetValue("nCatalogoID", out result) ? result : null) : nCatalogoID.CurrentValue;
-				if (!IsNumeric(val))
-					return "0=1"; // Invalid key
-				if (val == null)
-					return "0=1"; // Invalid key
-				else
-					keyFilter = keyFilter.Replace("@nCatalogoID@", AdjustSql(val, DbId)); // Replace key value
-				return keyFilter;
-			}
-
-			#pragma warning restore 168
-
 			// Return URL
 			public string ReturnUrl {
 				get {
@@ -983,6 +961,28 @@ namespace AspNetMaker2019.Models {
 
 			#pragma warning restore 618
 
+			// Record filter WHERE clause
+			private string _sqlKeyFilter => "[nCatalogoID] = @nCatalogoID@";
+
+			#pragma warning disable 168
+
+			// Get record filter
+			public string GetRecordFilter(Dictionary<string, object> row = null)
+			{
+				string keyFilter = _sqlKeyFilter;
+				object val, result;
+				val = !Empty(row) ? (row.TryGetValue("nCatalogoID", out result) ? result : null) : nCatalogoID.CurrentValue;
+				if (!IsNumeric(val))
+					return "0=1"; // Invalid key
+				if (val == null)
+					return "0=1"; // Invalid key
+				else
+					keyFilter = keyFilter.Replace("@nCatalogoID@", AdjustSql(val, DbId)); // Replace key value
+				return keyFilter;
+			}
+
+			#pragma warning restore 168
+
 			// Load row values from recordset
 			public void LoadListRowValues(DbDataReader rs) {
 				nCatalogoID.SetDbValue(rs["nCatalogoID"]);
@@ -1105,6 +1105,8 @@ namespace AspNetMaker2019.Models {
 
 				// sDescripcion
 				sDescripcion.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sDescripcion.CurrentValue = HtmlDecode(sDescripcion.CurrentValue);
 				sDescripcion.EditValue = sDescripcion.CurrentValue; // DN
 				sDescripcion.PlaceHolder = RemoveHtml(sDescripcion.Caption);
 
@@ -1283,7 +1285,7 @@ namespace AspNetMaker2019.Models {
 				}
 
 				// Create lookup object and output JSON
-				var lookup = new Lookup(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
+				var lookup = new Lookup<DbField>(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
 				for (int i = 0; i < filterFields.Count; i++) { // Set up filter operators
 					if (!Empty(filterOperators[i]))
 						lookup.SetFilterOperator(filterFields[i], filterOperators[i]);

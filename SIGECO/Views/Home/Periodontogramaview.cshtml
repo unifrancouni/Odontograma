@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,9 +50,9 @@ fPeriodontogramaview.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fPeriodontogramaview.lists["x_nExpedienteID"] = @Html.Raw(Periodontograma_View.nExpedienteID.Lookup.ToClientList());
-fPeriodontogramaview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Periodontograma_View.nExpedienteID.LookupOptions()));
+fPeriodontogramaview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Periodontograma_View.nExpedienteID.LookupOptions));
 fPeriodontogramaview.lists["x_nEstadoID"] = @Html.Raw(Periodontograma_View.nEstadoID.Lookup.ToClientList());
-fPeriodontogramaview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Periodontograma_View.nEstadoID.LookupOptions()));
+fPeriodontogramaview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Periodontograma_View.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

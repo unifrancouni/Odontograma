@@ -1,0 +1,232 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetupLoginStatus(); // Setup login status
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	PlanTratamientoDetalle_Edit.Page_Render();
+
+	// Check action result
+	if (PlanTratamientoDetalle_Edit.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+
+	#pragma warning restore 168
+
+}
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "edit";
+var fPlanTratamientoDetalleedit = currentForm = new ew.Form("fPlanTratamientoDetalleedit", "edit");
+
+// Validate form
+fPlanTratamientoDetalleedit.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+	@if (PlanTratamientoDetalle_Edit.nTratamientoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nTratamientoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.nTratamientoID.RequiredErrorMessage.Replace("%s", PlanTratamientoDetalle.nTratamientoID.Caption)))");
+		</text>
+	}
+	@if (PlanTratamientoDetalle_Edit.dFechaTratamiento.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaTratamiento");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.dFechaTratamiento.RequiredErrorMessage.Replace("%s", PlanTratamientoDetalle.dFechaTratamiento.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaTratamiento");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.dFechaTratamiento.ErrorMessage))");
+	@if (PlanTratamientoDetalle_Edit.nCosto.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nCosto");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.nCosto.RequiredErrorMessage.Replace("%s", PlanTratamientoDetalle.nCosto.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_nCosto");
+		if (elm && !ew.checkNumber(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.nCosto.ErrorMessage))");
+	@if (PlanTratamientoDetalle_Edit.nMonedaID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nMonedaID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.nMonedaID.RequiredErrorMessage.Replace("%s", PlanTratamientoDetalle.nMonedaID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+	}
+
+	// Process detail forms
+	var dfs = $fobj.find("input[name='detailpage']").get();
+	for (var i = 0; i < dfs.length; i++) {
+		var df = dfs[i], val = df.value;
+		if (val && ew.forms[val])
+			if (!ew.forms[val].validate())
+				return false;
+	}
+	return true;
+}
+
+// Form_CustomValidate event
+fPlanTratamientoDetalleedit.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPlanTratamientoDetalleedit.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPlanTratamientoDetalleedit.lists["x_nTratamientoID"] = @Html.Raw(PlanTratamientoDetalle_Edit.nTratamientoID.Lookup.ToClientList());
+fPlanTratamientoDetalleedit.lists["x_nTratamientoID"].options = @Html.Raw(ConvertToJson(PlanTratamientoDetalle_Edit.nTratamientoID.LookupOptions));
+fPlanTratamientoDetalleedit.lists["x_nMonedaID"] = @Html.Raw(PlanTratamientoDetalle_Edit.nMonedaID.Lookup.ToClientList());
+fPlanTratamientoDetalleedit.lists["x_nMonedaID"].options = @Html.Raw(ConvertToJson(PlanTratamientoDetalle_Edit.nMonedaID.LookupOptions));
+
+// Form object for search
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+@PlanTratamientoDetalle_Edit.ShowPageHeader()
+@PlanTratamientoDetalle_Edit.ShowMessages()
+<form name="fPlanTratamientoDetalleedit" id="fPlanTratamientoDetalleedit" class="@PlanTratamientoDetalle_Edit.FormClassName" action="@AppPath(CurrentPageName())" method="post">
+@if (PlanTratamientoDetalle_Edit.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<input type="hidden" name="action" id="action" value="update">
+@if (PlanTratamientoDetalle_Edit.IsModal) {
+<input type="hidden" name="modal" value="@ConvertToInt(PlanTratamientoDetalle_Edit.IsModal)">
+}
+@if (PlanTratamientoDetalle_Edit.CurrentMasterTable == "PlanTratamiento") {
+<input type="hidden" name="@Config.TableShowMaster" value="PlanTratamiento">
+<input type="hidden" name="fk_nPlanTratamientoID" value="@PlanTratamientoDetalle_Edit.nPlanTratamientoID.SessionValue">
+}
+<div class="ew-edit-div"><!-- page* -->
+@if (PlanTratamientoDetalle.nTratamientoID.Visible) { // nTratamientoID.Visible (begin)
+	<div id="r_nTratamientoID" class="form-group row">
+		<label id="elh_PlanTratamientoDetalle_nTratamientoID" for="x_nTratamientoID" class="@PlanTratamientoDetalle_Edit.LeftColumnClass">@Html.Raw(PlanTratamientoDetalle.nTratamientoID.Caption)@Html.Raw(PlanTratamientoDetalle.nTratamientoID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@PlanTratamientoDetalle_Edit.RightColumnClass"><div @Html.Raw(PlanTratamientoDetalle.nTratamientoID.CellAttributes)>
+<span id="el_PlanTratamientoDetalle_nTratamientoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nTratamientoID">@Html.Raw(SameString(PlanTratamientoDetalle.nTratamientoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(PlanTratamientoDetalle.nTratamientoID.ViewValue) : PlanTratamientoDetalle.nTratamientoID.ViewValue))</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(PlanTratamientoDetalle.nTratamientoID.Caption))" class="ew-lookup-btn btn btn-default"@((PlanTratamientoDetalle.nTratamientoID.ReadOnly || PlanTratamientoDetalle.nTratamientoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nTratamientoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(PlanTratamientoDetalle.nTratamientoID.Lookup.GetParamTag("p_x_nTratamientoID"))
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" data-multiple="0" data-lookup="1" data-value-separator="@PlanTratamientoDetalle.nTratamientoID.DisplayValueSeparatorAttribute" name="x_nTratamientoID" id="x_nTratamientoID" value="@Html.Raw(PlanTratamientoDetalle.nTratamientoID.CurrentValue)"@Html.Raw(PlanTratamientoDetalle.nTratamientoID.EditAttributes)>
+</span>
+@Html.Raw(PlanTratamientoDetalle.nTratamientoID.CustomMessage)</div></div>
+	</div>
+} @* nTratamientoID.Visible (end) *@
+@if (PlanTratamientoDetalle.dFechaTratamiento.Visible) { // dFechaTratamiento.Visible (begin)
+	<div id="r_dFechaTratamiento" class="form-group row">
+		<label id="elh_PlanTratamientoDetalle_dFechaTratamiento" for="x_dFechaTratamiento" class="@PlanTratamientoDetalle_Edit.LeftColumnClass">@Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.Caption)@Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@PlanTratamientoDetalle_Edit.RightColumnClass"><div @Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.CellAttributes)>
+<span id="el_PlanTratamientoDetalle_dFechaTratamiento">
+<input type="text" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="x_dFechaTratamiento" id="x_dFechaTratamiento" placeholder="@PlanTratamientoDetalle.dFechaTratamiento.PlaceHolder" value="@PlanTratamientoDetalle.dFechaTratamiento.EditValue" @Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.EditAttributes)>
+@if (!PlanTratamientoDetalle.dFechaTratamiento.ReadOnly && !PlanTratamientoDetalle.dFechaTratamiento.Disabled && !PlanTratamientoDetalle.dFechaTratamiento.EditAttrs.ContainsKey("readonly") && !PlanTratamientoDetalle.dFechaTratamiento.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fPlanTratamientoDetalleedit", "x_dFechaTratamiento", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+@Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.CustomMessage)</div></div>
+	</div>
+} @* dFechaTratamiento.Visible (end) *@
+@if (PlanTratamientoDetalle.nCosto.Visible) { // nCosto.Visible (begin)
+	<div id="r_nCosto" class="form-group row">
+		<label id="elh_PlanTratamientoDetalle_nCosto" for="x_nCosto" class="@PlanTratamientoDetalle_Edit.LeftColumnClass">@Html.Raw(PlanTratamientoDetalle.nCosto.Caption)@Html.Raw(PlanTratamientoDetalle.nCosto.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@PlanTratamientoDetalle_Edit.RightColumnClass"><div @Html.Raw(PlanTratamientoDetalle.nCosto.CellAttributes)>
+<span id="el_PlanTratamientoDetalle_nCosto">
+<input type="text" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="x_nCosto" id="x_nCosto" size="30" placeholder="@PlanTratamientoDetalle.nCosto.PlaceHolder" value="@PlanTratamientoDetalle.nCosto.EditValue" @Html.Raw(PlanTratamientoDetalle.nCosto.EditAttributes)>
+</span>
+@Html.Raw(PlanTratamientoDetalle.nCosto.CustomMessage)</div></div>
+	</div>
+} @* nCosto.Visible (end) *@
+@if (PlanTratamientoDetalle.nMonedaID.Visible) { // nMonedaID.Visible (begin)
+	<div id="r_nMonedaID" class="form-group row">
+		<label id="elh_PlanTratamientoDetalle_nMonedaID" for="x_nMonedaID" class="@PlanTratamientoDetalle_Edit.LeftColumnClass">@Html.Raw(PlanTratamientoDetalle.nMonedaID.Caption)@Html.Raw(PlanTratamientoDetalle.nMonedaID.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<div class="@PlanTratamientoDetalle_Edit.RightColumnClass"><div @Html.Raw(PlanTratamientoDetalle.nMonedaID.CellAttributes)>
+<span id="el_PlanTratamientoDetalle_nMonedaID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(PlanTratamientoDetalle.nMonedaID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(PlanTratamientoDetalle.nMonedaID.ViewValue)</button>
+		<div id="dsl_x_nMonedaID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@PlanTratamientoDetalle.nMonedaID.RadioButtonListHtml(true, "x_nMonedaID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x_nMonedaID" class="ew-template"><input type="radio" class="form-check-input" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" data-value-separator="@PlanTratamientoDetalle.nMonedaID.DisplayValueSeparatorAttribute" data-please-select-text="@PlanTratamientoDetalle.nMonedaID.PleaseSelectText" name="x_nMonedaID" id="x_nMonedaID" value="{value}"@Html.Raw(PlanTratamientoDetalle.nMonedaID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!PlanTratamientoDetalle.nMonedaID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(PlanTratamientoDetalle.nMonedaID.Lookup.GetParamTag("p_x_nMonedaID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+@Html.Raw(PlanTratamientoDetalle.nMonedaID.CustomMessage)</div></div>
+	</div>
+} @* nMonedaID.Visible (end) *@
+</div><!-- /page* -->
+	<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nPlanTratamientoDetalleID" name="x_nPlanTratamientoDetalleID" id="x_nPlanTratamientoDetalleID" value="@PlanTratamientoDetalle.nPlanTratamientoDetalleID.CurrentValue">
+@{ PlanTratamientoDetalle_Edit.CloseRecordset(); }
+@if (!PlanTratamientoDetalle_Edit.IsModal) {
+@:<div class="form-group row"><!-- buttons .form-group -->
+	@:<div class="@PlanTratamientoDetalle_Edit.OffsetColumnClass"><!-- buttons offset -->
+<button class="btn btn-primary ew-btn" name="btn-action" id="btn-action" type="submit">@Html.Raw(Language.Phrase("SaveBtn"))</button>
+<button class="btn btn-default ew-btn" name="btn-cancel" id="btn-cancel" type="button" data-href="@AppPath(PlanTratamientoDetalle_Edit.ReturnUrl)">@Html.Raw(Language.Phrase("CancelBtn"))</button>
+	@:</div><!-- /buttons offset -->
+@:</div><!-- /buttons .form-group -->
+}
+</form>
+@PlanTratamientoDetalle_Edit.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>

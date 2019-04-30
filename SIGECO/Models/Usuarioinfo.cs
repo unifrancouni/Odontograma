@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models (Table)
 namespace AspNetMaker2019.Models {
@@ -149,7 +149,7 @@ namespace AspNetMaker2019.Models {
 					IsAutoIncrement = true, // Autoincrement field
 					IsPrimaryKey = true, // Primary key field
 					Nullable = false, // NOT NULL field
-					Sortable = false, // Allow sort
+					Sortable = true, // Allow sort
 					DefaultErrorMessage = Language.Phrase("IncorrectInteger"),
 					IsUpload = false
 				};
@@ -251,12 +251,9 @@ namespace AspNetMaker2019.Models {
 					SelectMultiple = false,
 					VirtualSearch = false,
 					ViewTag = "FORMATTED TEXT",
-					HtmlTag = "SELECT",
+					HtmlTag = "CHECKBOX",
 					Nullable = false, // NOT NULL field
-					Required = true, // Required field
 					Sortable = true, // Allow sort
-					UsePleaseSelect = true, // Use PleaseSelect by default
-					PleaseSelectText = Language.Phrase("PleaseSelect"), // PleaseSelect text
 					DataType = Config.DataTypeBoolean,
 					OptionCount = 2,
 					IsUpload = false
@@ -264,10 +261,10 @@ namespace AspNetMaker2019.Models {
 				nActivo.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nActivo.Lookup = new Lookup("nActivo", "Usuario", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nActivo.Lookup = new Lookup<DbField>("nActivo", "Usuario", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nActivo.Lookup = new Lookup("nActivo", "Usuario", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nActivo.Lookup = new Lookup<DbField>("nActivo", "Usuario", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nActivo", nActivo);
@@ -674,28 +671,6 @@ namespace AspNetMaker2019.Models {
 				LoadDbValues(row);
 			}
 
-			// Record filter WHERE clause
-			private string _sqlKeyFilter => "[nUsuarioId] = @nUsuarioId@";
-
-			#pragma warning disable 168
-
-			// Get record filter
-			public string GetRecordFilter(Dictionary<string, object> row = null)
-			{
-				string keyFilter = _sqlKeyFilter;
-				object val, result;
-				val = !Empty(row) ? (row.TryGetValue("nUsuarioId", out result) ? result : null) : nUsuarioId.CurrentValue;
-				if (!IsNumeric(val))
-					return "0=1"; // Invalid key
-				if (val == null)
-					return "0=1"; // Invalid key
-				else
-					keyFilter = keyFilter.Replace("@nUsuarioId@", AdjustSql(val, DbId)); // Replace key value
-				return keyFilter;
-			}
-
-			#pragma warning restore 168
-
 			// Return URL
 			public string ReturnUrl {
 				get {
@@ -893,6 +868,28 @@ namespace AspNetMaker2019.Models {
 
 			#pragma warning restore 618
 
+			// Record filter WHERE clause
+			private string _sqlKeyFilter => "[nUsuarioId] = @nUsuarioId@";
+
+			#pragma warning disable 168
+
+			// Get record filter
+			public string GetRecordFilter(Dictionary<string, object> row = null)
+			{
+				string keyFilter = _sqlKeyFilter;
+				object val, result;
+				val = !Empty(row) ? (row.TryGetValue("nUsuarioId", out result) ? result : null) : nUsuarioId.CurrentValue;
+				if (!IsNumeric(val))
+					return "0=1"; // Invalid key
+				if (val == null)
+					return "0=1"; // Invalid key
+				else
+					keyFilter = keyFilter.Replace("@nUsuarioId@", AdjustSql(val, DbId)); // Replace key value
+				return keyFilter;
+			}
+
+			#pragma warning restore 168
+
 			// Load row values from recordset
 			public void LoadListRowValues(DbDataReader rs) {
 				nUsuarioId.SetDbValue(rs["nUsuarioId"]);
@@ -912,9 +909,6 @@ namespace AspNetMaker2019.Models {
 
 				// Common render codes
 				// nUsuarioId
-
-				nUsuarioId.CellCssStyle = "white-space: nowrap;";
-
 				// sEmail
 				// sPassword
 
@@ -937,9 +931,9 @@ namespace AspNetMaker2019.Models {
 
 				// nActivo
 				if (ConvertToBool(nActivo.CurrentValue)) {
-					nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Activo";
+					nActivo.ViewValue = (nActivo.TagCaption(1) != "") ? nActivo.TagCaption(1) : "Yes";
 				} else {
-					nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "Inactivo";
+					nActivo.ViewValue = (nActivo.TagCaption(2) != "") ? nActivo.TagCaption(2) : "No";
 				}
 
 				// nUsuarioId
@@ -985,6 +979,8 @@ namespace AspNetMaker2019.Models {
 
 				// sEmail
 				sEmail.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sEmail.CurrentValue = HtmlDecode(sEmail.CurrentValue);
 				sEmail.EditValue = sEmail.CurrentValue; // DN
 				sEmail.PlaceHolder = RemoveHtml(sEmail.Caption);
 
@@ -995,12 +991,13 @@ namespace AspNetMaker2019.Models {
 
 				// sUserName
 				sUserName.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sUserName.CurrentValue = HtmlDecode(sUserName.CurrentValue);
 				sUserName.EditValue = sUserName.CurrentValue; // DN
 				sUserName.PlaceHolder = RemoveHtml(sUserName.Caption);
 
 				// nActivo
-				nActivo.EditAttrs["class"] = "form-control";
-				nActivo.EditValue = nActivo.Options(true);
+				nActivo.EditValue = nActivo.Options(false);
 
 				// Call Row Rendered event
 				Row_Rendered();
@@ -1037,10 +1034,12 @@ namespace AspNetMaker2019.Models {
 					if (doc.Horizontal) { // Horizontal format, write header
 						doc.BeginExportRow();
 						if (exportType == "view") {
+							doc.ExportCaption(nUsuarioId);
 							doc.ExportCaption(sEmail);
 							doc.ExportCaption(sUserName);
 							doc.ExportCaption(nActivo);
 						} else {
+							doc.ExportCaption(nUsuarioId);
 							doc.ExportCaption(sEmail);
 							doc.ExportCaption(sUserName);
 							doc.ExportCaption(nActivo);
@@ -1081,10 +1080,12 @@ namespace AspNetMaker2019.Models {
 						if (!doc.ExportCustom) {
 							doc.BeginExportRow(rowcnt); // Allow CSS styles if enabled
 							if (exportType == "view") {
+								await doc.ExportField(nUsuarioId);
 								await doc.ExportField(sEmail);
 								await doc.ExportField(sUserName);
 								await doc.ExportField(nActivo);
 							} else {
+								await doc.ExportField(nUsuarioId);
 								await doc.ExportField(sEmail);
 								await doc.ExportField(sUserName);
 								await doc.ExportField(nActivo);
@@ -1115,7 +1116,6 @@ namespace AspNetMaker2019.Models {
 					filterWrk = Security.UserIDList();
 					if (!Empty(filterWrk))
 						filterWrk = "[nUsuarioId] IN (" + filterWrk + ")";
-					AddFilter(ref filterWrk, filter);
 				}
 
 				// Call User ID Filtering event
@@ -1210,7 +1210,7 @@ namespace AspNetMaker2019.Models {
 				}
 
 				// Create lookup object and output JSON
-				var lookup = new Lookup(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
+				var lookup = new Lookup<DbField>(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
 				for (int i = 0; i < filterFields.Count; i++) { // Set up filter operators
 					if (!Empty(filterOperators[i]))
 						lookup.SetFilterOperator(filterFields[i], filterOperators[i]);

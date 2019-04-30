@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -51,9 +51,9 @@ fPlacagramalist.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fPlacagramalist.lists["x_nExpedienteID"] = @Html.Raw(Placagrama_List.nExpedienteID.Lookup.ToClientList());
-fPlacagramalist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Placagrama_List.nExpedienteID.LookupOptions()));
+fPlacagramalist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Placagrama_List.nExpedienteID.LookupOptions));
 fPlacagramalist.lists["x_nEstadoID"] = @Html.Raw(Placagrama_List.nEstadoID.Lookup.ToClientList());
-fPlacagramalist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Placagrama_List.nEstadoID.LookupOptions()));
+fPlacagramalist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Placagrama_List.nEstadoID.LookupOptions));
 
 // Form object for search
 var fPlacagramalistsrch = currentSearchForm = new ew.Form("fPlacagramalistsrch");
@@ -146,15 +146,19 @@ if (!Placagrama_List.IsExport() && Empty(Placagrama_List.CurrentAction)) { // Be
                 <th data-name="nExpedienteID" class="@Placagrama.nExpedienteID.HeaderCellClass">
                     <div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Placagrama.SortUrl(Placagrama.nExpedienteID))',1);">
                         <div id="elh_Placagrama_nExpedienteID" class="Placagrama_nExpedienteID">
-                            <div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Placagrama.nExpedienteID.Caption)</span><span class="ew-table-header-sort">@if (Placagrama.nExpedienteID.Sort == "ASC")
-                            {<i class="fa fa-sort-up"></i>}
-                            else if (Placagrama.nExpedienteID.Sort == "DESC")
-                            {<i class="fa fa-sort-down"></i>}</span></div>
+                            <div class="ew-table-header-btn">
+                                <span class="ew-table-header-caption">@Html.Raw(Placagrama.nExpedienteID.Caption)</span><span class="ew-table-header-sort">
+                                    @if (Placagrama.nExpedienteID.Sort == "ASC")
+                                    {<i class="fa fa-sort-up"></i>}
+                                    else if (Placagrama.nExpedienteID.Sort == "DESC")
+                                    {<i class="fa fa-sort-down"></i>}
+                            </span>
                         </div>
                     </div>
-                </th>
-            }
-        } @* nExpedienteID.Visible (end) *@
+                </div>
+            </th>
+        }
+    } @* nExpedienteID.Visible (end) *@
         @if (Placagrama.sObservaciones.Visible)
         { // sObservaciones.Visible (begin)
             if (Placagrama_List.SortUrl(Placagrama.sObservaciones) == "")
@@ -166,15 +170,19 @@ if (!Placagrama_List.IsExport() && Empty(Placagrama_List.CurrentAction)) { // Be
                 <th data-name="sObservaciones" class="@Placagrama.sObservaciones.HeaderCellClass">
                     <div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Placagrama.SortUrl(Placagrama.sObservaciones))',1);">
                         <div id="elh_Placagrama_sObservaciones" class="Placagrama_sObservaciones">
-                            <div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Placagrama.sObservaciones.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (Placagrama.sObservaciones.Sort == "ASC")
-                            {<i class="fa fa-sort-up"></i>}
-                            else if (Placagrama.sObservaciones.Sort == "DESC")
-                            {<i class="fa fa-sort-down"></i>}</span></div>
+                            <div class="ew-table-header-btn">
+                                <span class="ew-table-header-caption">@Html.Raw(Placagrama.sObservaciones.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">
+                                    @if (Placagrama.sObservaciones.Sort == "ASC")
+                                    {<i class="fa fa-sort-up"></i>}
+                                    else if (Placagrama.sObservaciones.Sort == "DESC")
+                                    {<i class="fa fa-sort-down"></i>}
+                            </span>
                         </div>
                     </div>
-                </th>
-            }
-        } @* sObservaciones.Visible (end) *@
+                </div>
+            </th>
+        }
+    } @* sObservaciones.Visible (end) *@
         @if (Placagrama.dFechaPlacagrama.Visible)
         { // dFechaPlacagrama.Visible (begin)
             if (Placagrama_List.SortUrl(Placagrama.dFechaPlacagrama) == "")
@@ -186,15 +194,19 @@ if (!Placagrama_List.IsExport() && Empty(Placagrama_List.CurrentAction)) { // Be
                 <th data-name="dFechaPlacagrama" class="@Placagrama.dFechaPlacagrama.HeaderCellClass">
                     <div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Placagrama.SortUrl(Placagrama.dFechaPlacagrama))',1);">
                         <div id="elh_Placagrama_dFechaPlacagrama" class="Placagrama_dFechaPlacagrama">
-                            <div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Placagrama.dFechaPlacagrama.Caption)</span><span class="ew-table-header-sort">@if (Placagrama.dFechaPlacagrama.Sort == "ASC")
-                            {<i class="fa fa-sort-up"></i>}
-                            else if (Placagrama.dFechaPlacagrama.Sort == "DESC")
-                            {<i class="fa fa-sort-down"></i>}</span></div>
+                            <div class="ew-table-header-btn">
+                                <span class="ew-table-header-caption">@Html.Raw(Placagrama.dFechaPlacagrama.Caption)</span><span class="ew-table-header-sort">
+                                    @if (Placagrama.dFechaPlacagrama.Sort == "ASC")
+                                    {<i class="fa fa-sort-up"></i>}
+                                    else if (Placagrama.dFechaPlacagrama.Sort == "DESC")
+                                    {<i class="fa fa-sort-down"></i>}
+                            </span>
                         </div>
                     </div>
-                </th>
-            }
-        } @* dFechaPlacagrama.Visible (end) *@
+                </div>
+            </th>
+        }
+    } @* dFechaPlacagrama.Visible (end) *@
         @if (Placagrama.nEstadoID.Visible)
         { // nEstadoID.Visible (begin)
             if (Placagrama_List.SortUrl(Placagrama.nEstadoID) == "")
@@ -206,17 +218,22 @@ if (!Placagrama_List.IsExport() && Empty(Placagrama_List.CurrentAction)) { // Be
                 <th data-name="nEstadoID" class="@Placagrama.nEstadoID.HeaderCellClass">
                     <div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Placagrama.SortUrl(Placagrama.nEstadoID))',1);">
                         <div id="elh_Placagrama_nEstadoID" class="Placagrama_nEstadoID">
-                            <div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Placagrama.nEstadoID.Caption)</span><span class="ew-table-header-sort">@if (Placagrama.nEstadoID.Sort == "ASC")
-                            {<i class="fa fa-sort-up"></i>}
-                            else if (Placagrama.nEstadoID.Sort == "DESC")
-                            {<i class="fa fa-sort-down"></i>}</span></div>
+                            <div class="ew-table-header-btn">
+                                <span class="ew-table-header-caption">@Html.Raw(Placagrama.nEstadoID.Caption)</span><span class="ew-table-header-sort">
+                                    @if (Placagrama.nEstadoID.Sort == "ASC")
+                                    {<i class="fa fa-sort-up"></i>}
+                                    else if (Placagrama.nEstadoID.Sort == "DESC")
+                                    {<i class="fa fa-sort-down"></i>}
+                            </span>
                         </div>
                     </div>
-                </th>
-            }
-        } @* nEstadoID.Visible (end) *@
+                </div>
+            </th>
+        }
+    } @* nEstadoID.Visible (end) *@
 
         <th class="@Placagrama.nEstadoID.HeaderCellClass"><div id="elh_Placagrama_cDetailButton" class="Placagrama_cDetailButton"><div class="ew-table-header-caption">Detalle</div></div></th>
+
 
 
         @{
@@ -336,16 +353,20 @@ while (Placagrama_List.RecordCount < Placagrama_List.StopRecord) { // Begin Whil
                 </span>
             </td>
         } @* nEstadoID.Visible (end) *@
-        @{
 
-            // Render list options (body, right)
-            Placagrama_List.ListOptions.Render("body", "right", Placagrama_List.RowCnt);
-        }
+
         <td @Html.Raw(Placagrama.nEstadoID.CellAttributes)>
             <a id="el@(Placagrama_List.RowCnt)_Odontograma_cDetailButton" href="/PlacagramaDetalle/List/@Html.Raw(Placagrama.nPlacagramaID.DbValue)" target="_blank" class="btn btn-default ew-row-link ew-detail">
                 Editar Detalle
             </a>
         </td>
+
+
+        @{
+
+            // Render list options (body, right)
+            Placagrama_List.ListOptions.Render("body", "right", Placagrama_List.RowCnt);
+        }
     </tr>
 	} @* End if *@
 } @* End While *@
@@ -363,52 +384,7 @@ while (Placagrama_List.RecordCount < Placagrama_List.StopRecord) { // Begin Whil
 		<div class="card-footer ew-grid-lower-panel">
 		@if (!Placagrama_List.IsGridAdd) {
 			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
-@{ Placagrama_List.Pager = Placagrama_List.Pager ?? new PrevNextPager(Placagrama_List.StartRecord, Placagrama_List.DisplayRecords, Placagrama_List.TotalRecords, Placagrama_List.AutoHidePager); }
-@if (Placagrama_List.Pager.RecordCount > 0 && Placagrama_List.Pager.Visible) {
-<div class="ew-pager">
-<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
-<div class="ew-prev-next"><div class="input-group input-group-sm">
-<div class="input-group-prepend">
-<!--first page button-->
-	@if (Placagrama_List.Pager.FirstButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Placagrama_List.PageUrl)start=@Placagrama_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
-	}
-<!--previous page button-->
-	@if (Placagrama_List.Pager.PrevButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Placagrama_List.PageUrl)start=@Placagrama_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
-	}
-</div>
-<!--current page number-->
-	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Placagrama_List.Pager.CurrentPageNumber">
-<div class="input-group-append">
-<!--next page button-->
-	@if (Placagrama_List.Pager.NextButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Placagrama_List.PageUrl)start=@Placagrama_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
-	}
-<!--last page button-->
-	@if (Placagrama_List.Pager.LastButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Placagrama_List.PageUrl)start=@Placagrama_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
-	}
-</div>
-</div>
-</div>
-<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Placagrama_List.Pager.PageCount</span>
-<div class="clearfix"></div>
-</div>
-}
-@if (Placagrama_List.Pager.RecordCount > 0) {
-	<div class="ew-pager ew-rec">
-		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Placagrama_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Placagrama_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Placagrama_List.Pager.RecordCount)</span>
-	</div>
-}
+			@Placagrama_List.Pager.Render()
 			</form>
 		}
 		<div class="ew-list-other-options">

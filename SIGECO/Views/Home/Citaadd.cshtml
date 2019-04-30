@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -122,9 +122,9 @@ fCitaadd.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fCitaadd.lists["x_nExpedienteID"] = @Html.Raw(Cita_Add.nExpedienteID.Lookup.ToClientList());
-fCitaadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Cita_Add.nExpedienteID.LookupOptions()));
+fCitaadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Cita_Add.nExpedienteID.LookupOptions));
 fCitaadd.lists["x_nEstadoID"] = @Html.Raw(Cita_Add.nEstadoID.Lookup.ToClientList());
-fCitaadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_Add.nEstadoID.LookupOptions()));
+fCitaadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_Add.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>
@@ -148,13 +148,13 @@ fCitaadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_Add.nEstado
 		<div class="@Cita_Add.RightColumnClass"><div @Html.Raw(Cita.nExpedienteID.CellAttributes)>
 <span id="el_Cita_nExpedienteID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(Cita.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : Cita.nExpedienteID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@Html.Raw(SameString(Cita.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(Cita.nExpedienteID.ViewValue) : Cita.nExpedienteID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(Cita.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((Cita.nExpedienteID.ReadOnly || Cita.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(Cita.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
-<input type="hidden" data-table="Cita" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@Cita.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Cita.nExpedienteID.CurrentValue"@Html.Raw(Cita.nExpedienteID.EditAttributes)>
+<input type="hidden" data-table="Cita" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@Cita.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Html.Raw(Cita.nExpedienteID.CurrentValue)"@Html.Raw(Cita.nExpedienteID.EditAttributes)>
 </span>
 @Html.Raw(Cita.nExpedienteID.CustomMessage)</div></div>
 	</div>
@@ -189,7 +189,7 @@ ew.createDateTimePicker("fCitaadd", "x_dFechaHoraCita", {"ignoreReadonly":true,"
 		<label id="elh_Cita_dHora" for="x_dHora" class="@Cita_Add.LeftColumnClass">@Html.Raw(Cita.dHora.Caption)@Html.Raw(Cita.dHora.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
 		<div class="@Cita_Add.RightColumnClass"><div @Html.Raw(Cita.dHora.CellAttributes)>
 <span id="el_Cita_dHora">
-<input type="time" data-table="Cita" data-field="x_dHora" name="x_dHora" id="x_dHora" placeholder="@Cita.dHora.PlaceHolder" value="@Cita.dHora.EditValue" @Html.Raw(Cita.dHora.EditAttributes)>
+<input type="text" data-table="Cita" data-field="x_dHora" name="x_dHora" id="x_dHora" placeholder="@Cita.dHora.PlaceHolder" value="@Cita.dHora.EditValue" @Html.Raw(Cita.dHora.EditAttributes)>
 </span>
 @Html.Raw(Cita.dHora.CustomMessage)</div></div>
 	</div>

@@ -1,0 +1,695 @@
+@{
+
+	// View
+	View = this;
+
+	// Set up CurrentGrid
+	CurrentGrid = PlanTratamientoDetalle_Grid;
+
+	// Run
+	await PlanTratamientoDetalle_Grid.Run();
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	PlanTratamientoDetalle_Grid.Page_Render();
+
+	// Check action result
+	if (PlanTratamientoDetalle_Grid.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+
+	#pragma warning restore 168
+
+}
+@if (!PlanTratamientoDetalle.IsExport()) {
+<script>
+
+// Form object
+var fPlanTratamientoDetallegrid = new ew.Form("fPlanTratamientoDetallegrid", "grid");
+fPlanTratamientoDetallegrid.formKeyCountName = "@PlanTratamientoDetalle_Grid.FormKeyCountName";
+
+// Validate form
+fPlanTratamientoDetallegrid.validate = function() {
+	if (!this.validateRequired)
+		return true; // Ignore validation
+	var $ = jQuery, fobj = this.getForm(), $fobj = $(fobj);
+	if ($fobj.find("#confirm").val() == "F")
+		return true;
+	var elm, felm, uelm, addcnt = 0;
+	var $k = $fobj.find("#" + this.formKeyCountName); // Get key_count
+	var rowcnt = ($k[0]) ? parseInt($k.val(), 10) : 1;
+	var startcnt = (rowcnt == 0) ? 0 : 1; // Check rowcnt == 0 => Inline-Add
+	var gridinsert = ["insert", "gridinsert"].includes($fobj.find("#action").val()) && $k[0];
+	for (var i = startcnt; i <= rowcnt; i++) {
+		var infix = ($k[0]) ? String(i) : "";
+		$fobj.data("rowindex", infix);
+		var checkrow = gridinsert ? !this.emptyRow(infix) : true;
+		if (checkrow) {
+			addcnt++;
+	@if (PlanTratamientoDetalle_Grid.nTratamientoID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nTratamientoID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.nTratamientoID.RequiredErrorMessage.Replace("%s", PlanTratamientoDetalle.nTratamientoID.Caption)))");
+		</text>
+	}
+	@if (PlanTratamientoDetalle_Grid.dFechaTratamiento.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_dFechaTratamiento");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.dFechaTratamiento.RequiredErrorMessage.Replace("%s", PlanTratamientoDetalle.dFechaTratamiento.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_dFechaTratamiento");
+		if (elm && !ew.checkDateDef(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.dFechaTratamiento.ErrorMessage))");
+	@if (PlanTratamientoDetalle_Grid.nCosto.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nCosto");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.nCosto.RequiredErrorMessage.Replace("%s", PlanTratamientoDetalle.nCosto.Caption)))");
+		</text>
+	}
+		elm = this.getElements("x" + infix + "_nCosto");
+		if (elm && !ew.checkNumber(elm.value))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.nCosto.ErrorMessage))");
+	@if (PlanTratamientoDetalle_Grid.nMonedaID.Required) {
+		<text>
+		elm = this.getElements("x" + infix + "_nMonedaID");
+		if (elm && !ew.isHidden(elm) && !ew.hasValue(elm))
+			return this.onError(elm, "@Html.Raw(JsEncode(PlanTratamientoDetalle.nMonedaID.RequiredErrorMessage.Replace("%s", PlanTratamientoDetalle.nMonedaID.Caption)))");
+		</text>
+	}
+
+		// Fire Form_CustomValidate event
+		if (!this.Form_CustomValidate(fobj))
+			return false;
+		} // End Grid Add checking
+	}
+	return true;
+}
+
+// Check empty row
+fPlanTratamientoDetallegrid.emptyRow = function(infix) {
+	var fobj = this._form;
+	if (ew.valueChanged(fobj, infix, "nTratamientoID", false)) return false;
+	if (ew.valueChanged(fobj, infix, "dFechaTratamiento", false)) return false;
+	if (ew.valueChanged(fobj, infix, "nCosto", false)) return false;
+	if (ew.valueChanged(fobj, infix, "nMonedaID", false)) return false;
+	return true;
+}
+
+// Form_CustomValidate event
+fPlanTratamientoDetallegrid.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPlanTratamientoDetallegrid.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPlanTratamientoDetallegrid.lists["x_nTratamientoID"] = @Html.Raw(PlanTratamientoDetalle_Grid.nTratamientoID.Lookup.ToClientList());
+fPlanTratamientoDetallegrid.lists["x_nTratamientoID"].options = @Html.Raw(ConvertToJson(PlanTratamientoDetalle_Grid.nTratamientoID.LookupOptions));
+fPlanTratamientoDetallegrid.lists["x_nMonedaID"] = @Html.Raw(PlanTratamientoDetalle_Grid.nMonedaID.Lookup.ToClientList());
+fPlanTratamientoDetallegrid.lists["x_nMonedaID"].options = @Html.Raw(ConvertToJson(PlanTratamientoDetalle_Grid.nMonedaID.LookupOptions));
+
+// Form object for search
+</script>
+}
+@{ PlanTratamientoDetalle_Grid.RenderOtherOptions(); }
+@PlanTratamientoDetalle_Grid.ShowPageHeader()
+@PlanTratamientoDetalle_Grid.ShowMessages()
+@if (PlanTratamientoDetalle_Grid.TotalRecords > 0 || PlanTratamientoDetalle_Grid.CurrentAction != "") {
+<div class="card ew-card ew-grid@(PlanTratamientoDetalle_Grid.IsAddOrEdit ? " ew-grid-add-edit" : "") PlanTratamientoDetalle">
+<div id="fPlanTratamientoDetallegrid" class="ew-form ew-list-form form-inline">
+<div id="gmp_PlanTratamientoDetalle" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+<table id="tbl_PlanTratamientoDetallegrid" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	PlanTratamientoDetalle_Grid.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await PlanTratamientoDetalle_Grid.RenderListOptions();
+
+	// Render list options (header, left)
+	PlanTratamientoDetalle_Grid.ListOptions.Render("header", "left");
+}
+@if (PlanTratamientoDetalle.nTratamientoID.Visible) { // nTratamientoID.Visible (begin)
+	if (PlanTratamientoDetalle_Grid.SortUrl(PlanTratamientoDetalle.nTratamientoID) == "") {
+		<th data-name="nTratamientoID" class="@PlanTratamientoDetalle.nTratamientoID.HeaderCellClass"><div id="elh_PlanTratamientoDetalle_nTratamientoID" class="PlanTratamientoDetalle_nTratamientoID"><div class="ew-table-header-caption">@Html.Raw(PlanTratamientoDetalle.nTratamientoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nTratamientoID" class="@PlanTratamientoDetalle.nTratamientoID.HeaderCellClass"><div><div id="elh_PlanTratamientoDetalle_nTratamientoID" class="PlanTratamientoDetalle_nTratamientoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(PlanTratamientoDetalle.nTratamientoID.Caption)</span><span class="ew-table-header-sort">@if (PlanTratamientoDetalle.nTratamientoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (PlanTratamientoDetalle.nTratamientoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nTratamientoID.Visible (end) *@
+@if (PlanTratamientoDetalle.dFechaTratamiento.Visible) { // dFechaTratamiento.Visible (begin)
+	if (PlanTratamientoDetalle_Grid.SortUrl(PlanTratamientoDetalle.dFechaTratamiento) == "") {
+		<th data-name="dFechaTratamiento" class="@PlanTratamientoDetalle.dFechaTratamiento.HeaderCellClass"><div id="elh_PlanTratamientoDetalle_dFechaTratamiento" class="PlanTratamientoDetalle_dFechaTratamiento"><div class="ew-table-header-caption">@Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.Caption)</div></div></th>
+	} else {
+		<th data-name="dFechaTratamiento" class="@PlanTratamientoDetalle.dFechaTratamiento.HeaderCellClass"><div><div id="elh_PlanTratamientoDetalle_dFechaTratamiento" class="PlanTratamientoDetalle_dFechaTratamiento">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.Caption)</span><span class="ew-table-header-sort">@if (PlanTratamientoDetalle.dFechaTratamiento.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (PlanTratamientoDetalle.dFechaTratamiento.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* dFechaTratamiento.Visible (end) *@
+@if (PlanTratamientoDetalle.nCosto.Visible) { // nCosto.Visible (begin)
+	if (PlanTratamientoDetalle_Grid.SortUrl(PlanTratamientoDetalle.nCosto) == "") {
+		<th data-name="nCosto" class="@PlanTratamientoDetalle.nCosto.HeaderCellClass"><div id="elh_PlanTratamientoDetalle_nCosto" class="PlanTratamientoDetalle_nCosto"><div class="ew-table-header-caption">@Html.Raw(PlanTratamientoDetalle.nCosto.Caption)</div></div></th>
+	} else {
+		<th data-name="nCosto" class="@PlanTratamientoDetalle.nCosto.HeaderCellClass"><div><div id="elh_PlanTratamientoDetalle_nCosto" class="PlanTratamientoDetalle_nCosto">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(PlanTratamientoDetalle.nCosto.Caption)</span><span class="ew-table-header-sort">@if (PlanTratamientoDetalle.nCosto.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (PlanTratamientoDetalle.nCosto.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nCosto.Visible (end) *@
+@if (PlanTratamientoDetalle.nMonedaID.Visible) { // nMonedaID.Visible (begin)
+	if (PlanTratamientoDetalle_Grid.SortUrl(PlanTratamientoDetalle.nMonedaID) == "") {
+		<th data-name="nMonedaID" class="@PlanTratamientoDetalle.nMonedaID.HeaderCellClass"><div id="elh_PlanTratamientoDetalle_nMonedaID" class="PlanTratamientoDetalle_nMonedaID"><div class="ew-table-header-caption">@Html.Raw(PlanTratamientoDetalle.nMonedaID.Caption)</div></div></th>
+	} else {
+		<th data-name="nMonedaID" class="@PlanTratamientoDetalle.nMonedaID.HeaderCellClass"><div><div id="elh_PlanTratamientoDetalle_nMonedaID" class="PlanTratamientoDetalle_nMonedaID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(PlanTratamientoDetalle.nMonedaID.Caption)</span><span class="ew-table-header-sort">@if (PlanTratamientoDetalle.nMonedaID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (PlanTratamientoDetalle.nMonedaID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nMonedaID.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	PlanTratamientoDetalle_Grid.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+PlanTratamientoDetalle_Grid.StartRecord = 1;
+PlanTratamientoDetalle_Grid.StopRecord = PlanTratamientoDetalle_Grid.TotalRecords; // Show all records
+
+// Restore number of post back records
+if (CurrentForm != null && PlanTratamientoDetalle_Grid.EventCancelled) {
+	CurrentForm.Index = -1;
+	if (CurrentForm.HasValue(PlanTratamientoDetalle_Grid.FormKeyCountName) && (PlanTratamientoDetalle_Grid.IsGridAdd || PlanTratamientoDetalle_Grid.IsGridEdit || PlanTratamientoDetalle_Grid.IsConfirm)) {
+		PlanTratamientoDetalle_Grid.KeyCount = CurrentForm.GetInt(PlanTratamientoDetalle_Grid.FormKeyCountName);
+		PlanTratamientoDetalle_Grid.StopRecord = PlanTratamientoDetalle_Grid.StartRecord + PlanTratamientoDetalle_Grid.KeyCount - 1;
+	}
+}
+if (PlanTratamientoDetalle_Grid.Recordset != null && PlanTratamientoDetalle_Grid.Recordset.HasRows) {
+	if (!PlanTratamientoDetalle_Grid.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= PlanTratamientoDetalle_Grid.StartRecord - 1; i++) { // Move to first record
+			if (await PlanTratamientoDetalle_Grid.Recordset.ReadAsync()) {
+				PlanTratamientoDetalle_Grid.RecordCount++;
+			}
+		}
+	} else {
+		PlanTratamientoDetalle_Grid.RecordCount = PlanTratamientoDetalle_Grid.StartRecord - 1;
+	}
+} else if (!PlanTratamientoDetalle_Grid.AllowAddDeleteRow && PlanTratamientoDetalle_Grid.StopRecord == 0) {
+	PlanTratamientoDetalle_Grid.StopRecord = PlanTratamientoDetalle_Grid.GridAddRowCount;
+}
+
+// Initialize aggregate
+PlanTratamientoDetalle_Grid.RowType = Config.RowTypeAggregateInit;
+PlanTratamientoDetalle_Grid.ResetAttributes();
+await PlanTratamientoDetalle_Grid.RenderRow();
+if (PlanTratamientoDetalle_Grid.IsGridAdd) {
+	PlanTratamientoDetalle_Grid.RowIndex = 0;
+}
+if (PlanTratamientoDetalle_Grid.IsGridEdit) {
+	PlanTratamientoDetalle_Grid.RowIndex = 0;
+}
+
+// Output data rows
+bool eof = (PlanTratamientoDetalle_Grid.Recordset == null); // DN
+while (PlanTratamientoDetalle_Grid.RecordCount < PlanTratamientoDetalle_Grid.StopRecord) { // Begin While
+	if ((!PlanTratamientoDetalle_Grid.IsGridAdd || PlanTratamientoDetalle_Grid.CurrentMode == "copy") && !eof) { // DN
+		eof = !await PlanTratamientoDetalle_Grid.Recordset.ReadAsync();
+	}
+	PlanTratamientoDetalle_Grid.RecordCount++;
+	if (PlanTratamientoDetalle_Grid.RecordCount >= PlanTratamientoDetalle_Grid.StartRecord) {
+		PlanTratamientoDetalle_Grid.RowCnt++;
+		if (PlanTratamientoDetalle_Grid.IsGridAdd || PlanTratamientoDetalle_Grid.IsGridEdit || PlanTratamientoDetalle_Grid.IsConfirm) {
+			PlanTratamientoDetalle_Grid.RowIndex = ConvertToInt(PlanTratamientoDetalle_Grid.RowIndex) + 1;
+			CurrentForm.Index = ConvertToInt(PlanTratamientoDetalle_Grid.RowIndex);
+			if (CurrentForm.HasValue(PlanTratamientoDetalle_Grid.FormActionName) && PlanTratamientoDetalle_Grid.EventCancelled) {
+				PlanTratamientoDetalle_Grid.RowAction = CurrentForm.GetValue(PlanTratamientoDetalle_Grid.FormActionName);
+			} else if (PlanTratamientoDetalle_Grid.IsGridAdd) {
+				PlanTratamientoDetalle_Grid.RowAction = "insert";
+			} else {
+				PlanTratamientoDetalle_Grid.RowAction = "";
+			}
+		}
+
+		// Set up key count
+		PlanTratamientoDetalle_Grid.KeyCount = ConvertToInt(PlanTratamientoDetalle_Grid.RowIndex);
+
+		// Init row class and style
+		PlanTratamientoDetalle_Grid.ResetAttributes();
+		PlanTratamientoDetalle_Grid.CssClass = "";
+		if (PlanTratamientoDetalle_Grid.IsGridAdd) {
+			if (PlanTratamientoDetalle_Grid.CurrentMode == "copy") {
+				await PlanTratamientoDetalle_Grid.LoadRowValues(PlanTratamientoDetalle_Grid.Recordset); // Load row values
+				PlanTratamientoDetalle_Grid.SetRecordKey(ref PlanTratamientoDetalle_Grid.RowOldKey, PlanTratamientoDetalle_Grid.Recordset); // Set old record key
+			} else {
+				await PlanTratamientoDetalle_Grid.LoadRowValues(); // Load default values
+				PlanTratamientoDetalle_Grid.RowOldKey = ""; // Clear old key value
+			}
+		} else {
+			await PlanTratamientoDetalle_Grid.LoadRowValues(PlanTratamientoDetalle_Grid.Recordset); // Load row values
+		}
+		PlanTratamientoDetalle_Grid.RowType = Config.RowTypeView; // Render view
+		if (PlanTratamientoDetalle_Grid.IsGridAdd) { // Grid add
+			PlanTratamientoDetalle_Grid.RowType = Config.RowTypeAdd; // Render add
+		}
+		if (PlanTratamientoDetalle_Grid.IsGridAdd && PlanTratamientoDetalle_Grid.EventCancelled && !CurrentForm.HasValue("k_blankrow")) { // Insert failed
+			await PlanTratamientoDetalle_Grid.RestoreCurrentRowFormValues(PlanTratamientoDetalle_Grid.RowIndex); // Restore form values
+		}
+		if (PlanTratamientoDetalle_Grid.IsGridEdit) { // Grid edit
+			if (PlanTratamientoDetalle_Grid.EventCancelled) {
+				await PlanTratamientoDetalle_Grid.RestoreCurrentRowFormValues(PlanTratamientoDetalle_Grid.RowIndex); // Restore form values
+			}
+			if (PlanTratamientoDetalle_Grid.RowAction == "insert") {
+				PlanTratamientoDetalle_Grid.RowType = Config.RowTypeAdd; // Render add
+			} else {
+				PlanTratamientoDetalle_Grid.RowType = Config.RowTypeEdit; // Render edit
+			}
+		}
+		if (PlanTratamientoDetalle_Grid.IsGridEdit && (PlanTratamientoDetalle_Grid.RowType == Config.RowTypeEdit || PlanTratamientoDetalle_Grid.RowType == Config.RowTypeAdd) && PlanTratamientoDetalle_Grid.EventCancelled) { // Update failed
+			await PlanTratamientoDetalle_Grid.RestoreCurrentRowFormValues(PlanTratamientoDetalle_Grid.RowIndex); // Restore form values
+		}
+		if (PlanTratamientoDetalle_Grid.RowType == Config.RowTypeEdit) { // Edit row
+			PlanTratamientoDetalle_Grid.EditRowCount++;
+		}
+		if (PlanTratamientoDetalle_Grid.IsConfirm) { // Confirm row
+			await PlanTratamientoDetalle_Grid.RestoreCurrentRowFormValues(PlanTratamientoDetalle_Grid.RowIndex); // Restore form values
+		}
+
+		// Set up row id / data-rowindex
+		PlanTratamientoDetalle_Grid.RowAttrs.Add("data-rowindex", Convert.ToString(PlanTratamientoDetalle_Grid.RowCnt));
+		PlanTratamientoDetalle_Grid.RowAttrs.Add("id", "r" + Convert.ToString(PlanTratamientoDetalle_Grid.RowCnt) + "_PlanTratamientoDetalle");
+		PlanTratamientoDetalle_Grid.RowAttrs.Add("data-rowtype", Convert.ToString(PlanTratamientoDetalle_Grid.RowType));
+
+		// Render row
+		await PlanTratamientoDetalle_Grid.RenderRow();
+
+		// Render list options
+		await PlanTratamientoDetalle_Grid.RenderListOptions();
+
+		// Skip delete row / empty row for confirm page
+		if (PlanTratamientoDetalle_Grid.RowAction != "delete" && PlanTratamientoDetalle_Grid.RowAction != "insertdelete" && !(PlanTratamientoDetalle_Grid.RowAction == "insert" && PlanTratamientoDetalle_Grid.IsConfirm && PlanTratamientoDetalle_Grid.EmptyRow())) {
+	<tr @Html.Raw(PlanTratamientoDetalle_Grid.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		PlanTratamientoDetalle_Grid.ListOptions.Render("body", "left", PlanTratamientoDetalle_Grid.RowCnt);
+	}
+	@if (PlanTratamientoDetalle.nTratamientoID.Visible) { // nTratamientoID.Visible (begin)
+		<td data-name="nTratamientoID"@Html.Raw(PlanTratamientoDetalle.nTratamientoID.CellAttributes)>
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* nTratamientoID (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nTratamientoID" class="form-group PlanTratamientoDetalle_nTratamientoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID">@Html.Raw(SameString(PlanTratamientoDetalle.nTratamientoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(PlanTratamientoDetalle.nTratamientoID.ViewValue) : PlanTratamientoDetalle.nTratamientoID.ViewValue))</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(PlanTratamientoDetalle.nTratamientoID.Caption))" class="ew-lookup-btn btn btn-default"@((PlanTratamientoDetalle.nTratamientoID.ReadOnly || PlanTratamientoDetalle.nTratamientoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(PlanTratamientoDetalle.nTratamientoID.Lookup.GetParamTag("p_x" + PlanTratamientoDetalle_Grid.RowIndex + "_nTratamientoID"))
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" data-multiple="0" data-lookup="1" data-value-separator="@PlanTratamientoDetalle.nTratamientoID.DisplayValueSeparatorAttribute" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@Html.Raw(PlanTratamientoDetalle.nTratamientoID.CurrentValue)"@Html.Raw(PlanTratamientoDetalle.nTratamientoID.EditAttributes)>
+</span>
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@PlanTratamientoDetalle.nTratamientoID.OldValue">
+			 @* nTratamientoID (end) *@
+		} @* Add (end) *@
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* nTratamientoID (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nTratamientoID" class="form-group PlanTratamientoDetalle_nTratamientoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID">@Html.Raw(SameString(PlanTratamientoDetalle.nTratamientoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(PlanTratamientoDetalle.nTratamientoID.ViewValue) : PlanTratamientoDetalle.nTratamientoID.ViewValue))</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(PlanTratamientoDetalle.nTratamientoID.Caption))" class="ew-lookup-btn btn btn-default"@((PlanTratamientoDetalle.nTratamientoID.ReadOnly || PlanTratamientoDetalle.nTratamientoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(PlanTratamientoDetalle.nTratamientoID.Lookup.GetParamTag("p_x" + PlanTratamientoDetalle_Grid.RowIndex + "_nTratamientoID"))
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" data-multiple="0" data-lookup="1" data-value-separator="@PlanTratamientoDetalle.nTratamientoID.DisplayValueSeparatorAttribute" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@Html.Raw(PlanTratamientoDetalle.nTratamientoID.CurrentValue)"@Html.Raw(PlanTratamientoDetalle.nTratamientoID.EditAttributes)>
+</span>
+			 @* nTratamientoID (end) *@
+		} @* Edit (end) *@
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeView) { // View (begin)
+			 @* nTratamientoID (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nTratamientoID" class="PlanTratamientoDetalle_nTratamientoID">
+<span @Html.Raw(PlanTratamientoDetalle.nTratamientoID.ViewAttributes)>
+@Html.Raw(PlanTratamientoDetalle.nTratamientoID.GetViewValue())</span>
+</span>
+			@if (!PlanTratamientoDetalle.IsConfirm) {
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@PlanTratamientoDetalle.nTratamientoID.FormValue">
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@PlanTratamientoDetalle.nTratamientoID.OldValue">
+			} else {
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" name="fPlanTratamientoDetallegrid$x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="fPlanTratamientoDetallegrid$x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@PlanTratamientoDetalle.nTratamientoID.FormValue">
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" name="fPlanTratamientoDetallegrid$o@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="fPlanTratamientoDetallegrid$o@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@PlanTratamientoDetalle.nTratamientoID.OldValue">
+			}
+			 @* nTratamientoID (end) *@
+		} @* View (end) *@
+</td>
+	} @* nTratamientoID.Visible (end) *@
+			@if (PlanTratamientoDetalle.RowType == Config.RowTypeAdd) { // Add (begin)
+				 @* nPlanTratamientoDetalleID (begin) *@
+	<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nPlanTratamientoDetalleID" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nPlanTratamientoDetalleID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nPlanTratamientoDetalleID" value="@PlanTratamientoDetalle.nPlanTratamientoDetalleID.CurrentValue">
+	<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nPlanTratamientoDetalleID" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nPlanTratamientoDetalleID" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nPlanTratamientoDetalleID" value="@PlanTratamientoDetalle.nPlanTratamientoDetalleID.OldValue">
+				 @* nPlanTratamientoDetalleID (end) *@
+			} @* Add (end) *@
+			@if (PlanTratamientoDetalle.RowType == Config.RowTypeEdit) { // Edit (begin)
+				 @* nPlanTratamientoDetalleID (begin) *@
+	<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nPlanTratamientoDetalleID" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nPlanTratamientoDetalleID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nPlanTratamientoDetalleID" value="@PlanTratamientoDetalle.nPlanTratamientoDetalleID.CurrentValue">
+				 @* nPlanTratamientoDetalleID (end) *@
+			} @* Edit (end) *@
+	@if (PlanTratamientoDetalle.dFechaTratamiento.Visible) { // dFechaTratamiento.Visible (begin)
+		<td data-name="dFechaTratamiento"@Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.CellAttributes)>
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* dFechaTratamiento (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_dFechaTratamiento" class="form-group PlanTratamientoDetalle_dFechaTratamiento">
+<input type="text" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" placeholder="@PlanTratamientoDetalle.dFechaTratamiento.PlaceHolder" value="@PlanTratamientoDetalle.dFechaTratamiento.EditValue" @Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.EditAttributes)>
+@if (!PlanTratamientoDetalle.dFechaTratamiento.ReadOnly && !PlanTratamientoDetalle.dFechaTratamiento.Disabled && !PlanTratamientoDetalle.dFechaTratamiento.EditAttrs.ContainsKey("readonly") && !PlanTratamientoDetalle.dFechaTratamiento.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fPlanTratamientoDetallegrid", "x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" value="@PlanTratamientoDetalle.dFechaTratamiento.OldValue">
+			 @* dFechaTratamiento (end) *@
+		} @* Add (end) *@
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* dFechaTratamiento (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_dFechaTratamiento" class="form-group PlanTratamientoDetalle_dFechaTratamiento">
+<input type="text" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" placeholder="@PlanTratamientoDetalle.dFechaTratamiento.PlaceHolder" value="@PlanTratamientoDetalle.dFechaTratamiento.EditValue" @Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.EditAttributes)>
+@if (!PlanTratamientoDetalle.dFechaTratamiento.ReadOnly && !PlanTratamientoDetalle.dFechaTratamiento.Disabled && !PlanTratamientoDetalle.dFechaTratamiento.EditAttrs.ContainsKey("readonly") && !PlanTratamientoDetalle.dFechaTratamiento.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fPlanTratamientoDetallegrid", "x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+			 @* dFechaTratamiento (end) *@
+		} @* Edit (end) *@
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeView) { // View (begin)
+			 @* dFechaTratamiento (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_dFechaTratamiento" class="PlanTratamientoDetalle_dFechaTratamiento">
+<span @Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.ViewAttributes)>
+@Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.GetViewValue())</span>
+</span>
+			@if (!PlanTratamientoDetalle.IsConfirm) {
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" value="@PlanTratamientoDetalle.dFechaTratamiento.FormValue">
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" value="@PlanTratamientoDetalle.dFechaTratamiento.OldValue">
+			} else {
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="fPlanTratamientoDetallegrid$x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="fPlanTratamientoDetallegrid$x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" value="@PlanTratamientoDetalle.dFechaTratamiento.FormValue">
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="fPlanTratamientoDetallegrid$o@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="fPlanTratamientoDetallegrid$o@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" value="@PlanTratamientoDetalle.dFechaTratamiento.OldValue">
+			}
+			 @* dFechaTratamiento (end) *@
+		} @* View (end) *@
+</td>
+	} @* dFechaTratamiento.Visible (end) *@
+	@if (PlanTratamientoDetalle.nCosto.Visible) { // nCosto.Visible (begin)
+		<td data-name="nCosto"@Html.Raw(PlanTratamientoDetalle.nCosto.CellAttributes)>
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* nCosto (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nCosto" class="form-group PlanTratamientoDetalle_nCosto">
+<input type="text" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" size="30" placeholder="@PlanTratamientoDetalle.nCosto.PlaceHolder" value="@PlanTratamientoDetalle.nCosto.EditValue" @Html.Raw(PlanTratamientoDetalle.nCosto.EditAttributes)>
+</span>
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" value="@PlanTratamientoDetalle.nCosto.OldValue">
+			 @* nCosto (end) *@
+		} @* Add (end) *@
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* nCosto (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nCosto" class="form-group PlanTratamientoDetalle_nCosto">
+<input type="text" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" size="30" placeholder="@PlanTratamientoDetalle.nCosto.PlaceHolder" value="@PlanTratamientoDetalle.nCosto.EditValue" @Html.Raw(PlanTratamientoDetalle.nCosto.EditAttributes)>
+</span>
+			 @* nCosto (end) *@
+		} @* Edit (end) *@
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeView) { // View (begin)
+			 @* nCosto (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nCosto" class="PlanTratamientoDetalle_nCosto">
+<span @Html.Raw(PlanTratamientoDetalle.nCosto.ViewAttributes)>
+@Html.Raw(PlanTratamientoDetalle.nCosto.GetViewValue())</span>
+</span>
+			@if (!PlanTratamientoDetalle.IsConfirm) {
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" value="@PlanTratamientoDetalle.nCosto.FormValue">
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" value="@PlanTratamientoDetalle.nCosto.OldValue">
+			} else {
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="fPlanTratamientoDetallegrid$x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="fPlanTratamientoDetallegrid$x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" value="@PlanTratamientoDetalle.nCosto.FormValue">
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="fPlanTratamientoDetallegrid$o@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="fPlanTratamientoDetallegrid$o@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" value="@PlanTratamientoDetalle.nCosto.OldValue">
+			}
+			 @* nCosto (end) *@
+		} @* View (end) *@
+</td>
+	} @* nCosto.Visible (end) *@
+	@if (PlanTratamientoDetalle.nMonedaID.Visible) { // nMonedaID.Visible (begin)
+		<td data-name="nMonedaID"@Html.Raw(PlanTratamientoDetalle.nMonedaID.CellAttributes)>
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeAdd) { // Add (begin)
+			 @* nMonedaID (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nMonedaID" class="form-group PlanTratamientoDetalle_nMonedaID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(PlanTratamientoDetalle.nMonedaID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(PlanTratamientoDetalle.nMonedaID.ViewValue)</button>
+		<div id="dsl_x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@PlanTratamientoDetalle.nMonedaID.RadioButtonListHtml(true, "x" + PlanTratamientoDetalle_Grid.RowIndex + "_nMonedaID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" class="ew-template"><input type="radio" class="form-check-input" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" data-value-separator="@PlanTratamientoDetalle.nMonedaID.DisplayValueSeparatorAttribute" data-please-select-text="@PlanTratamientoDetalle.nMonedaID.PleaseSelectText" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="{value}"@Html.Raw(PlanTratamientoDetalle.nMonedaID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!PlanTratamientoDetalle.nMonedaID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(PlanTratamientoDetalle.nMonedaID.Lookup.GetParamTag("p_x" + PlanTratamientoDetalle_Grid.RowIndex + "_nMonedaID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="@PlanTratamientoDetalle.nMonedaID.OldValue">
+			 @* nMonedaID (end) *@
+		} @* Add (end) *@
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeEdit) { // Edit (begin)
+			 @* nMonedaID (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nMonedaID" class="form-group PlanTratamientoDetalle_nMonedaID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(PlanTratamientoDetalle.nMonedaID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(PlanTratamientoDetalle.nMonedaID.ViewValue)</button>
+		<div id="dsl_x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@PlanTratamientoDetalle.nMonedaID.RadioButtonListHtml(true, "x" + PlanTratamientoDetalle_Grid.RowIndex + "_nMonedaID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" class="ew-template"><input type="radio" class="form-check-input" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" data-value-separator="@PlanTratamientoDetalle.nMonedaID.DisplayValueSeparatorAttribute" data-please-select-text="@PlanTratamientoDetalle.nMonedaID.PleaseSelectText" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="{value}"@Html.Raw(PlanTratamientoDetalle.nMonedaID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!PlanTratamientoDetalle.nMonedaID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(PlanTratamientoDetalle.nMonedaID.Lookup.GetParamTag("p_x" + PlanTratamientoDetalle_Grid.RowIndex + "_nMonedaID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+			 @* nMonedaID (end) *@
+		} @* Edit (end) *@
+		@if (PlanTratamientoDetalle.RowType == Config.RowTypeView) { // View (begin)
+			 @* nMonedaID (begin) *@
+<span id="el@(PlanTratamientoDetalle_Grid.RowCnt)_PlanTratamientoDetalle_nMonedaID" class="PlanTratamientoDetalle_nMonedaID">
+<span @Html.Raw(PlanTratamientoDetalle.nMonedaID.ViewAttributes)>
+@Html.Raw(PlanTratamientoDetalle.nMonedaID.GetViewValue())</span>
+</span>
+			@if (!PlanTratamientoDetalle.IsConfirm) {
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="@PlanTratamientoDetalle.nMonedaID.FormValue">
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="@PlanTratamientoDetalle.nMonedaID.OldValue">
+			} else {
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" name="fPlanTratamientoDetallegrid$x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="fPlanTratamientoDetallegrid$x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="@PlanTratamientoDetalle.nMonedaID.FormValue">
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" name="fPlanTratamientoDetallegrid$o@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="fPlanTratamientoDetallegrid$o@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="@PlanTratamientoDetalle.nMonedaID.OldValue">
+			}
+			 @* nMonedaID (end) *@
+		} @* View (end) *@
+</td>
+	} @* nMonedaID.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		PlanTratamientoDetalle_Grid.ListOptions.Render("body", "right", PlanTratamientoDetalle_Grid.RowCnt);
+	}
+	</tr>
+		if (PlanTratamientoDetalle_Grid.RowType == Config.RowTypeAdd || PlanTratamientoDetalle_Grid.RowType == Config.RowTypeEdit) {
+			<script>
+			fPlanTratamientoDetallegrid.updateLists(@PlanTratamientoDetalle_Grid.RowIndex);
+			</script>
+		}
+	} @* End if *@
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+@if (PlanTratamientoDetalle_Grid.CurrentMode == "add" || PlanTratamientoDetalle_Grid.CurrentMode == "copy" || PlanTratamientoDetalle_Grid.CurrentMode == "edit") {
+	PlanTratamientoDetalle_Grid.RowIndex = "$rowindex$";
+	await PlanTratamientoDetalle_Grid.LoadRowValues();
+
+	// Set row properties
+	PlanTratamientoDetalle_Grid.ResetAttributes();
+	PlanTratamientoDetalle_Grid.RowAttrs.Add("data-rowindex", Convert.ToString(PlanTratamientoDetalle_Grid.RowIndex));
+	PlanTratamientoDetalle_Grid.RowAttrs.Add("id", "r0_PlanTratamientoDetalle");
+	PlanTratamientoDetalle_Grid.RowAttrs.Add("data-rowtype", Convert.ToString(Config.RowTypeAdd));
+	PlanTratamientoDetalle_Grid.RowAttrs.AppendClass("ew-template");
+	PlanTratamientoDetalle_Grid.RowType = Config.RowTypeAdd;
+
+	// Render row
+	await PlanTratamientoDetalle_Grid.RenderRow();
+
+	// Render list options
+	await PlanTratamientoDetalle_Grid.RenderListOptions();
+	PlanTratamientoDetalle_Grid.StartRowCount = 0;
+	<tr @Html.Raw(PlanTratamientoDetalle_Grid.RowAttributes)>
+	@* Render list options (body, left) *@
+	@PlanTratamientoDetalle_Grid.ListOptions.RenderBody("left", PlanTratamientoDetalle_Grid.RowIndex)
+	@if (PlanTratamientoDetalle.nTratamientoID.Visible) { // nTratamientoID.Visible (begin)
+		<td data-name="nTratamientoID">
+@if (!PlanTratamientoDetalle.IsConfirm) { // nTratamientoID (begin)
+<span id="el$rowindex$_PlanTratamientoDetalle_nTratamientoID" class="form-group PlanTratamientoDetalle_nTratamientoID">
+<div class="input-group ew-lookup-list">
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID">@Html.Raw(SameString(PlanTratamientoDetalle.nTratamientoID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(PlanTratamientoDetalle.nTratamientoID.ViewValue) : PlanTratamientoDetalle.nTratamientoID.ViewValue))</div>
+	<div class="input-group-append">
+		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(PlanTratamientoDetalle.nTratamientoID.Caption))" class="ew-lookup-btn btn btn-default"@((PlanTratamientoDetalle.nTratamientoID.ReadOnly || PlanTratamientoDetalle.nTratamientoID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
+	</div>
+</div>
+@Html.Raw(PlanTratamientoDetalle.nTratamientoID.Lookup.GetParamTag("p_x" + PlanTratamientoDetalle_Grid.RowIndex + "_nTratamientoID"))
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" data-multiple="0" data-lookup="1" data-value-separator="@PlanTratamientoDetalle.nTratamientoID.DisplayValueSeparatorAttribute" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@Html.Raw(PlanTratamientoDetalle.nTratamientoID.CurrentValue)"@Html.Raw(PlanTratamientoDetalle.nTratamientoID.EditAttributes)>
+</span>
+} else { // nTratamientoID (confirm)
+<span id="el$rowindex$_PlanTratamientoDetalle_nTratamientoID" class="form-group PlanTratamientoDetalle_nTratamientoID">
+<span @Html.Raw(PlanTratamientoDetalle.nTratamientoID.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(PlanTratamientoDetalle.nTratamientoID.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@PlanTratamientoDetalle.nTratamientoID.FormValue">
+} @* nTratamientoID (end) *@
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nTratamientoID" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nTratamientoID" value="@PlanTratamientoDetalle.nTratamientoID.OldValue">
+</td>
+	} @* nTratamientoID.Visible (end) *@
+	@if (PlanTratamientoDetalle.dFechaTratamiento.Visible) { // dFechaTratamiento.Visible (begin)
+		<td data-name="dFechaTratamiento">
+@if (!PlanTratamientoDetalle.IsConfirm) { // dFechaTratamiento (begin)
+<span id="el$rowindex$_PlanTratamientoDetalle_dFechaTratamiento" class="form-group PlanTratamientoDetalle_dFechaTratamiento">
+<input type="text" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" placeholder="@PlanTratamientoDetalle.dFechaTratamiento.PlaceHolder" value="@PlanTratamientoDetalle.dFechaTratamiento.EditValue" @Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.EditAttributes)>
+@if (!PlanTratamientoDetalle.dFechaTratamiento.ReadOnly && !PlanTratamientoDetalle.dFechaTratamiento.Disabled && !PlanTratamientoDetalle.dFechaTratamiento.EditAttrs.ContainsKey("readonly") && !PlanTratamientoDetalle.dFechaTratamiento.EditAttrs.ContainsKey("disabled")) { 
+<script>
+ew.createDateTimePicker("fPlanTratamientoDetallegrid", "x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento", {"ignoreReadonly":true,"useCurrent":false,"format":0});
+</script>
+}
+</span>
+} else { // dFechaTratamiento (confirm)
+<span id="el$rowindex$_PlanTratamientoDetalle_dFechaTratamiento" class="form-group PlanTratamientoDetalle_dFechaTratamiento">
+<span @Html.Raw(PlanTratamientoDetalle.dFechaTratamiento.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(PlanTratamientoDetalle.dFechaTratamiento.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" value="@PlanTratamientoDetalle.dFechaTratamiento.FormValue">
+} @* dFechaTratamiento (end) *@
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_dFechaTratamiento" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_dFechaTratamiento" value="@PlanTratamientoDetalle.dFechaTratamiento.OldValue">
+</td>
+	} @* dFechaTratamiento.Visible (end) *@
+	@if (PlanTratamientoDetalle.nCosto.Visible) { // nCosto.Visible (begin)
+		<td data-name="nCosto">
+@if (!PlanTratamientoDetalle.IsConfirm) { // nCosto (begin)
+<span id="el$rowindex$_PlanTratamientoDetalle_nCosto" class="form-group PlanTratamientoDetalle_nCosto">
+<input type="text" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" size="30" placeholder="@PlanTratamientoDetalle.nCosto.PlaceHolder" value="@PlanTratamientoDetalle.nCosto.EditValue" @Html.Raw(PlanTratamientoDetalle.nCosto.EditAttributes)>
+</span>
+} else { // nCosto (confirm)
+<span id="el$rowindex$_PlanTratamientoDetalle_nCosto" class="form-group PlanTratamientoDetalle_nCosto">
+<span @Html.Raw(PlanTratamientoDetalle.nCosto.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(PlanTratamientoDetalle.nCosto.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" value="@PlanTratamientoDetalle.nCosto.FormValue">
+} @* nCosto (end) *@
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nCosto" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nCosto" value="@PlanTratamientoDetalle.nCosto.OldValue">
+</td>
+	} @* nCosto.Visible (end) *@
+	@if (PlanTratamientoDetalle.nMonedaID.Visible) { // nMonedaID.Visible (begin)
+		<td data-name="nMonedaID">
+@if (!PlanTratamientoDetalle.IsConfirm) { // nMonedaID (begin)
+<span id="el$rowindex$_PlanTratamientoDetalle_nMonedaID" class="form-group PlanTratamientoDetalle_nMonedaID">
+<div class="btn-group ew-dropdown-list" role="group">
+	<div class="btn-group" role="group">
+		<button type="button" class="btn form-control dropdown-toggle ew-dropdown-toggle" aria-haspopup="true" aria-expanded="false"@Html.Raw(PlanTratamientoDetalle.nMonedaID.ReadOnly ? " readonly" : " data-toggle=\"dropdown\"")>
+		@Html.Raw(PlanTratamientoDetalle.nMonedaID.ViewValue)</button>
+		<div id="dsl_x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" data-repeatcolumn="1" class="dropdown-menu">
+			<div class="ew-items" style="overflow-x: hidden;">
+@PlanTratamientoDetalle.nMonedaID.RadioButtonListHtml(true, "x" + PlanTratamientoDetalle_Grid.RowIndex + "_nMonedaID")
+						</div><!-- /.ew-items ##-->
+				</div><!-- /.dropdown-menu ##-->
+				<div id="tp_x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" class="ew-template"><input type="radio" class="form-check-input" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" data-value-separator="@PlanTratamientoDetalle.nMonedaID.DisplayValueSeparatorAttribute" data-please-select-text="@PlanTratamientoDetalle.nMonedaID.PleaseSelectText" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="{value}"@Html.Raw(PlanTratamientoDetalle.nMonedaID.EditAttributes)></div>
+		</div><!-- /.btn-group ##-->
+		@if (!PlanTratamientoDetalle.nMonedaID.ReadOnly) {
+		<button type="button" class="btn btn-default ew-dropdown-clear" disabled>
+			<i class="fa fa-times ew-icon"></i>
+		</button>
+@Html.Raw(PlanTratamientoDetalle.nMonedaID.Lookup.GetParamTag("p_x" + PlanTratamientoDetalle_Grid.RowIndex + "_nMonedaID"))
+		}
+</div><!-- /.ew-dropdown-list ##-->
+</span>
+} else { // nMonedaID (confirm)
+<span id="el$rowindex$_PlanTratamientoDetalle_nMonedaID" class="form-group PlanTratamientoDetalle_nMonedaID">
+<span @Html.Raw(PlanTratamientoDetalle.nMonedaID.ViewAttributes)>
+<input type="text" readonly class="form-control-plaintext" value="@RemoveHtml(Convert.ToString(PlanTratamientoDetalle.nMonedaID.ViewValue))"></span>
+</span>
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" name="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="x@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="@PlanTratamientoDetalle.nMonedaID.FormValue">
+} @* nMonedaID (end) *@
+<input type="hidden" data-table="PlanTratamientoDetalle" data-field="x_nMonedaID" name="o@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" id="o@(PlanTratamientoDetalle_Grid.RowIndex)_nMonedaID" value="@PlanTratamientoDetalle.nMonedaID.OldValue">
+</td>
+	} @* nMonedaID.Visible (end) *@
+	@* Render list options (body, right) *@
+	@PlanTratamientoDetalle_Grid.ListOptions.RenderBody("right", PlanTratamientoDetalle_Grid.RowCnt)
+<script>
+fPlanTratamientoDetallegrid.updateLists(@PlanTratamientoDetalle_Grid.RowIndex);
+</script>
+	</tr>
+}
+</tbody>
+</table><!-- /.ew-table -->
+@if (PlanTratamientoDetalle_Grid.CurrentMode == "add" || PlanTratamientoDetalle_Grid.CurrentMode == "copy") {
+<input type="hidden" name="@PlanTratamientoDetalle_Grid.FormKeyCountName" id="@PlanTratamientoDetalle_Grid.FormKeyCountName" value="@PlanTratamientoDetalle_Grid.KeyCount">
+@Html.Raw(PlanTratamientoDetalle_Grid.MultiSelectKey)
+}
+@if (PlanTratamientoDetalle_Grid.CurrentMode == "edit") {
+<input type="hidden" name="@PlanTratamientoDetalle_Grid.FormKeyCountName" id="@PlanTratamientoDetalle_Grid.FormKeyCountName" value="@PlanTratamientoDetalle_Grid.KeyCount">
+@Html.Raw(PlanTratamientoDetalle_Grid.MultiSelectKey)
+}
+@if (Empty(PlanTratamientoDetalle_Grid.CurrentMode)) {
+<input type="hidden" name="action" id="action" value="">
+}
+<input type="hidden" name="detailpage" value="fPlanTratamientoDetallegrid">
+</div><!-- /.ew-grid-middle-panel -->
+@{ PlanTratamientoDetalle_Grid.CloseRecordset(); }
+</div>
+@if (PlanTratamientoDetalle_Grid.ShowOtherOptions) {
+	<div class="card-footer ew-grid-lower-panel">
+	@PlanTratamientoDetalle_Grid.OtherOptions.RenderBody("bottom")
+	</div>
+	<div class="clearfix"></div>
+}
+</div><!-- /.ew-grid -->
+}
+@if (PlanTratamientoDetalle_Grid.TotalRecords <= 0 && PlanTratamientoDetalle_Grid.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@PlanTratamientoDetalle_Grid.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@{
+
+	// Clear CurrentGrid
+	CurrentGrid = null;
+}

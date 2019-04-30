@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,9 +50,9 @@ fCitaview.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fCitaview.lists["x_nExpedienteID"] = @Html.Raw(Cita_View.nExpedienteID.Lookup.ToClientList());
-fCitaview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Cita_View.nExpedienteID.LookupOptions()));
+fCitaview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Cita_View.nExpedienteID.LookupOptions));
 fCitaview.lists["x_nEstadoID"] = @Html.Raw(Cita_View.nEstadoID.Lookup.ToClientList());
-fCitaview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_View.nEstadoID.LookupOptions()));
+fCitaview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Cita_View.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -49,11 +49,11 @@ fAntecedenteFamiliardelete.validateRequired = @ConvertToJson(Config.ClientValida
 
 // Dynamic selection lists
 fAntecedenteFamiliardelete.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteFamiliar_Delete.nExpedienteID.Lookup.ToClientList());
-fAntecedenteFamiliardelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nExpedienteID.LookupOptions()));
+fAntecedenteFamiliardelete.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nExpedienteID.LookupOptions));
 fAntecedenteFamiliardelete.lists["x_nParentescoID"] = @Html.Raw(AntecedenteFamiliar_Delete.nParentescoID.Lookup.ToClientList());
-fAntecedenteFamiliardelete.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nParentescoID.LookupOptions()));
+fAntecedenteFamiliardelete.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nParentescoID.LookupOptions));
 fAntecedenteFamiliardelete.lists["x_nEstadoID"] = @Html.Raw(AntecedenteFamiliar_Delete.nEstadoID.Lookup.ToClientList());
-fAntecedenteFamiliardelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nEstadoID.LookupOptions()));
+fAntecedenteFamiliardelete.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Delete.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

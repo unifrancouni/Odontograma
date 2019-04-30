@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using AspNetMaker2019.Models;
 using static AspNetMaker2019.Models.prjSIGECO;
 
@@ -46,8 +47,8 @@ namespace AspNetMaker2019.Controllers
 		[HttpGet("{table}")]
 		public async Task<IActionResult> List([FromRoute] string table)
 		{
-			if (Config.TableClassNames.ContainsKey(table)) {
-				var obj = CreateInstance("_" + table + "_List", new object[] { this });
+			if (Config.TableClassNames.TryGetValue(table, out string className)) {
+				var obj = CreateInstance(className + "_List", new object[] { this });
 				return await obj.Run();
 			} else {
 				return new JsonBoolResult(new { success = false, error = Language.Phrase("TableNotFound"), version = Config.ProductVersion }, false);
@@ -67,8 +68,8 @@ namespace AspNetMaker2019.Controllers
 		[HttpGet("{table}/{*key}")]
 		public async Task<IActionResult> Get([FromRoute] string table)
 		{
-			if (Config.TableClassNames.ContainsKey(table)) {
-				var obj = CreateInstance("_" + table + "_View", new object[] { this });
+			if (Config.TableClassNames.TryGetValue(table, out string className)) {
+				var obj = CreateInstance(className + "_View", new object[] { this });
 				return await obj.Run();
 			} else {
 				return new JsonBoolResult(new { success = false, error = Language.Phrase("TableNotFound"), version = Config.ProductVersion }, false);
@@ -97,8 +98,8 @@ namespace AspNetMaker2019.Controllers
 		// Add
 		protected async Task<IActionResult> Add(string table)
 		{
-			if (Config.TableClassNames.ContainsKey(table)) {
-				var obj = CreateInstance("_" + table + "_Add", new object[] { this });
+			if (Config.TableClassNames.TryGetValue(table, out string className)) {
+				var obj = CreateInstance(className + "_Add", new object[] { this });
 				return await obj.Run();
 			} else {
 				return new JsonBoolResult(new { success = false, error = Language.Phrase("TableNotFound"), version = Config.ProductVersion }, false);
@@ -118,8 +119,8 @@ namespace AspNetMaker2019.Controllers
 		[HttpPost("{table}/{*key}")]
 		public async Task<IActionResult> Edit([FromRoute] string table)
 		{
-			if (Config.TableClassNames.ContainsKey(table)) {
-				var obj = CreateInstance("_" + table + "_Edit", new object[] { this });
+			if (Config.TableClassNames.TryGetValue(table, out string className)) {
+				var obj = CreateInstance(className + "_Edit", new object[] { this });
 				return await obj.Run();
 			} else {
 				return new JsonBoolResult(new { success = false, error = Language.Phrase("TableNotFound"), version = Config.ProductVersion }, false);
@@ -139,8 +140,8 @@ namespace AspNetMaker2019.Controllers
 		[HttpPost("{table}/{*key}")]
 		public async Task<IActionResult> Delete([FromRoute] string table)
 		{
-			if (Config.TableClassNames.ContainsKey(table)) {
-				var obj = CreateInstance("_" + table + "_Delete", new object[] { this });
+			if (Config.TableClassNames.TryGetValue(table, out string className)) {
+				var obj = CreateInstance(className + "_Delete", new object[] { this });
 				return await obj.Run();
 			} else {
 				return new JsonBoolResult(new { success = false, error = Language.Phrase("TableNotFound"), version = Config.ProductVersion }, false);
@@ -254,7 +255,7 @@ namespace AspNetMaker2019.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Post()
 		{
-			var obj = new __ewupload(this);
+			var obj = new UploadHandler(this);
 			return await obj.Run();
 		}
 	}
@@ -293,9 +294,14 @@ namespace AspNetMaker2019.Controllers
 			if (Config.TableClassNames.TryGetValue(linkTable, out string className)) {
 				var obj = CreateInstance(className);
 				return await obj.Lookup();
-			} else {
-				return new JsonBoolResult(new { success = false, error = Language.Phrase("TableNotFound"), version = Config.ProductVersion }, false);
+			} else if (typeof(prjSIGECO.Config).GetField("ReportClassNames") != null) {
+				 Dictionary<string, string> names = (Dictionary<string, string>)typeof(prjSIGECO.Config).GetField("ReportClassNames").GetValue(null);
+				 if (names.TryGetValue(linkTable, out string reportClassName)) {
+					var obj = CreateInstance(reportClassName);
+					return await obj.Lookup();
+				 }
 			}
+			return new JsonBoolResult(new { success = false, error = Language.Phrase("TableNotFound"), version = Config.ProductVersion }, false);
 		}
 	}
 

@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,11 +50,11 @@ fAntecedenteFamiliarview.validateRequired = @ConvertToJson(Config.ClientValidate
 
 // Dynamic selection lists
 fAntecedenteFamiliarview.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteFamiliar_View.nExpedienteID.Lookup.ToClientList());
-fAntecedenteFamiliarview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_View.nExpedienteID.LookupOptions()));
+fAntecedenteFamiliarview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_View.nExpedienteID.LookupOptions));
 fAntecedenteFamiliarview.lists["x_nParentescoID"] = @Html.Raw(AntecedenteFamiliar_View.nParentescoID.Lookup.ToClientList());
-fAntecedenteFamiliarview.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_View.nParentescoID.LookupOptions()));
+fAntecedenteFamiliarview.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_View.nParentescoID.LookupOptions));
 fAntecedenteFamiliarview.lists["x_nEstadoID"] = @Html.Raw(AntecedenteFamiliar_View.nEstadoID.Lookup.ToClientList());
-fAntecedenteFamiliarview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_View.nEstadoID.LookupOptions()));
+fAntecedenteFamiliarview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_View.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

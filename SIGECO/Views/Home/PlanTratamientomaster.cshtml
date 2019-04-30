@@ -1,0 +1,43 @@
+@{
+}
+@if (PlanTratamiento.Visible) { // PlanTratamiento_Master.Visible (begin)
+<div class="ew-master-div">
+<table id="tbl_PlanTratamientomaster" class="table ew-view-table ew-master-table ew-vertical">
+	<tbody>
+		@if (PlanTratamiento.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+		<tr id="r_nExpedienteID">
+			<td class="@PlanTratamiento.TableLeftColumnClass">@Html.Raw(PlanTratamiento.nExpedienteID.Caption)</td>
+			<td @Html.Raw(PlanTratamiento.nExpedienteID.CellAttributes)>
+<span id="el_PlanTratamiento_nExpedienteID">
+<span @Html.Raw(PlanTratamiento.nExpedienteID.ViewAttributes)>
+@Html.Raw(PlanTratamiento.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* nExpedienteID.Visible (end) *@
+		@if (PlanTratamiento.dFechaAsignacion.Visible) { // dFechaAsignacion.Visible (begin)
+		<tr id="r_dFechaAsignacion">
+			<td class="@PlanTratamiento.TableLeftColumnClass">@Html.Raw(PlanTratamiento.dFechaAsignacion.Caption)</td>
+			<td @Html.Raw(PlanTratamiento.dFechaAsignacion.CellAttributes)>
+<span id="el_PlanTratamiento_dFechaAsignacion">
+<span @Html.Raw(PlanTratamiento.dFechaAsignacion.ViewAttributes)>
+@Html.Raw(PlanTratamiento.dFechaAsignacion.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* dFechaAsignacion.Visible (end) *@
+		@if (PlanTratamiento.sObservaciones.Visible) { // sObservaciones.Visible (begin)
+		<tr id="r_sObservaciones">
+			<td class="@PlanTratamiento.TableLeftColumnClass">@Html.Raw(PlanTratamiento.sObservaciones.Caption)</td>
+			<td @Html.Raw(PlanTratamiento.sObservaciones.CellAttributes)>
+<span id="el_PlanTratamiento_sObservaciones">
+<span @Html.Raw(PlanTratamiento.sObservaciones.ViewAttributes)>
+@Html.Raw(PlanTratamiento.sObservaciones.GetViewValue())</span>
+</span>
+</td>
+		</tr>
+		} @* sObservaciones.Visible (end) *@
+	</tbody>
+</table>
+</div>
+} @* PlanTratamiento_Master.Visible (end) *@

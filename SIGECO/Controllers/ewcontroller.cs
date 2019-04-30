@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using AspNetMaker2019.Models;
 using static AspNetMaker2019.Models.prjSIGECO;
 
@@ -42,19 +43,6 @@ namespace AspNetMaker2019.Controllers
 		[Route("ewmenu")]
 		[Route("Home/ewmenu")]
 		public IActionResult ewmenu() => View();
-
-		// ewupload
-		[Route("Ewupload")]
-		[Route("Home/Ewupload")]
-		public async Task<IActionResult> Ewupload()
-		{
-
-			// Create page object
-			_ewupload = new __ewupload(this);
-
-			// Run the page
-			return await _ewupload.Run();
-		}
 
 		// ewemail
 		[Route("ewemail")]

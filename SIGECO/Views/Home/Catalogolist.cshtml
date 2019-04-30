@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -283,52 +283,7 @@ while (Catalogo_List.RecordCount < Catalogo_List.StopRecord) { // Begin While
 		<div class="card-footer ew-grid-lower-panel">
 		@if (!Catalogo_List.IsGridAdd) {
 			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
-@{ Catalogo_List.Pager = Catalogo_List.Pager ?? new PrevNextPager(Catalogo_List.StartRecord, Catalogo_List.DisplayRecords, Catalogo_List.TotalRecords, Catalogo_List.AutoHidePager); }
-@if (Catalogo_List.Pager.RecordCount > 0 && Catalogo_List.Pager.Visible) {
-<div class="ew-pager">
-<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
-<div class="ew-prev-next"><div class="input-group input-group-sm">
-<div class="input-group-prepend">
-<!--first page button-->
-	@if (Catalogo_List.Pager.FirstButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Catalogo_List.PageUrl)start=@Catalogo_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
-	}
-<!--previous page button-->
-	@if (Catalogo_List.Pager.PrevButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Catalogo_List.PageUrl)start=@Catalogo_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
-	}
-</div>
-<!--current page number-->
-	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Catalogo_List.Pager.CurrentPageNumber">
-<div class="input-group-append">
-<!--next page button-->
-	@if (Catalogo_List.Pager.NextButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Catalogo_List.PageUrl)start=@Catalogo_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
-	}
-<!--last page button-->
-	@if (Catalogo_List.Pager.LastButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Catalogo_List.PageUrl)start=@Catalogo_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
-	}
-</div>
-</div>
-</div>
-<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Catalogo_List.Pager.PageCount</span>
-<div class="clearfix"></div>
-</div>
-}
-@if (Catalogo_List.Pager.RecordCount > 0) {
-	<div class="ew-pager ew-rec">
-		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Catalogo_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Catalogo_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Catalogo_List.Pager.RecordCount)</span>
-	</div>
-}
+			@Catalogo_List.Pager.Render()
 			</form>
 		}
 		<div class="ew-list-other-options">

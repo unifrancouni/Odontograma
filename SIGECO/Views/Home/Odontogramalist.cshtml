@@ -5,6 +5,7 @@
 
 	// View
 	View = this;
+	SetupLoginStatus(); // Setup login status
 	SetClientVar("login", LoginStatus);
 
 	// Global Page Rendering event
@@ -21,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,9 +51,9 @@ fOdontogramalist.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fOdontogramalist.lists["x_nExpedienteID"] = @Html.Raw(Odontograma_List.nExpedienteID.Lookup.ToClientList());
-fOdontogramalist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Odontograma_List.nExpedienteID.LookupOptions()));
+fOdontogramalist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Odontograma_List.nExpedienteID.LookupOptions));
 fOdontogramalist.lists["x_nEstadoID"] = @Html.Raw(Odontograma_List.nEstadoID.Lookup.ToClientList());
-fOdontogramalist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Odontograma_List.nEstadoID.LookupOptions()));
+fOdontogramalist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Odontograma_List.nEstadoID.LookupOptions));
 
 // Form object for search
 var fOdontogramalistsrch = currentSearchForm = new ew.Form("fOdontogramalistsrch");
@@ -83,7 +84,7 @@ fOdontogramalistsrch.filterList = @Html.Raw(await Odontograma_List.GetFilterList
 </div>
 }
 @{ Odontograma_List.RenderOtherOptions(); }
-@{
+@if (Security.CanSearch) {
 if (!Odontograma_List.IsExport() && Empty(Odontograma_List.CurrentAction)) { // Begin search form
 <form name="fOdontogramalistsrch" id="fOdontogramalistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
 <div id="fOdontogramalistsrch-search-panel" class="ew-search-panel collapse@(!Empty(Odontograma_List.SearchWhere) ? " show" : " show")">
@@ -215,6 +216,7 @@ if (!Odontograma_List.IsExport() && Empty(Odontograma_List.CurrentAction)) { // 
             }
         } @* nEstadoID.Visible (end) *@
 
+
         <th class="@Odontograma.nEstadoID.HeaderCellClass"><div id="elh_Odontograma_cDetailButton" class="Odontograma_cDetailButton"><div class="ew-table-header-caption">Detalle</div></div></th>
 
 
@@ -223,7 +225,6 @@ if (!Odontograma_List.IsExport() && Empty(Odontograma_List.CurrentAction)) { // 
             // Render list options (header, right)
             Odontograma_List.ListOptions.Render("header", "right");
         }
-
     </tr>
 </thead>
 <tbody>
@@ -363,52 +364,7 @@ while (Odontograma_List.RecordCount < Odontograma_List.StopRecord) { // Begin Wh
 		<div class="card-footer ew-grid-lower-panel">
 		@if (!Odontograma_List.IsGridAdd) {
 			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
-@{ Odontograma_List.Pager = Odontograma_List.Pager ?? new PrevNextPager(Odontograma_List.StartRecord, Odontograma_List.DisplayRecords, Odontograma_List.TotalRecords, Odontograma_List.AutoHidePager); }
-@if (Odontograma_List.Pager.RecordCount > 0 && Odontograma_List.Pager.Visible) {
-<div class="ew-pager">
-<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
-<div class="ew-prev-next"><div class="input-group input-group-sm">
-<div class="input-group-prepend">
-<!--first page button-->
-	@if (Odontograma_List.Pager.FirstButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Odontograma_List.PageUrl)start=@Odontograma_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
-	}
-<!--previous page button-->
-	@if (Odontograma_List.Pager.PrevButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Odontograma_List.PageUrl)start=@Odontograma_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
-	}
-</div>
-<!--current page number-->
-	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Odontograma_List.Pager.CurrentPageNumber">
-<div class="input-group-append">
-<!--next page button-->
-	@if (Odontograma_List.Pager.NextButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Odontograma_List.PageUrl)start=@Odontograma_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
-	}
-<!--last page button-->
-	@if (Odontograma_List.Pager.LastButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Odontograma_List.PageUrl)start=@Odontograma_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
-	}
-</div>
-</div>
-</div>
-<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Odontograma_List.Pager.PageCount</span>
-<div class="clearfix"></div>
-</div>
-}
-@if (Odontograma_List.Pager.RecordCount > 0) {
-	<div class="ew-pager ew-rec">
-		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Odontograma_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Odontograma_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Odontograma_List.Pager.RecordCount)</span>
-	</div>
-}
+			@Odontograma_List.Pager.Render()
 			</form>
 		}
 		<div class="ew-list-other-options">

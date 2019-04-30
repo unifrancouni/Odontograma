@@ -30,5 +30,5 @@ body {
 
 /* main table footer */
 .ew-table-pdf-footer {
-	background-color: #E6E6FA; /* footer color */
+	bgcolor: #E6E6FA; /* footer color */
 }

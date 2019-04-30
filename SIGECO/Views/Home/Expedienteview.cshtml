@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,13 +50,13 @@ fExpedienteview.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fExpedienteview.lists["x_nPacienteID"] = @Html.Raw(Expediente_View.nPacienteID.Lookup.ToClientList());
-fExpedienteview.lists["x_nPacienteID"].options = @Html.Raw(ConvertToJson(Expediente_View.nPacienteID.LookupOptions()));
+fExpedienteview.lists["x_nPacienteID"].options = @Html.Raw(ConvertToJson(Expediente_View.nPacienteID.LookupOptions));
 fExpedienteview.lists["x_nGrupoSanguineoID"] = @Html.Raw(Expediente_View.nGrupoSanguineoID.Lookup.ToClientList());
-fExpedienteview.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_View.nGrupoSanguineoID.LookupOptions()));
+fExpedienteview.lists["x_nGrupoSanguineoID"].options = @Html.Raw(ConvertToJson(Expediente_View.nGrupoSanguineoID.LookupOptions));
 fExpedienteview.lists["x_nAAAMA"] = @Html.Raw(Expediente_View.nAAAMA.Lookup.ToClientList());
 fExpedienteview.lists["x_nAAAMA"].options = @Html.Raw(ConvertToJson(Expediente_View.nAAAMA.Options(false))); // DN
 fExpedienteview.lists["x_nEstadoID"] = @Html.Raw(Expediente_View.nEstadoID.Lookup.ToClientList());
-fExpedienteview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_View.nEstadoID.LookupOptions()));
+fExpedienteview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Expediente_View.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

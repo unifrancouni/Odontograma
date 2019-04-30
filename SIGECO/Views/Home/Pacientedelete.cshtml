@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -49,7 +49,7 @@ fPacientedelete.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fPacientedelete.lists["x_nGeneroID"] = @Html.Raw(Paciente_Delete.nGeneroID.Lookup.ToClientList());
-fPacientedelete.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_Delete.nGeneroID.LookupOptions()));
+fPacientedelete.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_Delete.nGeneroID.LookupOptions));
 
 // Form object for search
 </script>

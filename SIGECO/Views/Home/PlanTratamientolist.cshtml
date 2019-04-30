@@ -1,0 +1,314 @@
+@{
+
+	// Layout
+	Layout = "_Layout";
+
+	// View
+	View = this;
+	SetupLoginStatus(); // Setup login status
+	SetClientVar("login", LoginStatus);
+
+	// Global Page Rendering event
+	Page_Rendering();
+
+	// Page Render event
+	PlanTratamiento_List.Page_Render();
+
+	// Check action result
+	if (PlanTratamiento_List.ActionResult is EmptyResult) { // Terminate page
+		return;
+	}
+
+	#pragma warning disable 168
+
+	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
+	List<Dictionary<string, object>> rswrk;
+	string[] arWrk;
+	List<object> listWrk;
+	Func<string> lookupFilter;
+
+	#pragma warning restore 168
+
+}
+@if (!PlanTratamiento.IsExport()) {
+<script>
+
+// Form object
+var CurrentPageID = ew.PAGE_ID = "list";
+var fPlanTratamientolist = currentForm = new ew.Form("fPlanTratamientolist", "list");
+fPlanTratamientolist.formKeyCountName = "@PlanTratamiento_List.FormKeyCountName";
+
+// Form_CustomValidate event
+fPlanTratamientolist.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
+
+	// Your custom validation code here, return false if invalid.
+	return true;
+}
+
+// Use JavaScript validation or not remove PROJ.ProgramLanguage
+fPlanTratamientolist.validateRequired = @ConvertToJson(Config.ClientValidate);
+
+// Dynamic selection lists
+fPlanTratamientolist.lists["x_nExpedienteID"] = @Html.Raw(PlanTratamiento_List.nExpedienteID.Lookup.ToClientList());
+fPlanTratamientolist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(PlanTratamiento_List.nExpedienteID.LookupOptions));
+fPlanTratamientolist.autoSuggests["x_nExpedienteID"] = @Html.Raw(ConvertToJson(new Dictionary<string, string> { {"data", "ajax=autosuggest"} }));
+
+// Form object for search
+var fPlanTratamientolistsrch = currentSearchForm = new ew.Form("fPlanTratamientolistsrch");
+
+// Filters
+fPlanTratamientolistsrch.filterList = @Html.Raw(await PlanTratamiento_List.GetFilterList());
+</script>
+<script>
+
+// Write your client script here, no need to add script tags.
+</script>
+}
+@if (!PlanTratamiento.IsExport()) {
+<div class="btn-toolbar ew-toolbar">
+@if (PlanTratamiento_List.TotalRecords > 0 && PlanTratamiento_List.ExportOptions.Visible) {
+	PlanTratamiento_List.ExportOptions.Render("body");
+}
+@if (PlanTratamiento_List.ImportOptions.Visible) {
+	PlanTratamiento_List.ImportOptions.Render("body");
+}
+@if (PlanTratamiento_List.SearchOptions.Visible) {
+	PlanTratamiento_List.SearchOptions.Render("body");
+}
+@if (PlanTratamiento_List.FilterOptions.Visible) {
+	PlanTratamiento_List.FilterOptions.Render("body");
+}
+<div class="clearfix"></div>
+</div>
+}
+@{ PlanTratamiento_List.RenderOtherOptions(); }
+@if (Security.CanSearch) {
+if (!PlanTratamiento_List.IsExport() && Empty(PlanTratamiento_List.CurrentAction)) { // Begin search form
+<form name="fPlanTratamientolistsrch" id="fPlanTratamientolistsrch" class="form-inline ew-form ew-ext-search-form" action="@AppPath(CurrentPageName())">
+<div id="fPlanTratamientolistsrch-search-panel" class="ew-search-panel collapse@(!Empty(PlanTratamiento_List.SearchWhere) ? " show" : " show")">
+<input type="hidden" name="cmd" value="search">
+<div class="ew-basic-search">
+<div id="xsr_1" class="ew-row d-sm-flex">
+	<div class="ew-quick-search input-group">
+	<input type="text" name="@Config.TableBasicSearch" id="@Config.TableBasicSearch" class="form-control" value="@PlanTratamiento_List.BasicSearch.SessionKeyword" placeholder="@Language.Phrase("Search")">
+	<input type="hidden" name="@Config.TableBasicSearchType" id="@Config.TableBasicSearchType" value="@PlanTratamiento_List.BasicSearch.SessionType">
+	<div class="input-group-append">
+		<button class="btn btn-primary" name="btn-submit" id="btn-submit" type="submit">@Html.Raw(Language.Phrase("SearchBtn"))</button>
+		<button type="button" data-toggle="dropdown" class="btn btn-primary dropdown-toggle dropdown-toggle-split" aria-haspopup="true" aria-expanded="false"><span id="searchtype">@Html.Raw(PlanTratamiento_List.BasicSearch.TypeNameShort)</span></button>
+		<div class="dropdown-menu dropdown-menu-right">
+			<a class="dropdown-item @((PlanTratamiento_List.BasicSearch.SessionType == "") ? " active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this)">@Html.Raw(Language.Phrase("QuickSearchAuto"))</a>
+			<a class="dropdown-item @((PlanTratamiento_List.BasicSearch.SessionType == "=") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'=')">@Html.Raw(Language.Phrase("QuickSearchExact"))</a>
+			<a class="dropdown-item @((PlanTratamiento_List.BasicSearch.SessionType == "AND") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'AND')">@Html.Raw(Language.Phrase("QuickSearchAll"))</a>
+			<a class="dropdown-item @((PlanTratamiento_List.BasicSearch.SessionType == "OR") ? "active" : "")" href="javascript:void(0);" onclick="ew.setSearchType(this,'OR')">@Html.Raw(Language.Phrase("QuickSearchAny"))</a>
+		</div>
+	</div>
+	</div>
+</div>
+</div>
+</div>
+</form>
+} @* End search form *@
+}
+@PlanTratamiento_List.ShowPageHeader()
+@PlanTratamiento_List.ShowMessages()
+@if (PlanTratamiento_List.TotalRecords > 0 || PlanTratamiento_List.CurrentAction != "") {
+<div class="card ew-card ew-grid@(PlanTratamiento_List.IsAddOrEdit ? " ew-grid-add-edit" : "") PlanTratamiento">
+<form name="fPlanTratamientolist" id="fPlanTratamientolist" class="form-inline ew-form ew-list-form" action="@AppPath(CurrentPageName())" method="post">
+@if (PlanTratamiento_List.CheckToken) {
+	@Html.AntiForgeryToken()
+}
+<div id="gmp_PlanTratamiento" class="@(IsResponsiveLayout() ? "table-responsive " : "")card-body ew-grid-middle-panel">
+@if (PlanTratamiento_List.TotalRecords > 0 || PlanTratamiento.IsGridEdit) { // Begin If TotalRecords > 0
+<table id="tbl_PlanTratamientolist" class="table ew-table"><!-- .ew-table -->
+<thead>
+	<tr class="ew-table-header">
+@{
+
+	// Header row
+	PlanTratamiento_List.RowType = Config.RowTypeHeader;
+
+	// Render list options
+	await PlanTratamiento_List.RenderListOptions();
+
+	// Render list options (header, left)
+	PlanTratamiento_List.ListOptions.Render("header", "left");
+}
+@if (PlanTratamiento.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	if (PlanTratamiento_List.SortUrl(PlanTratamiento.nExpedienteID) == "") {
+		<th data-name="nExpedienteID" class="@PlanTratamiento.nExpedienteID.HeaderCellClass"><div id="elh_PlanTratamiento_nExpedienteID" class="PlanTratamiento_nExpedienteID"><div class="ew-table-header-caption">@Html.Raw(PlanTratamiento.nExpedienteID.Caption)</div></div></th>
+	} else {
+		<th data-name="nExpedienteID" class="@PlanTratamiento.nExpedienteID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(PlanTratamiento.SortUrl(PlanTratamiento.nExpedienteID))',1);"><div id="elh_PlanTratamiento_nExpedienteID" class="PlanTratamiento_nExpedienteID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(PlanTratamiento.nExpedienteID.Caption)</span><span class="ew-table-header-sort">@if (PlanTratamiento.nExpedienteID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (PlanTratamiento.nExpedienteID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nExpedienteID.Visible (end) *@
+@if (PlanTratamiento.dFechaAsignacion.Visible) { // dFechaAsignacion.Visible (begin)
+	if (PlanTratamiento_List.SortUrl(PlanTratamiento.dFechaAsignacion) == "") {
+		<th data-name="dFechaAsignacion" class="@PlanTratamiento.dFechaAsignacion.HeaderCellClass"><div id="elh_PlanTratamiento_dFechaAsignacion" class="PlanTratamiento_dFechaAsignacion"><div class="ew-table-header-caption">@Html.Raw(PlanTratamiento.dFechaAsignacion.Caption)</div></div></th>
+	} else {
+		<th data-name="dFechaAsignacion" class="@PlanTratamiento.dFechaAsignacion.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(PlanTratamiento.SortUrl(PlanTratamiento.dFechaAsignacion))',1);"><div id="elh_PlanTratamiento_dFechaAsignacion" class="PlanTratamiento_dFechaAsignacion">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(PlanTratamiento.dFechaAsignacion.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (PlanTratamiento.dFechaAsignacion.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (PlanTratamiento.dFechaAsignacion.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* dFechaAsignacion.Visible (end) *@
+@if (PlanTratamiento.sObservaciones.Visible) { // sObservaciones.Visible (begin)
+	if (PlanTratamiento_List.SortUrl(PlanTratamiento.sObservaciones) == "") {
+		<th data-name="sObservaciones" class="@PlanTratamiento.sObservaciones.HeaderCellClass"><div id="elh_PlanTratamiento_sObservaciones" class="PlanTratamiento_sObservaciones"><div class="ew-table-header-caption">@Html.Raw(PlanTratamiento.sObservaciones.Caption)</div></div></th>
+	} else {
+		<th data-name="sObservaciones" class="@PlanTratamiento.sObservaciones.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(PlanTratamiento.SortUrl(PlanTratamiento.sObservaciones))',1);"><div id="elh_PlanTratamiento_sObservaciones" class="PlanTratamiento_sObservaciones">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(PlanTratamiento.sObservaciones.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (PlanTratamiento.sObservaciones.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (PlanTratamiento.sObservaciones.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sObservaciones.Visible (end) *@
+@{
+
+	// Render list options (header, right)
+	PlanTratamiento_List.ListOptions.Render("header", "right");
+}
+	</tr>
+</thead>
+<tbody>
+@{ // Begin Code
+if (PlanTratamiento_List.ExportAll && PlanTratamiento_List.IsExport()) {
+	PlanTratamiento_List.StopRecord = PlanTratamiento_List.TotalRecords;
+} else {
+
+	// Set the last record to display
+	if (PlanTratamiento_List.TotalRecords > PlanTratamiento_List.StartRecord + PlanTratamiento_List.DisplayRecords - 1) {
+		PlanTratamiento_List.StopRecord = PlanTratamiento_List.StartRecord + PlanTratamiento_List.DisplayRecords - 1;
+	} else {
+		PlanTratamiento_List.StopRecord = PlanTratamiento_List.TotalRecords;
+	}
+}
+if (PlanTratamiento_List.Recordset != null && PlanTratamiento_List.Recordset.HasRows) {
+	if (!PlanTratamiento_List.Connection.SelectOffset) { // DN
+		for (var i = 1; i <= PlanTratamiento_List.StartRecord - 1; i++) { // Move to first record
+			if (await PlanTratamiento_List.Recordset.ReadAsync()) {
+				PlanTratamiento_List.RecordCount++;
+			}
+		}
+	} else {
+		PlanTratamiento_List.RecordCount = PlanTratamiento_List.StartRecord - 1;
+	}
+} else if (!PlanTratamiento_List.AllowAddDeleteRow && PlanTratamiento_List.StopRecord == 0) {
+	PlanTratamiento_List.StopRecord = PlanTratamiento_List.GridAddRowCount;
+}
+
+// Initialize aggregate
+PlanTratamiento_List.RowType = Config.RowTypeAggregateInit;
+PlanTratamiento_List.ResetAttributes();
+await PlanTratamiento_List.RenderRow();
+
+// Output data rows
+bool eof = (PlanTratamiento_List.Recordset == null); // DN
+while (PlanTratamiento_List.RecordCount < PlanTratamiento_List.StopRecord) { // Begin While
+	if (!PlanTratamiento_List.IsGridAdd && !eof) { // DN
+		eof = !await PlanTratamiento_List.Recordset.ReadAsync();
+	}
+	PlanTratamiento_List.RecordCount++;
+	if (PlanTratamiento_List.RecordCount >= PlanTratamiento_List.StartRecord) {
+		PlanTratamiento_List.RowCnt++;
+
+		// Set up key count
+		PlanTratamiento_List.KeyCount = ConvertToInt(PlanTratamiento_List.RowIndex);
+
+		// Init row class and style
+		PlanTratamiento_List.ResetAttributes();
+		PlanTratamiento_List.CssClass = "";
+		if (PlanTratamiento_List.IsGridAdd) {
+		} else {
+			await PlanTratamiento_List.LoadRowValues(PlanTratamiento_List.Recordset); // Load row values
+		}
+		PlanTratamiento_List.RowType = Config.RowTypeView; // Render view
+
+		// Set up row id / data-rowindex
+		PlanTratamiento_List.RowAttrs.Add("data-rowindex", Convert.ToString(PlanTratamiento_List.RowCnt));
+		PlanTratamiento_List.RowAttrs.Add("id", "r" + Convert.ToString(PlanTratamiento_List.RowCnt) + "_PlanTratamiento");
+		PlanTratamiento_List.RowAttrs.Add("data-rowtype", Convert.ToString(PlanTratamiento_List.RowType));
+
+		// Render row
+		await PlanTratamiento_List.RenderRow();
+
+		// Render list options
+		await PlanTratamiento_List.RenderListOptions();
+	<tr @Html.Raw(PlanTratamiento_List.RowAttributes)>
+	@{
+
+		// Render list options (body, left)
+		PlanTratamiento_List.ListOptions.Render("body", "left", PlanTratamiento_List.RowCnt);
+	}
+	@if (PlanTratamiento.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+		<td data-name="nExpedienteID"@Html.Raw(PlanTratamiento.nExpedienteID.CellAttributes)>
+<span id="el@(PlanTratamiento_List.RowCnt)_PlanTratamiento_nExpedienteID" class="PlanTratamiento_nExpedienteID">
+<span @Html.Raw(PlanTratamiento.nExpedienteID.ViewAttributes)>
+@Html.Raw(PlanTratamiento.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	} @* nExpedienteID.Visible (end) *@
+	@if (PlanTratamiento.dFechaAsignacion.Visible) { // dFechaAsignacion.Visible (begin)
+		<td data-name="dFechaAsignacion"@Html.Raw(PlanTratamiento.dFechaAsignacion.CellAttributes)>
+<span id="el@(PlanTratamiento_List.RowCnt)_PlanTratamiento_dFechaAsignacion" class="PlanTratamiento_dFechaAsignacion">
+<span @Html.Raw(PlanTratamiento.dFechaAsignacion.ViewAttributes)>
+@Html.Raw(PlanTratamiento.dFechaAsignacion.GetViewValue())</span>
+</span>
+</td>
+	} @* dFechaAsignacion.Visible (end) *@
+	@if (PlanTratamiento.sObservaciones.Visible) { // sObservaciones.Visible (begin)
+		<td data-name="sObservaciones"@Html.Raw(PlanTratamiento.sObservaciones.CellAttributes)>
+<span id="el@(PlanTratamiento_List.RowCnt)_PlanTratamiento_sObservaciones" class="PlanTratamiento_sObservaciones">
+<span @Html.Raw(PlanTratamiento.sObservaciones.ViewAttributes)>
+@Html.Raw(PlanTratamiento.sObservaciones.GetViewValue())</span>
+</span>
+</td>
+	} @* sObservaciones.Visible (end) *@
+	@{
+
+		// Render list options (body, right)
+		PlanTratamiento_List.ListOptions.Render("body", "right", PlanTratamiento_List.RowCnt);
+	}
+	</tr>
+	} @* End if *@
+} @* End While *@
+} @* End Code *@
+</tbody>
+</table><!-- /.ew-table -->
+} @* End If TotalRecords > 0 *@
+@if (Empty(PlanTratamiento_List.CurrentAction)) {
+<input type="hidden" name="action" id="action" value="">
+}
+</div><!-- /.ew-grid-middle-panel -->
+</form><!-- /.ew-list-form -->
+@{ PlanTratamiento_List.CloseRecordset(); }
+		@if (!PlanTratamiento.IsExport()) {
+		<div class="card-footer ew-grid-lower-panel">
+		@if (!PlanTratamiento_List.IsGridAdd) {
+			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
+			@PlanTratamiento_List.Pager.Render()
+			</form>
+		}
+		<div class="ew-list-other-options">
+		@PlanTratamiento_List.OtherOptions.RenderBody("bottom")
+		</div>
+		<div class="clearfix"></div>
+		</div>
+		}
+</div><!-- /.ew-grid -->
+}
+@if (PlanTratamiento_List.TotalRecords <= 0 && PlanTratamiento_List.CurrentAction == "") { // Show other options
+<div class="ew-list-other-options">
+@PlanTratamiento_List.OtherOptions.ForEach(opt => opt.ButtonClass = "").RenderBody()
+</div>
+<div class="clearfix"></div>
+}
+@PlanTratamiento_List.ShowPageFooter()
+@ShowDebugMessage()
+@ElapsedTime()
+@if (!PlanTratamiento.IsExport()) {
+<script>
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+
+</script>
+}

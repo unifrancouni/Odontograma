@@ -3,16 +3,16 @@ var xEmp = 2; var yEmp = 2; var T = 50;
 var lineV; var lineH; var rectangle;
 
 var images = [
-    { key: 'espacio', value: 'http://localhost:52124/Content/img/espacio.png', width: T, height: T, },
-    { key: 'arrow_right', value: 'http://localhost:52124/Content/img/arrow_right.png', width: T, height: T, },
-    { key: 'arrow_left', value: 'http://localhost:52124/Content/img/arrow_left.png', width: T, height: T, },
-    { key: 'item', value: 'http://localhost:52124/Content/img/diente.png', width: T, height: T, },
-    { key: 'panel', value: 'http://localhost:52124/Content/img/panel.png', width: T, height: T, },
-    { key: 'save_button', value: 'http://localhost:52124/Content/img/save_button.png', width: T, height: T, },
-    { key: 'print_button', value: 'http://localhost:52124/Content/img/print_button.png', width: T, height: T, },
-    { key: 'toggle_d', value: 'http://localhost:52124/Content/img/toggle_d.png', width: T, height: T, },
-    { key: 'toggle_ed', value: 'http://localhost:52124/Content/img/toggle_ed.png', width: T, height: T, },
-    { key: 'background', value: 'http://localhost:52124/Content/img/background.png', width: T, height: T, },
+    { key: 'espacio', value: 'http://localhost:51713/Content/img/espacio.png', width: T, height: T, },
+    { key: 'arrow_right', value: 'http://localhost:51713/Content/img/arrow_right.png', width: T, height: T, },
+    { key: 'arrow_left', value: 'http://localhost:51713/Content/img/arrow_left.png', width: T, height: T, },
+    { key: 'item', value: 'http://localhost:51713/Content/img/diente.png', width: T, height: T, },
+    { key: 'panel', value: 'http://localhost:51713/Content/img/panel.png', width: T, height: T, },
+    { key: 'save_button', value: 'http://localhost:51713/Content/img/save_button.png', width: T, height: T, },
+    { key: 'print_button', value: 'http://localhost:51713/Content/img/print_button.png', width: T, height: T, },
+    { key: 'toggle_d', value: 'http://localhost:51713/Content/img/toggle_d.png', width: T, height: T, },
+    { key: 'toggle_ed', value: 'http://localhost:51713/Content/img/toggle_ed.png', width: T, height: T, },
+    { key: 'background', value: 'http://localhost:51713/Content/img/background.png', width: T, height: T, },
 ];
 
 var init_config = {

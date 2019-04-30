@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -222,7 +222,7 @@ namespace AspNetMaker2019.Models {
 
 				// Add some random noise
 				int m = Math.Max(rect.Width, rect.Height);
-				for (int i = 0; i < (int) (rect.Width * rect.Height / 30F); i++)
+				for (int i = 0; i < (int)(rect.Width * rect.Height / 30F); i++)
 				{
 					int x = this.random.Next(rect.Width);
 					int y = this.random.Next(rect.Height);

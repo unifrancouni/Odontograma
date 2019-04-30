@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -73,19 +73,10 @@ namespace AspNetMaker2019.Models {
 	public partial class prjSIGECO {
 
 		/// <summary>
-		/// _ewupload
-		/// </summary>
-
-		public static __ewupload _ewupload {
-			get => (__ewupload)HttpData["_ewupload"];
-			set => HttpData["_ewupload"] = value;
-		}
-
-		/// <summary>
 		/// Page class
 		/// </summary>
 
-		public class __ewupload
+		public class UploadHandler
 		{
 			public string UploadTable;
 
@@ -278,7 +269,7 @@ namespace AspNetMaker2019.Models {
 			}
 
 			// Page class constructor
-			public __ewupload(Controller controller = null) { // DN
+			public UploadHandler(Controller controller = null) { // DN
 				if (controller != null)
 					Controller = controller;
 			}

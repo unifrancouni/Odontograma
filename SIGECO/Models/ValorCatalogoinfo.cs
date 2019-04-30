@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models (Table)
 namespace AspNetMaker2019.Models {
@@ -189,10 +189,10 @@ namespace AspNetMaker2019.Models {
 				nCatalogoID.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nCatalogoID.Lookup = new Lookup("nCatalogoID", "Catalogo", true, "nCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nCatalogoID.Lookup = new Lookup<DbField>("nCatalogoID", "Catalogo", true, "nCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 					default:
-						nCatalogoID.Lookup = new Lookup("nCatalogoID", "Catalogo", true, "nCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nCatalogoID.Lookup = new Lookup<DbField>("nCatalogoID", "Catalogo", true, "nCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 				}
 				nCatalogoID.GetSelectFilter = () => "nCatalogoUsuario=1";
@@ -281,10 +281,10 @@ namespace AspNetMaker2019.Models {
 				nActivo.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nActivo.Lookup = new Lookup("nActivo", "ValorCatalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nActivo.Lookup = new Lookup<DbField>("nActivo", "ValorCatalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nActivo.Lookup = new Lookup("nActivo", "ValorCatalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nActivo.Lookup = new Lookup<DbField>("nActivo", "ValorCatalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nActivo", nActivo);
@@ -367,10 +367,10 @@ namespace AspNetMaker2019.Models {
 				nValorCatalogoUsuario.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nValorCatalogoUsuario.Lookup = new Lookup("nValorCatalogoUsuario", "ValorCatalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nValorCatalogoUsuario.Lookup = new Lookup<DbField>("nValorCatalogoUsuario", "ValorCatalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nValorCatalogoUsuario.Lookup = new Lookup("nValorCatalogoUsuario", "ValorCatalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nValorCatalogoUsuario.Lookup = new Lookup<DbField>("nValorCatalogoUsuario", "ValorCatalogo", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				nValorCatalogoUsuario.GetDefault = () => 1;
@@ -817,28 +817,6 @@ namespace AspNetMaker2019.Models {
 				LoadDbValues(row);
 			}
 
-			// Record filter WHERE clause
-			private string _sqlKeyFilter => "[nValorCatalogoID] = @nValorCatalogoID@";
-
-			#pragma warning disable 168
-
-			// Get record filter
-			public string GetRecordFilter(Dictionary<string, object> row = null)
-			{
-				string keyFilter = _sqlKeyFilter;
-				object val, result;
-				val = !Empty(row) ? (row.TryGetValue("nValorCatalogoID", out result) ? result : null) : nValorCatalogoID.CurrentValue;
-				if (!IsNumeric(val))
-					return "0=1"; // Invalid key
-				if (val == null)
-					return "0=1"; // Invalid key
-				else
-					keyFilter = keyFilter.Replace("@nValorCatalogoID@", AdjustSql(val, DbId)); // Replace key value
-				return keyFilter;
-			}
-
-			#pragma warning restore 168
-
 			// Return URL
 			public string ReturnUrl {
 				get {
@@ -1040,6 +1018,28 @@ namespace AspNetMaker2019.Models {
 
 			#pragma warning restore 618
 
+			// Record filter WHERE clause
+			private string _sqlKeyFilter => "[nValorCatalogoID] = @nValorCatalogoID@";
+
+			#pragma warning disable 168
+
+			// Get record filter
+			public string GetRecordFilter(Dictionary<string, object> row = null)
+			{
+				string keyFilter = _sqlKeyFilter;
+				object val, result;
+				val = !Empty(row) ? (row.TryGetValue("nValorCatalogoID", out result) ? result : null) : nValorCatalogoID.CurrentValue;
+				if (!IsNumeric(val))
+					return "0=1"; // Invalid key
+				if (val == null)
+					return "0=1"; // Invalid key
+				else
+					keyFilter = keyFilter.Replace("@nValorCatalogoID@", AdjustSql(val, DbId)); // Replace key value
+				return keyFilter;
+			}
+
+			#pragma warning restore 168
+
 			// Load row values from recordset
 			public void LoadListRowValues(DbDataReader rs) {
 				nValorCatalogoID.SetDbValue(rs["nValorCatalogoID"]);
@@ -1089,18 +1089,18 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(curVal)) {
 					nCatalogoID.ViewValue = nCatalogoID.LookupCacheOption(curVal);
 					if (nCatalogoID.ViewValue == null) { // Lookup from database
-					filterWrk = "[nCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+						filterWrk = "[nCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 						lookupFilter = () => "nCatalogoUsuario=1";
 						sqlWrk = nCatalogoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-						rswrk = Connection.GetRows(sqlWrk);
-					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-						var listwrk = rswrk[0].Values.ToList();
-						listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-						listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-						nCatalogoID.ViewValue = nCatalogoID.DisplayValue(listwrk);
-					} else {
-						nCatalogoID.ViewValue = nCatalogoID.CurrentValue;
-					}
+						rswrk = await Connection.GetRowsAsync(sqlWrk);
+						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+							var listwrk = rswrk[0].Values.ToList();
+							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+							listwrk[2] = Convert.ToString(listwrk[2]);
+							nCatalogoID.ViewValue = nCatalogoID.DisplayValue(listwrk);
+						} else {
+							nCatalogoID.ViewValue = nCatalogoID.CurrentValue;
+						}
 					}
 				} else {
 					nCatalogoID.ViewValue = System.DBNull.Value;
@@ -1196,18 +1196,18 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(curVal)) {
 					nCatalogoID.ViewValue = nCatalogoID.LookupCacheOption(curVal);
 					if (nCatalogoID.ViewValue == null) { // Lookup from database
-					filterWrk = "[nCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+						filterWrk = "[nCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 						lookupFilter = () => "nCatalogoUsuario=1";
 						sqlWrk = nCatalogoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-						rswrk = Connection.GetRows(sqlWrk);
-					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-						var listwrk = rswrk[0].Values.ToList();
-						listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-						listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-						nCatalogoID.ViewValue = nCatalogoID.DisplayValue(listwrk);
-					} else {
-						nCatalogoID.ViewValue = nCatalogoID.CurrentValue;
-					}
+						rswrk = await Connection.GetRowsAsync(sqlWrk);
+						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+							var listwrk = rswrk[0].Values.ToList();
+							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+							listwrk[2] = Convert.ToString(listwrk[2]);
+							nCatalogoID.ViewValue = nCatalogoID.DisplayValue(listwrk);
+						} else {
+							nCatalogoID.ViewValue = nCatalogoID.CurrentValue;
+						}
 					}
 				} else {
 					nCatalogoID.ViewValue = System.DBNull.Value;
@@ -1222,6 +1222,8 @@ namespace AspNetMaker2019.Models {
 
 				// sDescripcion
 				sDescripcion.EditAttrs["class"] = "form-control";
+				if (Config.RemoveXss)
+					sDescripcion.CurrentValue = HtmlDecode(sDescripcion.CurrentValue);
 				sDescripcion.EditValue = sDescripcion.CurrentValue; // DN
 				sDescripcion.PlaceHolder = RemoveHtml(sDescripcion.Caption);
 
@@ -1402,7 +1404,7 @@ namespace AspNetMaker2019.Models {
 				}
 
 				// Create lookup object and output JSON
-				var lookup = new Lookup(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
+				var lookup = new Lookup<DbField>(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
 				for (int i = 0; i < filterFields.Count; i++) { // Set up filter operators
 					if (!Empty(filterOperators[i]))
 						lookup.SetFilterOperator(filterFields[i], filterOperators[i]);

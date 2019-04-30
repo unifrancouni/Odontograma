@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -109,11 +109,11 @@ fAntecedenteFamiliaradd.validateRequired = @ConvertToJson(Config.ClientValidate)
 
 // Dynamic selection lists
 fAntecedenteFamiliaradd.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteFamiliar_Add.nExpedienteID.Lookup.ToClientList());
-fAntecedenteFamiliaradd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Add.nExpedienteID.LookupOptions()));
+fAntecedenteFamiliaradd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Add.nExpedienteID.LookupOptions));
 fAntecedenteFamiliaradd.lists["x_nParentescoID"] = @Html.Raw(AntecedenteFamiliar_Add.nParentescoID.Lookup.ToClientList());
-fAntecedenteFamiliaradd.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Add.nParentescoID.LookupOptions()));
+fAntecedenteFamiliaradd.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Add.nParentescoID.LookupOptions));
 fAntecedenteFamiliaradd.lists["x_nEstadoID"] = @Html.Raw(AntecedenteFamiliar_Add.nEstadoID.Lookup.ToClientList());
-fAntecedenteFamiliaradd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Add.nEstadoID.LookupOptions()));
+fAntecedenteFamiliaradd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_Add.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>
@@ -137,13 +137,13 @@ fAntecedenteFamiliaradd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(A
 		<div class="@AntecedenteFamiliar_Add.RightColumnClass"><div @Html.Raw(AntecedenteFamiliar.nExpedienteID.CellAttributes)>
 <span id="el_AntecedenteFamiliar_nExpedienteID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(AntecedenteFamiliar.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : AntecedenteFamiliar.nExpedienteID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@Html.Raw(SameString(AntecedenteFamiliar.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(AntecedenteFamiliar.nExpedienteID.ViewValue) : AntecedenteFamiliar.nExpedienteID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(AntecedenteFamiliar.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((AntecedenteFamiliar.nExpedienteID.ReadOnly || AntecedenteFamiliar.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(AntecedenteFamiliar.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
-<input type="hidden" data-table="AntecedenteFamiliar" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@AntecedenteFamiliar.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@AntecedenteFamiliar.nExpedienteID.CurrentValue"@Html.Raw(AntecedenteFamiliar.nExpedienteID.EditAttributes)>
+<input type="hidden" data-table="AntecedenteFamiliar" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@AntecedenteFamiliar.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Html.Raw(AntecedenteFamiliar.nExpedienteID.CurrentValue)"@Html.Raw(AntecedenteFamiliar.nExpedienteID.EditAttributes)>
 </span>
 @Html.Raw(AntecedenteFamiliar.nExpedienteID.CustomMessage)</div></div>
 	</div>

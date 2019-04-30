@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -128,7 +128,6 @@ namespace AspNetMaker2019.Models {
 
 			// Token
 			public string Token; // DN
-			public int TokenTimeout = 0;
 			public bool CheckToken = Config.CheckToken;
 
 			// Action result // DN
@@ -139,6 +138,9 @@ namespace AspNetMaker2019.Models {
 
 			// Page terminated // DN
 			private bool _terminated = false;
+
+			// Page URL
+			private string _pageUrl = "";
 
 			// Page action result
 			public IActionResult PageResult() {
@@ -175,7 +177,14 @@ namespace AspNetMaker2019.Models {
 			public string PageName => CurrentPageName();
 
 			// Page URL
-			public string PageUrl => CurrentPageName() + "?";
+			public string PageUrl {
+				get {
+					if (_pageUrl == "") {
+						_pageUrl = CurrentPageName() + "?";
+					}
+					return _pageUrl;
+				}
+			}
 
 			// Export URLs
 			public string ExportPrintUrl = "";
@@ -370,7 +379,7 @@ namespace AspNetMaker2019.Models {
 			public IHtmlContent ShowPageFooter() {
 				string footer = PageFooter;
 				Page_DataRendered(ref footer);
-				if (!Empty(footer)) // Fotoer exists, display
+				if (!Empty(footer)) // Footer exists, display
 					return new HtmlString("<p id=\"ew-page-footer\">" + footer + "</p>");
 				return null;
 			}
@@ -394,7 +403,6 @@ namespace AspNetMaker2019.Models {
 
 				// Initialize
 				CurrentPage = this;
-				TokenTimeout = SessionTimeoutTime();
 
 				// Language object
 				Language = Language ?? new Lang();
@@ -608,7 +616,8 @@ namespace AspNetMaker2019.Models {
 			public int StopRecord;
 			public int TotalRecords = -1;
 			public int RecordRange = 10;
-			public dynamic Pager;
+			public string PageSizes = ""; // Page sizes (comma separated)
+			public Pager _pager;
 			public bool AutoHidePager = Config.AutoHidePager;
 			public bool AutoHidePageSizeSelector = Config.AutoHidePageSizeSelector;
 			public string DefaultSearchWhere = ""; // Default search WHERE clause
@@ -633,6 +642,14 @@ namespace AspNetMaker2019.Models {
 			public SubPages DetailPages;
 			public DbDataReader Recordset;
 			public DbDataReader OldRecordset;
+
+			// Pager
+			public Pager Pager {
+				get {
+					_pager = _pager ?? new PrevNextPager(StartRecord, RecordsPerPage, TotalRecords, PageSizes, RecordRange, AutoHidePager, AutoHidePageSizeSelector);
+					return _pager;
+				}
+			}
 
 			/// <summary>
 			/// Page run
@@ -766,13 +783,8 @@ namespace AspNetMaker2019.Models {
 
 					// Process list action first
 					var result = await ProcessListAction();
-					if (!Empty(result)) { // Ajax request
-
-						// Clean output buffer
-						if (!Config.Debug)
-							Response.Clear();
-						return Controller.Content(result, "text/plain", Encoding.UTF8);
-					}
+					if (result != null) // Ajax request
+						return result;
 
 					// Handle reset command
 					ResetCommand();
@@ -841,6 +853,7 @@ namespace AspNetMaker2019.Models {
 					DisplayRecords = RecordsPerPage; // Restore from Session
 				} else {
 					DisplayRecords = 20; // Load default
+					RecordsPerPage = DisplayRecords; // Save default to session
 				}
 
 				// Load Sorting Order
@@ -907,7 +920,9 @@ namespace AspNetMaker2019.Models {
 					DisplayRecords = TotalRecords;
 				if (!(IsExport() && ExportAll)) // Set up start record position
 					SetupStartRec();
-				var selectLimit = UseSelectLimit;
+
+				// Recordset
+				bool selectLimit = UseSelectLimit;
 				if (selectLimit)
 					Recordset = await LoadRecordset(StartRecord - 1, DisplayRecords);
 
@@ -1492,10 +1507,9 @@ namespace AspNetMaker2019.Models {
 			}
 
 			// Process list action
-			public async Task<string> ProcessListAction() {
-				string errmsg;
-				var filter = GetFilterFromRecordKeys();
-				var userAction = Post("useraction");
+			public async Task<IActionResult> ProcessListAction() {
+				string filter = GetFilterFromRecordKeys();
+				string userAction = Post("useraction");
 				if (filter != "" && userAction != "") {
 
 					// Check permission first
@@ -1504,17 +1518,17 @@ namespace AspNetMaker2019.Models {
 						if (SameString(key, userAction)) {
 							actionCaption = act.Caption;
 							if (!act.Allowed) {
-								errmsg = Language.Phrase("CustomActionNotAllowed").Replace("%s", actionCaption);
+								string errmsg = Language.Phrase("CustomActionNotAllowed").Replace("%s", actionCaption);
 								if (Post("ajax") == userAction) // Ajax
-									return "<p class=\"text-danger\">" + errmsg + "</p>";
+									return Controller.Content("<p class=\"text-danger\">" + errmsg + "</p>", "text/plain", Encoding.UTF8);
 								else
 									FailureMessage = errmsg;
-								return "";
+								return null;
 							}
 						}
 					}
 					CurrentFilter = filter;
-					var sql = CurrentSql;
+					string sql = CurrentSql;
 					var rsuser = await Connection.GetRowsAsync(sql);
 					CurrentAction = userAction;
 
@@ -1551,6 +1565,8 @@ namespace AspNetMaker2019.Models {
 					}
 					CurrentAction = ""; // Clear action
 					if (Post("ajax") == userAction) { // Ajax
+						if (ActionResult != null) // Action result set by Row_CustomAction // DN
+							return ActionResult;
 						string msg = "";
 						if (SuccessMessage != "") {
 							msg = "<p class=\"text-success\">" + SuccessMessage + "</p>";
@@ -1560,10 +1576,11 @@ namespace AspNetMaker2019.Models {
 							msg = "<p class=\"text-danger\">" + FailureMessage + "</p>";
 							ClearFailureMessage(); // Clear message
 						}
-						return msg;
+						if (!Empty(msg))
+							return Controller.Content(msg, "text/plain", Encoding.UTF8);
 					}
 				}
-				return ""; // Not ajax request
+				return null; // Not ajax request
 			}
 
 			// Set up search options
@@ -1799,19 +1816,19 @@ namespace AspNetMaker2019.Models {
 					if (!Empty(curVal)) {
 						nExpedienteID.ViewValue = nExpedienteID.LookupCacheOption(curVal);
 						if (nExpedienteID.ViewValue == null) { // Lookup from database
-						filterWrk = "[nExpedienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+							filterWrk = "[nExpedienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 							sqlWrk = nExpedienteID.Lookup.GetSql(false, filterWrk, null, this);
-							rswrk = Connection.GetRows(sqlWrk);
-						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-							var listwrk = rswrk[0].Values.ToList();
-							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-							listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-							listwrk[3] = Convert.ToString(FormatNumber(listwrk[3], 0, -2, -2, -2));
-							listwrk[4] = Convert.ToString(FormatNumber(listwrk[4], 0, -2, -2, -2));
-							nExpedienteID.ViewValue = nExpedienteID.DisplayValue(listwrk);
-						} else {
-							nExpedienteID.ViewValue = nExpedienteID.CurrentValue;
-						}
+							rswrk = await Connection.GetRowsAsync(sqlWrk);
+							if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+								var listwrk = rswrk[0].Values.ToList();
+								listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+								listwrk[2] = Convert.ToString(listwrk[2]);
+								listwrk[3] = Convert.ToString(listwrk[3]);
+								listwrk[4] = Convert.ToString(listwrk[4]);
+								nExpedienteID.ViewValue = nExpedienteID.DisplayValue(listwrk);
+							} else {
+								nExpedienteID.ViewValue = nExpedienteID.CurrentValue;
+							}
 						}
 					} else {
 						nExpedienteID.ViewValue = System.DBNull.Value;
@@ -1822,18 +1839,18 @@ namespace AspNetMaker2019.Models {
 					if (!Empty(curVal)) {
 						nParentescoID.ViewValue = nParentescoID.LookupCacheOption(curVal);
 						if (nParentescoID.ViewValue == null) { // Lookup from database
-						filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+							filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 							lookupFilter = () => "nCatalogoID=14";
 							sqlWrk = nParentescoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-							rswrk = Connection.GetRows(sqlWrk);
-						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-							var listwrk = rswrk[0].Values.ToList();
-							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-							listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-							nParentescoID.ViewValue = nParentescoID.DisplayValue(listwrk);
-						} else {
-							nParentescoID.ViewValue = nParentescoID.CurrentValue;
-						}
+							rswrk = await Connection.GetRowsAsync(sqlWrk);
+							if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+								var listwrk = rswrk[0].Values.ToList();
+								listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+								listwrk[2] = Convert.ToString(listwrk[2]);
+								nParentescoID.ViewValue = nParentescoID.DisplayValue(listwrk);
+							} else {
+								nParentescoID.ViewValue = nParentescoID.CurrentValue;
+							}
 						}
 					} else {
 						nParentescoID.ViewValue = System.DBNull.Value;
@@ -1847,18 +1864,18 @@ namespace AspNetMaker2019.Models {
 					if (!Empty(curVal)) {
 						nEstadoID.ViewValue = nEstadoID.LookupCacheOption(curVal);
 						if (nEstadoID.ViewValue == null) { // Lookup from database
-						filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+							filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 							lookupFilter = () => "nCatalogoID=11";
 							sqlWrk = nEstadoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-							rswrk = Connection.GetRows(sqlWrk);
-						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-							var listwrk = rswrk[0].Values.ToList();
-							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-							listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-							nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
-						} else {
-							nEstadoID.ViewValue = nEstadoID.CurrentValue;
-						}
+							rswrk = await Connection.GetRowsAsync(sqlWrk);
+							if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+								var listwrk = rswrk[0].Values.ToList();
+								listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+								listwrk[2] = Convert.ToString(listwrk[2]);
+								nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
+							} else {
+								nEstadoID.ViewValue = nEstadoID.CurrentValue;
+							}
 						}
 					} else {
 						nEstadoID.ViewValue = System.DBNull.Value;
@@ -2100,13 +2117,13 @@ namespace AspNetMaker2019.Models {
 					var sql = fld.Lookup.GetSql(false, "", lookupFilter, this);
 
 					// Set up lookup cache
-					if (fld.UseLookupCache && !Empty(sql) && fld.Lookup.Options.Count == 0) {
+					if (fld.UseLookupCache && !Empty(sql) && fld.Lookup.ParentFields.Count == 0 && fld.Lookup.Options.Count == 0) {
 						int totalCnt = await TryGetRecordCount(sql);
 						if (totalCnt > fld.LookupCacheCount) // Total count > cache count, do not cache
 							return;
 						var ar = new Dictionary<string, Dictionary<string, object>>();
 						var values = new List<object>();
-						var conn = GetConnection();
+						var conn = await GetConnectionAsync();
 						List<Dictionary<string, object>> rs = await conn.GetRowsAsync(sql);
 						if (rs != null) {
 							foreach (var row in rs) {

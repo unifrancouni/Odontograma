@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -51,11 +51,11 @@ fAntecedenteFamiliarlist.validateRequired = @ConvertToJson(Config.ClientValidate
 
 // Dynamic selection lists
 fAntecedenteFamiliarlist.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteFamiliar_List.nExpedienteID.Lookup.ToClientList());
-fAntecedenteFamiliarlist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nExpedienteID.LookupOptions()));
+fAntecedenteFamiliarlist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nExpedienteID.LookupOptions));
 fAntecedenteFamiliarlist.lists["x_nParentescoID"] = @Html.Raw(AntecedenteFamiliar_List.nParentescoID.Lookup.ToClientList());
-fAntecedenteFamiliarlist.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nParentescoID.LookupOptions()));
+fAntecedenteFamiliarlist.lists["x_nParentescoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nParentescoID.LookupOptions));
 fAntecedenteFamiliarlist.lists["x_nEstadoID"] = @Html.Raw(AntecedenteFamiliar_List.nEstadoID.Lookup.ToClientList());
-fAntecedenteFamiliarlist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nEstadoID.LookupOptions()));
+fAntecedenteFamiliarlist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteFamiliar_List.nEstadoID.LookupOptions));
 
 // Form object for search
 var fAntecedenteFamiliarlistsrch = currentSearchForm = new ew.Form("fAntecedenteFamiliarlistsrch");
@@ -304,52 +304,7 @@ while (AntecedenteFamiliar_List.RecordCount < AntecedenteFamiliar_List.StopRecor
 		<div class="card-footer ew-grid-lower-panel">
 		@if (!AntecedenteFamiliar_List.IsGridAdd) {
 			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
-@{ AntecedenteFamiliar_List.Pager = AntecedenteFamiliar_List.Pager ?? new PrevNextPager(AntecedenteFamiliar_List.StartRecord, AntecedenteFamiliar_List.DisplayRecords, AntecedenteFamiliar_List.TotalRecords, AntecedenteFamiliar_List.AutoHidePager); }
-@if (AntecedenteFamiliar_List.Pager.RecordCount > 0 && AntecedenteFamiliar_List.Pager.Visible) {
-<div class="ew-pager">
-<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
-<div class="ew-prev-next"><div class="input-group input-group-sm">
-<div class="input-group-prepend">
-<!--first page button-->
-	@if (AntecedenteFamiliar_List.Pager.FirstButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(AntecedenteFamiliar_List.PageUrl)start=@AntecedenteFamiliar_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
-	}
-<!--previous page button-->
-	@if (AntecedenteFamiliar_List.Pager.PrevButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(AntecedenteFamiliar_List.PageUrl)start=@AntecedenteFamiliar_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
-	}
-</div>
-<!--current page number-->
-	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@AntecedenteFamiliar_List.Pager.CurrentPageNumber">
-<div class="input-group-append">
-<!--next page button-->
-	@if (AntecedenteFamiliar_List.Pager.NextButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(AntecedenteFamiliar_List.PageUrl)start=@AntecedenteFamiliar_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
-	}
-<!--last page button-->
-	@if (AntecedenteFamiliar_List.Pager.LastButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(AntecedenteFamiliar_List.PageUrl)start=@AntecedenteFamiliar_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
-	}
-</div>
-</div>
-</div>
-<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@AntecedenteFamiliar_List.Pager.PageCount</span>
-<div class="clearfix"></div>
-</div>
-}
-@if (AntecedenteFamiliar_List.Pager.RecordCount > 0) {
-	<div class="ew-pager ew-rec">
-		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(AntecedenteFamiliar_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(AntecedenteFamiliar_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(AntecedenteFamiliar_List.Pager.RecordCount)</span>
-	</div>
-}
+			@AntecedenteFamiliar_List.Pager.Render()
 			</form>
 		}
 		<div class="ew-list-other-options">

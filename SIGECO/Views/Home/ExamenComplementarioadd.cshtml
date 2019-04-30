@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -123,13 +123,13 @@ fExamenComplementarioadd.validateRequired = @ConvertToJson(Config.ClientValidate
 
 // Dynamic selection lists
 fExamenComplementarioadd.lists["x_nExpedienteID"] = @Html.Raw(ExamenComplementario_Add.nExpedienteID.Lookup.ToClientList());
-fExamenComplementarioadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nExpedienteID.LookupOptions()));
+fExamenComplementarioadd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nExpedienteID.LookupOptions));
 fExamenComplementarioadd.lists["x_nEstudiosRadiologicos"] = @Html.Raw(ExamenComplementario_Add.nEstudiosRadiologicos.Lookup.ToClientList());
 fExamenComplementarioadd.lists["x_nEstudiosRadiologicos"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nEstudiosRadiologicos.Options(false))); // DN
 fExamenComplementarioadd.lists["x_nEstudiosLaboratorio"] = @Html.Raw(ExamenComplementario_Add.nEstudiosLaboratorio.Lookup.ToClientList());
 fExamenComplementarioadd.lists["x_nEstudiosLaboratorio"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nEstudiosLaboratorio.Options(false))); // DN
 fExamenComplementarioadd.lists["x_nEstadoID"] = @Html.Raw(ExamenComplementario_Add.nEstadoID.Lookup.ToClientList());
-fExamenComplementarioadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nEstadoID.LookupOptions()));
+fExamenComplementarioadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(ExamenComplementario_Add.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>
@@ -153,13 +153,13 @@ fExamenComplementarioadd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(
 		<div class="@ExamenComplementario_Add.RightColumnClass"><div @Html.Raw(ExamenComplementario.nExpedienteID.CellAttributes)>
 <span id="el_ExamenComplementario_nExpedienteID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(ExamenComplementario.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : ExamenComplementario.nExpedienteID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@Html.Raw(SameString(ExamenComplementario.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(ExamenComplementario.nExpedienteID.ViewValue) : ExamenComplementario.nExpedienteID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(ExamenComplementario.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((ExamenComplementario.nExpedienteID.ReadOnly || ExamenComplementario.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(ExamenComplementario.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
-<input type="hidden" data-table="ExamenComplementario" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@ExamenComplementario.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@ExamenComplementario.nExpedienteID.CurrentValue"@Html.Raw(ExamenComplementario.nExpedienteID.EditAttributes)>
+<input type="hidden" data-table="ExamenComplementario" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@ExamenComplementario.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Html.Raw(ExamenComplementario.nExpedienteID.CurrentValue)"@Html.Raw(ExamenComplementario.nExpedienteID.EditAttributes)>
 </span>
 @Html.Raw(ExamenComplementario.nExpedienteID.CustomMessage)</div></div>
 	</div>

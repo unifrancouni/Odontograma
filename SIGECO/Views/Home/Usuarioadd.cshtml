@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -168,14 +168,10 @@ fUsuarioadd.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Usuario_Add.nAc
 } @* sUserName.Visible (end) *@
 @if (Usuario.nActivo.Visible) { // nActivo.Visible (begin)
 	<div id="r_nActivo" class="form-group row">
-		<label id="elh_Usuario_nActivo" for="x_nActivo" class="@Usuario_Add.LeftColumnClass">@Html.Raw(Usuario.nActivo.Caption)@Html.Raw(Usuario.nActivo.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
+		<label id="elh_Usuario_nActivo" class="@Usuario_Add.LeftColumnClass">@Html.Raw(Usuario.nActivo.Caption)@Html.Raw(Usuario.nActivo.Required ? Language.Phrase("FieldRequiredIndicator") : "")</label>
 		<div class="@Usuario_Add.RightColumnClass"><div @Html.Raw(Usuario.nActivo.CellAttributes)>
 <span id="el_Usuario_nActivo">
-<div class="input-group">
-	<select class="custom-select ew-custom-select" data-table="Usuario" data-field="x_nActivo" data-value-separator="@Usuario.nActivo.DisplayValueSeparatorAttribute" id="x_nActivo" name="x_nActivo"@Html.Raw(Usuario.nActivo.EditAttributes)>
-		@Usuario.nActivo.SelectOptionListHtml("x_nActivo")
-	</select>
-</div>
+<input type="checkbox" data-table="Usuario" data-field="x_nActivo" name="x_nActivo" id="x_nActivo" value="1" checked="@ConvertToBool(Usuario.nActivo.CurrentValue)" @Html.Raw(Usuario.nActivo.EditAttributes)>
 </span>
 @Html.Raw(Usuario.nActivo.CustomMessage)</div></div>
 	</div>

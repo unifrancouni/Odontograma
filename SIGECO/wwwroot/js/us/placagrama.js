@@ -3,11 +3,11 @@ var xEmp = 2; var yEmp = 2; var T = 50;
 var lineV; var lineH; var rectangle;
 
 var images = [
-    { key: 'item', value: 'http://localhost:52124/Content/img/diente.png', width: T, height: T, },
-    { key: 'panel', value: 'http://localhost:52124/Content/img/panel.png', width: T, height: T, },
-    { key: 'save_button', value: 'http://localhost:52124/Content/img/save_button.png', width: T, height: T, },
-    { key: 'print_button', value: 'http://localhost:52124/Content/img/print_button.png', width: T, height: T, },
-    { key: 'background', value: 'http://localhost:52124/Content/img/background.png', width: T, height: T, },
+    { key: 'item', value: 'http://localhost:51713/Content/img/diente.png', width: T, height: T, },
+    { key: 'panel', value: 'http://localhost:51713/Content/img/panel.png', width: T, height: T, },
+    { key: 'save_button', value: 'http://localhost:51713/Content/img/save_button.png', width: T, height: T, },
+    { key: 'print_button', value: 'http://localhost:51713/Content/img/print_button.png', width: T, height: T, },
+    { key: 'background', value: 'http://localhost:51713/Content/img/background.png', width: T, height: T, },
 ];
 
 var init_config = {
@@ -103,7 +103,7 @@ var grupo_tools;
 var save_button;
 var print_button;
 var descriptionText;
-var dientes_afectados = [];
+var areas_afectadas = [];
 var dientes_ausentes = 0;
 var indice_oleary = 0;
 
@@ -157,7 +157,7 @@ function create() {
     IndiceOleary();
     
     //debugger
-    console.log(dientes_afectados);
+    console.log(areas_afectadas);
     console.log(dientes_ausentes);
     console.log(indice_oleary.toFixed(2));
 
@@ -166,22 +166,28 @@ function create() {
 function IndiceOleary() {
     //Cálculo
     dientes_ausentes = 0;
-    dientes_afectados = [];
+    areas_afectadas = [];
     init_config.simbolos.forEach(o => {
         if (o.sDescripcion.includes("caries"))
-            addElementAsGrupBy(o.sNombreDiente);
+            addElement(o.sNombreDiente);
         else
             dientes_ausentes++;
     });
-    indice_oleary = (dientes_afectados.length * 100) / (32 - dientes_ausentes);
-    descriptionText.text = 'Indice de O\'Leary: ' + indice_oleary.toFixed(2) + '%';
+    indice_oleary = (areas_afectadas.length * 100) / (32*5 - dientes_ausentes*5);
+    descriptionText.text = 'Indice de O\'Leary: ' + indice_oleary.toFixed(2) + '% Placa';
 }
 
 //Función que agrega a un array sin repetir
 function addElementAsGrupBy(item) {
     //debugger
-    if (!dientes_afectados.includes(item))
-        dientes_afectados.push(item);
+    if (!areas_afectadas.includes(item))
+        areas_afectadas.push(item);
+}
+
+//Función que agrega a un array
+function addElement(item) {
+    //debugger
+    areas_afectadas.push(item);
 }
 
 

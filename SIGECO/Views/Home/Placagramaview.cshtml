@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,9 +50,9 @@ fPlacagramaview.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fPlacagramaview.lists["x_nExpedienteID"] = @Html.Raw(Placagrama_View.nExpedienteID.Lookup.ToClientList());
-fPlacagramaview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Placagrama_View.nExpedienteID.LookupOptions()));
+fPlacagramaview.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Placagrama_View.nExpedienteID.LookupOptions));
 fPlacagramaview.lists["x_nEstadoID"] = @Html.Raw(Placagrama_View.nEstadoID.Lookup.ToClientList());
-fPlacagramaview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Placagrama_View.nEstadoID.LookupOptions()));
+fPlacagramaview.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Placagrama_View.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>

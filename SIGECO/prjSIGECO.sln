@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "prjSIGECO", "prjSIGECO.csproj", "{925148B1-870F-4BCA-B9D5-3C0D0134B6DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "prjSIGECO", "prjSIGECO.csproj", "{3B769318-513A-4E23-8532-0E049A1FA1E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroDB", "..\MicroDB\MicroDB.csproj", "{88DDB3FB-70C1-4C80-9444-5E9B033256EB}"
 EndProject
@@ -13,10 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{925148B1-870F-4BCA-B9D5-3C0D0134B6DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{925148B1-870F-4BCA-B9D5-3C0D0134B6DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{925148B1-870F-4BCA-B9D5-3C0D0134B6DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{925148B1-870F-4BCA-B9D5-3C0D0134B6DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B769318-513A-4E23-8532-0E049A1FA1E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B769318-513A-4E23-8532-0E049A1FA1E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B769318-513A-4E23-8532-0E049A1FA1E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B769318-513A-4E23-8532-0E049A1FA1E3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{88DDB3FB-70C1-4C80-9444-5E9B033256EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{88DDB3FB-70C1-4C80-9444-5E9B033256EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88DDB3FB-70C1-4C80-9444-5E9B033256EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {79365DC7-6353-4471-9670-3A987B2CD071}
+		SolutionGuid = {1269D275-29E4-4768-9A6C-264815C169A0}
 	EndGlobalSection
 EndGlobal

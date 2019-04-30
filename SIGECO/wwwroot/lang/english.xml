@@ -706,6 +706,12 @@
     <menu id="88">
       <phrase id="menutext" value="vw Odontograma Info Paciente" />
     </menu>
+	<menu id="90">
+      <phrase id="menutext" value="Plan Tratamiento Detalle" />
+    </menu>
+    <menu id="89">
+      <phrase id="menutext" value="Plan Tratamiento" />
+    </menu>
     <menu id="87">
       <phrase id="menutext" value="vw Paciente Expediente" />
     </menu>
@@ -1519,6 +1525,54 @@
       </field>
       <field id="dfechaodontograma">
         <phrase id="fldcaption" value="d Fecha Odontograma" />
+      </field>
+    </table>
+	    <table id="plantratamiento">
+      <phrase id="tblcaption" value="Plan Tratamiento" />
+      <field id="nplantratamientoid">
+        <phrase id="fldcaption" value="n Plan Tratamiento ID" />
+      </field>
+      <field id="nexpedienteid">
+        <phrase id="fldcaption" value="Expediente" />
+      </field>
+      <field id="dfechaasignacion">
+        <phrase id="fldcaption" value="Fecha Asignacion" />
+      </field>
+      <field id="sobservaciones">
+        <phrase id="fldcaption" value="Observaciones" />
+      </field>
+      <field id="dfechacreacion">
+        <phrase id="fldcaption" value="d Fecha Creacion" />
+      </field>
+      <field id="dfechamodificacion">
+        <phrase id="fldcaption" value="d Fecha Modificacion" />
+      </field>
+    </table>
+    <table id="plantratamientodetalle">
+      <phrase id="tblcaption" value="Plan Tratamiento Detalle" />
+      <field id="nplantratamientodetalleid">
+        <phrase id="fldcaption" value="n Plan Tratamiento Detalle ID" />
+      </field>
+      <field id="nplantratamientoid">
+        <phrase id="fldcaption" value="n Plan Tratamiento ID" />
+      </field>
+      <field id="ntratamientoid">
+        <phrase id="fldcaption" value="Tratamiento" />
+      </field>
+      <field id="dfechatratamiento">
+        <phrase id="fldcaption" value="Fecha Tratamiento" />
+      </field>
+      <field id="ncosto">
+        <phrase id="fldcaption" value="Costo" />
+      </field>
+      <field id="nmonedaid">
+        <phrase id="fldcaption" value="Moneda" />
+      </field>
+      <field id="dfechacreacion">
+        <phrase id="fldcaption" value="d Fecha Creacion" />
+      </field>
+      <field id="dfechamodificacion">
+        <phrase id="fldcaption" value="d Fecha Modificacion" />
       </field>
     </table>
   </project>

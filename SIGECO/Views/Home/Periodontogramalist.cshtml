@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -51,9 +51,9 @@ fPeriodontogramalist.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fPeriodontogramalist.lists["x_nExpedienteID"] = @Html.Raw(Periodontograma_List.nExpedienteID.Lookup.ToClientList());
-fPeriodontogramalist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Periodontograma_List.nExpedienteID.LookupOptions()));
+fPeriodontogramalist.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(Periodontograma_List.nExpedienteID.LookupOptions));
 fPeriodontogramalist.lists["x_nEstadoID"] = @Html.Raw(Periodontograma_List.nEstadoID.Lookup.ToClientList());
-fPeriodontogramalist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Periodontograma_List.nEstadoID.LookupOptions()));
+fPeriodontogramalist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Periodontograma_List.nEstadoID.LookupOptions));
 
 // Form object for search
 var fPeriodontogramalistsrch = currentSearchForm = new ew.Form("fPeriodontogramalistsrch");
@@ -123,108 +123,60 @@ if (!Periodontograma_List.IsExport() && Empty(Periodontograma_List.CurrentAction
 @if (Periodontograma_List.TotalRecords > 0 || Periodontograma.IsGridEdit) { // Begin If TotalRecords > 0
 <table id="tbl_Periodontogramalist" class="table ew-table"><!-- .ew-table -->
 <thead>
-    <tr class="ew-table-header">
-        @{
+	<tr class="ew-table-header">
+@{
 
-            // Header row
-            Periodontograma_List.RowType = Config.RowTypeHeader;
+	// Header row
+	Periodontograma_List.RowType = Config.RowTypeHeader;
 
-            // Render list options
-            await Periodontograma_List.RenderListOptions();
+	// Render list options
+	await Periodontograma_List.RenderListOptions();
 
-            // Render list options (header, left)
-            Periodontograma_List.ListOptions.Render("header", "left");
-        }
-        @if (Periodontograma.nExpedienteID.Visible)
-        { // nExpedienteID.Visible (begin)
-            if (Periodontograma_List.SortUrl(Periodontograma.nExpedienteID) == "")
-            {
-                <th data-name="nExpedienteID" class="@Periodontograma.nExpedienteID.HeaderCellClass"><div id="elh_Periodontograma_nExpedienteID" class="Periodontograma_nExpedienteID"><div class="ew-table-header-caption">@Html.Raw(Periodontograma.nExpedienteID.Caption)</div></div></th>
-            }
-            else
-            {
-                <th data-name="nExpedienteID" class="@Periodontograma.nExpedienteID.HeaderCellClass">
-                    <div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Periodontograma.SortUrl(Periodontograma.nExpedienteID))',1);">
-                        <div id="elh_Periodontograma_nExpedienteID" class="Periodontograma_nExpedienteID">
-                            <div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Periodontograma.nExpedienteID.Caption)</span><span class="ew-table-header-sort">@if (Periodontograma.nExpedienteID.Sort == "ASC")
-                            {<i class="fa fa-sort-up"></i>}
-                            else if (Periodontograma.nExpedienteID.Sort == "DESC")
-                            {<i class="fa fa-sort-down"></i>}</span></div>
-                        </div>
-                    </div>
-                </th>
-            }
-        } @* nExpedienteID.Visible (end) *@
-        @if (Periodontograma.dFechaPeriodontograma.Visible)
-        { // dFechaPeriodontograma.Visible (begin)
-            if (Periodontograma_List.SortUrl(Periodontograma.dFechaPeriodontograma) == "")
-            {
-                <th data-name="dFechaPeriodontograma" class="@Periodontograma.dFechaPeriodontograma.HeaderCellClass"><div id="elh_Periodontograma_dFechaPeriodontograma" class="Periodontograma_dFechaPeriodontograma"><div class="ew-table-header-caption">@Html.Raw(Periodontograma.dFechaPeriodontograma.Caption)</div></div></th>
-            }
-            else
-            {
-                <th data-name="dFechaPeriodontograma" class="@Periodontograma.dFechaPeriodontograma.HeaderCellClass">
-                    <div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Periodontograma.SortUrl(Periodontograma.dFechaPeriodontograma))',1);">
-                        <div id="elh_Periodontograma_dFechaPeriodontograma" class="Periodontograma_dFechaPeriodontograma">
-                            <div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Periodontograma.dFechaPeriodontograma.Caption)</span><span class="ew-table-header-sort">@if (Periodontograma.dFechaPeriodontograma.Sort == "ASC")
-                            {<i class="fa fa-sort-up"></i>}
-                            else if (Periodontograma.dFechaPeriodontograma.Sort == "DESC")
-                            {<i class="fa fa-sort-down"></i>}</span></div>
-                        </div>
-                    </div>
-                </th>
-            }
-        } @* dFechaPeriodontograma.Visible (end) *@
-        @if (Periodontograma.sObservaciones.Visible)
-        { // sObservaciones.Visible (begin)
-            if (Periodontograma_List.SortUrl(Periodontograma.sObservaciones) == "")
-            {
-                <th data-name="sObservaciones" class="@Periodontograma.sObservaciones.HeaderCellClass"><div id="elh_Periodontograma_sObservaciones" class="Periodontograma_sObservaciones"><div class="ew-table-header-caption">@Html.Raw(Periodontograma.sObservaciones.Caption)</div></div></th>
-            }
-            else
-            {
-                <th data-name="sObservaciones" class="@Periodontograma.sObservaciones.HeaderCellClass">
-                    <div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Periodontograma.SortUrl(Periodontograma.sObservaciones))',1);">
-                        <div id="elh_Periodontograma_sObservaciones" class="Periodontograma_sObservaciones">
-                            <div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Periodontograma.sObservaciones.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (Periodontograma.sObservaciones.Sort == "ASC")
-                            {<i class="fa fa-sort-up"></i>}
-                            else if (Periodontograma.sObservaciones.Sort == "DESC")
-                            {<i class="fa fa-sort-down"></i>}</span></div>
-                        </div>
-                    </div>
-                </th>
-            }
-        } @* sObservaciones.Visible (end) *@
-        @if (Periodontograma.nEstadoID.Visible)
-        { // nEstadoID.Visible (begin)
-            if (Periodontograma_List.SortUrl(Periodontograma.nEstadoID) == "")
-            {
-                <th data-name="nEstadoID" class="@Periodontograma.nEstadoID.HeaderCellClass"><div id="elh_Periodontograma_nEstadoID" class="Periodontograma_nEstadoID"><div class="ew-table-header-caption">@Html.Raw(Periodontograma.nEstadoID.Caption)</div></div></th>
-            }
-            else
-            {
-                <th data-name="nEstadoID" class="@Periodontograma.nEstadoID.HeaderCellClass">
-                    <div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Periodontograma.SortUrl(Periodontograma.nEstadoID))',1);">
-                        <div id="elh_Periodontograma_nEstadoID" class="Periodontograma_nEstadoID">
-                            <div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Periodontograma.nEstadoID.Caption)</span><span class="ew-table-header-sort">@if (Periodontograma.nEstadoID.Sort == "ASC")
-                            {<i class="fa fa-sort-up"></i>}
-                            else if (Periodontograma.nEstadoID.Sort == "DESC")
-                            {<i class="fa fa-sort-down"></i>}</span></div>
-                        </div>
-                    </div>
-                </th>
-            }
-        } @* nEstadoID.Visible (end) *@
+	// Render list options (header, left)
+	Periodontograma_List.ListOptions.Render("header", "left");
+}
+@if (Periodontograma.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+	if (Periodontograma_List.SortUrl(Periodontograma.nExpedienteID) == "") {
+		<th data-name="nExpedienteID" class="@Periodontograma.nExpedienteID.HeaderCellClass"><div id="elh_Periodontograma_nExpedienteID" class="Periodontograma_nExpedienteID"><div class="ew-table-header-caption">@Html.Raw(Periodontograma.nExpedienteID.Caption)</div></div></th>
+	} else {
+		<th data-name="nExpedienteID" class="@Periodontograma.nExpedienteID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Periodontograma.SortUrl(Periodontograma.nExpedienteID))',1);"><div id="elh_Periodontograma_nExpedienteID" class="Periodontograma_nExpedienteID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Periodontograma.nExpedienteID.Caption)</span><span class="ew-table-header-sort">@if (Periodontograma.nExpedienteID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Periodontograma.nExpedienteID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nExpedienteID.Visible (end) *@
+@if (Periodontograma.dFechaPeriodontograma.Visible) { // dFechaPeriodontograma.Visible (begin)
+	if (Periodontograma_List.SortUrl(Periodontograma.dFechaPeriodontograma) == "") {
+		<th data-name="dFechaPeriodontograma" class="@Periodontograma.dFechaPeriodontograma.HeaderCellClass"><div id="elh_Periodontograma_dFechaPeriodontograma" class="Periodontograma_dFechaPeriodontograma"><div class="ew-table-header-caption">@Html.Raw(Periodontograma.dFechaPeriodontograma.Caption)</div></div></th>
+	} else {
+		<th data-name="dFechaPeriodontograma" class="@Periodontograma.dFechaPeriodontograma.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Periodontograma.SortUrl(Periodontograma.dFechaPeriodontograma))',1);"><div id="elh_Periodontograma_dFechaPeriodontograma" class="Periodontograma_dFechaPeriodontograma">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Periodontograma.dFechaPeriodontograma.Caption)</span><span class="ew-table-header-sort">@if (Periodontograma.dFechaPeriodontograma.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Periodontograma.dFechaPeriodontograma.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* dFechaPeriodontograma.Visible (end) *@
+@if (Periodontograma.sObservaciones.Visible) { // sObservaciones.Visible (begin)
+	if (Periodontograma_List.SortUrl(Periodontograma.sObservaciones) == "") {
+		<th data-name="sObservaciones" class="@Periodontograma.sObservaciones.HeaderCellClass"><div id="elh_Periodontograma_sObservaciones" class="Periodontograma_sObservaciones"><div class="ew-table-header-caption">@Html.Raw(Periodontograma.sObservaciones.Caption)</div></div></th>
+	} else {
+		<th data-name="sObservaciones" class="@Periodontograma.sObservaciones.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Periodontograma.SortUrl(Periodontograma.sObservaciones))',1);"><div id="elh_Periodontograma_sObservaciones" class="Periodontograma_sObservaciones">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Periodontograma.sObservaciones.Caption)@Html.Raw(Language.Phrase("SrchLegend"))</span><span class="ew-table-header-sort">@if (Periodontograma.sObservaciones.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Periodontograma.sObservaciones.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* sObservaciones.Visible (end) *@
+@if (Periodontograma.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+	if (Periodontograma_List.SortUrl(Periodontograma.nEstadoID) == "") {
+		<th data-name="nEstadoID" class="@Periodontograma.nEstadoID.HeaderCellClass"><div id="elh_Periodontograma_nEstadoID" class="Periodontograma_nEstadoID"><div class="ew-table-header-caption">@Html.Raw(Periodontograma.nEstadoID.Caption)</div></div></th>
+	} else {
+		<th data-name="nEstadoID" class="@Periodontograma.nEstadoID.HeaderCellClass"><div class="ew-pointer" onclick="ew.sort(event,'@Html.Raw(Periodontograma.SortUrl(Periodontograma.nEstadoID))',1);"><div id="elh_Periodontograma_nEstadoID" class="Periodontograma_nEstadoID">
+			<div class="ew-table-header-btn"><span class="ew-table-header-caption">@Html.Raw(Periodontograma.nEstadoID.Caption)</span><span class="ew-table-header-sort">@if (Periodontograma.nEstadoID.Sort == "ASC") {<i class="fa fa-sort-up"></i>} else if (Periodontograma.nEstadoID.Sort == "DESC") {<i class="fa fa-sort-down"></i>}</span></div>
+		</div></div></th>
+	}
+} @* nEstadoID.Visible (end) *@
+@{
 
-        <th class="@Periodontograma.nEstadoID.HeaderCellClass"><div id="elh_Periodontograma_cDetailButton" class="Periodontograma_cDetailButton"><div class="ew-table-header-caption">Detalle</div></div></th>
-
-
-        @{
-
-            // Render list options (header, right)
-            Periodontograma_List.ListOptions.Render("header", "right");
-        }
-    </tr>
+	// Render list options (header, right)
+	Periodontograma_List.ListOptions.Render("header", "right");
+}
+	</tr>
 </thead>
 <tbody>
 @{ // Begin Code
@@ -290,65 +242,50 @@ while (Periodontograma_List.RecordCount < Periodontograma_List.StopRecord) { // 
 
 		// Render list options
 		await Periodontograma_List.RenderListOptions();
-    <tr @Html.Raw(Periodontograma_List.RowAttributes)>
-        @{
+	<tr @Html.Raw(Periodontograma_List.RowAttributes)>
+	@{
 
-            // Render list options (body, left)
-            Periodontograma_List.ListOptions.Render("body", "left", Periodontograma_List.RowCnt);
-        }
-        @if (Periodontograma.nExpedienteID.Visible)
-        { // nExpedienteID.Visible (begin)
-            <td data-name="nExpedienteID" @Html.Raw(Periodontograma.nExpedienteID.CellAttributes)>
-                <span id="el@(Periodontograma_List.RowCnt)_Periodontograma_nExpedienteID" class="Periodontograma_nExpedienteID">
-                    <span @Html.Raw(Periodontograma.nExpedienteID.ViewAttributes)>
-                        @Html.Raw(Periodontograma.nExpedienteID.GetViewValue())
-                    </span>
-                </span>
-            </td>
-        } @* nExpedienteID.Visible (end) *@
-        @if (Periodontograma.dFechaPeriodontograma.Visible)
-        { // dFechaPeriodontograma.Visible (begin)
-            <td data-name="dFechaPeriodontograma" @Html.Raw(Periodontograma.dFechaPeriodontograma.CellAttributes)>
-                <span id="el@(Periodontograma_List.RowCnt)_Periodontograma_dFechaPeriodontograma" class="Periodontograma_dFechaPeriodontograma">
-                    <span @Html.Raw(Periodontograma.dFechaPeriodontograma.ViewAttributes)>
-                        @Html.Raw(Periodontograma.dFechaPeriodontograma.GetViewValue())
-                    </span>
-                </span>
-            </td>
-        } @* dFechaPeriodontograma.Visible (end) *@
-        @if (Periodontograma.sObservaciones.Visible)
-        { // sObservaciones.Visible (begin)
-            <td data-name="sObservaciones" @Html.Raw(Periodontograma.sObservaciones.CellAttributes)>
-                <span id="el@(Periodontograma_List.RowCnt)_Periodontograma_sObservaciones" class="Periodontograma_sObservaciones">
-                    <span @Html.Raw(Periodontograma.sObservaciones.ViewAttributes)>
-                        @Html.Raw(Periodontograma.sObservaciones.GetViewValue())
-                    </span>
-                </span>
-            </td>
-        } @* sObservaciones.Visible (end) *@
-        @if (Periodontograma.nEstadoID.Visible)
-        { // nEstadoID.Visible (begin)
-            <td data-name="nEstadoID" @Html.Raw(Periodontograma.nEstadoID.CellAttributes)>
-                <span id="el@(Periodontograma_List.RowCnt)_Periodontograma_nEstadoID" class="Periodontograma_nEstadoID">
-                    <span @Html.Raw(Periodontograma.nEstadoID.ViewAttributes)>
-                        @Html.Raw(Periodontograma.nEstadoID.GetViewValue())
-                    </span>
-                </span>
-            </td>
-        } @* nEstadoID.Visible (end) *@
+		// Render list options (body, left)
+		Periodontograma_List.ListOptions.Render("body", "left", Periodontograma_List.RowCnt);
+	}
+	@if (Periodontograma.nExpedienteID.Visible) { // nExpedienteID.Visible (begin)
+		<td data-name="nExpedienteID"@Html.Raw(Periodontograma.nExpedienteID.CellAttributes)>
+<span id="el@(Periodontograma_List.RowCnt)_Periodontograma_nExpedienteID" class="Periodontograma_nExpedienteID">
+<span @Html.Raw(Periodontograma.nExpedienteID.ViewAttributes)>
+@Html.Raw(Periodontograma.nExpedienteID.GetViewValue())</span>
+</span>
+</td>
+	} @* nExpedienteID.Visible (end) *@
+	@if (Periodontograma.dFechaPeriodontograma.Visible) { // dFechaPeriodontograma.Visible (begin)
+		<td data-name="dFechaPeriodontograma"@Html.Raw(Periodontograma.dFechaPeriodontograma.CellAttributes)>
+<span id="el@(Periodontograma_List.RowCnt)_Periodontograma_dFechaPeriodontograma" class="Periodontograma_dFechaPeriodontograma">
+<span @Html.Raw(Periodontograma.dFechaPeriodontograma.ViewAttributes)>
+@Html.Raw(Periodontograma.dFechaPeriodontograma.GetViewValue())</span>
+</span>
+</td>
+	} @* dFechaPeriodontograma.Visible (end) *@
+	@if (Periodontograma.sObservaciones.Visible) { // sObservaciones.Visible (begin)
+		<td data-name="sObservaciones"@Html.Raw(Periodontograma.sObservaciones.CellAttributes)>
+<span id="el@(Periodontograma_List.RowCnt)_Periodontograma_sObservaciones" class="Periodontograma_sObservaciones">
+<span @Html.Raw(Periodontograma.sObservaciones.ViewAttributes)>
+@Html.Raw(Periodontograma.sObservaciones.GetViewValue())</span>
+</span>
+</td>
+	} @* sObservaciones.Visible (end) *@
+	@if (Periodontograma.nEstadoID.Visible) { // nEstadoID.Visible (begin)
+		<td data-name="nEstadoID"@Html.Raw(Periodontograma.nEstadoID.CellAttributes)>
+<span id="el@(Periodontograma_List.RowCnt)_Periodontograma_nEstadoID" class="Periodontograma_nEstadoID">
+<span @Html.Raw(Periodontograma.nEstadoID.ViewAttributes)>
+@Html.Raw(Periodontograma.nEstadoID.GetViewValue())</span>
+</span>
+</td>
+	} @* nEstadoID.Visible (end) *@
+	@{
 
-        <td @Html.Raw(Periodontograma.nEstadoID.CellAttributes)>
-            <a id="el@(Periodontograma_List.RowCnt)_Periodontograma_cDetailButton" href="/PeriodontogramaDetalle/List/@Html.Raw(Periodontograma.nPeriodontogramaID.DbValue)" target="_blank" class="btn btn-default ew-row-link ew-detail">
-                Editar Detalle
-            </a>
-        </td>
-
-        @{
-
-            // Render list options (body, right)
-            Periodontograma_List.ListOptions.Render("body", "right", Periodontograma_List.RowCnt);
-        }
-    </tr>
+		// Render list options (body, right)
+		Periodontograma_List.ListOptions.Render("body", "right", Periodontograma_List.RowCnt);
+	}
+	</tr>
 	} @* End if *@
 } @* End While *@
 } @* End Code *@
@@ -365,52 +302,7 @@ while (Periodontograma_List.RecordCount < Periodontograma_List.StopRecord) { // 
 		<div class="card-footer ew-grid-lower-panel">
 		@if (!Periodontograma_List.IsGridAdd) {
 			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
-@{ Periodontograma_List.Pager = Periodontograma_List.Pager ?? new PrevNextPager(Periodontograma_List.StartRecord, Periodontograma_List.DisplayRecords, Periodontograma_List.TotalRecords, Periodontograma_List.AutoHidePager); }
-@if (Periodontograma_List.Pager.RecordCount > 0 && Periodontograma_List.Pager.Visible) {
-<div class="ew-pager">
-<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
-<div class="ew-prev-next"><div class="input-group input-group-sm">
-<div class="input-group-prepend">
-<!--first page button-->
-	@if (Periodontograma_List.Pager.FirstButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Periodontograma_List.PageUrl)start=@Periodontograma_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
-	}
-<!--previous page button-->
-	@if (Periodontograma_List.Pager.PrevButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Periodontograma_List.PageUrl)start=@Periodontograma_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
-	}
-</div>
-<!--current page number-->
-	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Periodontograma_List.Pager.CurrentPageNumber">
-<div class="input-group-append">
-<!--next page button-->
-	@if (Periodontograma_List.Pager.NextButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Periodontograma_List.PageUrl)start=@Periodontograma_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
-	}
-<!--last page button-->
-	@if (Periodontograma_List.Pager.LastButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Periodontograma_List.PageUrl)start=@Periodontograma_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
-	}
-</div>
-</div>
-</div>
-<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Periodontograma_List.Pager.PageCount</span>
-<div class="clearfix"></div>
-</div>
-}
-@if (Periodontograma_List.Pager.RecordCount > 0) {
-	<div class="ew-pager ew-rec">
-		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Periodontograma_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Periodontograma_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Periodontograma_List.Pager.RecordCount)</span>
-	</div>
-}
+			@Periodontograma_List.Pager.Render()
 			</form>
 		}
 		<div class="ew-list-other-options">

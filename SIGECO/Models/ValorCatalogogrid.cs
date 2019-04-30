@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -128,7 +128,6 @@ namespace AspNetMaker2019.Models {
 
 			// Token
 			public string Token; // DN
-			public int TokenTimeout = 0;
 			public bool CheckToken = Config.CheckToken;
 
 			// Action result // DN
@@ -139,6 +138,9 @@ namespace AspNetMaker2019.Models {
 
 			// Page terminated // DN
 			private bool _terminated = false;
+
+			// Page URL
+			private string _pageUrl = "";
 
 			// Page action result
 			public IActionResult PageResult() {
@@ -175,7 +177,14 @@ namespace AspNetMaker2019.Models {
 			public string PageName => CurrentPageName();
 
 			// Page URL
-			public string PageUrl => CurrentPageName() + "?";
+			public string PageUrl {
+				get {
+					if (_pageUrl == "") {
+						_pageUrl = CurrentPageName() + "?";
+					}
+					return _pageUrl;
+				}
+			}
 
 			// Private properties
 			private string _message = "";
@@ -348,7 +357,7 @@ namespace AspNetMaker2019.Models {
 			public IHtmlContent ShowPageFooter() {
 				string footer = PageFooter;
 				Page_DataRendered(ref footer);
-				if (!Empty(footer)) // Fotoer exists, display
+				if (!Empty(footer)) // Footer exists, display
 					return new HtmlString("<p id=\"ew-page-footer\">" + footer + "</p>");
 				return null;
 			}
@@ -376,7 +385,6 @@ namespace AspNetMaker2019.Models {
 				FormOldKeyName += "_" + FormName;
 				FormBlankRowName += "_" + FormName;
 				FormKeyCountName += "_" + FormName;
-				TokenTimeout = SessionTimeoutTime();
 
 				// Language object
 				Language = Language ?? new Lang();
@@ -570,7 +578,8 @@ namespace AspNetMaker2019.Models {
 			public int StopRecord;
 			public int TotalRecords = -1;
 			public int RecordRange = 10;
-			public dynamic Pager;
+			public string PageSizes = ""; // Page sizes (comma separated)
+			public Pager _pager;
 			public bool AutoHidePager = Config.AutoHidePager;
 			public bool AutoHidePageSizeSelector = Config.AutoHidePageSizeSelector;
 			public string DefaultSearchWhere = ""; // Default search WHERE clause
@@ -595,6 +604,14 @@ namespace AspNetMaker2019.Models {
 			public SubPages DetailPages;
 			public DbDataReader Recordset;
 			public DbDataReader OldRecordset;
+
+			// Pager
+			public Pager Pager {
+				get {
+					_pager = _pager ?? new PrevNextPager(StartRecord, RecordsPerPage, TotalRecords, PageSizes, RecordRange, AutoHidePager, AutoHidePageSizeSelector);
+					return _pager;
+				}
+			}
 
 			/// <summary>
 			/// Page run
@@ -717,6 +734,7 @@ namespace AspNetMaker2019.Models {
 					DisplayRecords = RecordsPerPage; // Restore from Session
 				} else {
 					DisplayRecords = 20; // Load default
+					RecordsPerPage = DisplayRecords; // Save default to session
 				}
 
 				// Load Sorting Order
@@ -775,7 +793,9 @@ namespace AspNetMaker2019.Models {
 					StopRecord = DisplayRecords;
 					StartRecord = 1;
 				DisplayRecords = TotalRecords; // Display all records
-				var selectLimit = UseSelectLimit;
+
+				// Recordset
+				bool selectLimit = UseSelectLimit;
 				if (selectLimit)
 					Recordset = await LoadRecordset(StartRecord - 1, DisplayRecords);
 
@@ -1700,6 +1720,8 @@ namespace AspNetMaker2019.Models {
 
 					// sDescripcion
 					sDescripcion.EditAttrs["class"] = "form-control";
+					if (Config.RemoveXss)
+						sDescripcion.CurrentValue = HtmlDecode(sDescripcion.CurrentValue);
 					sDescripcion.EditValue = sDescripcion.CurrentValue; // DN
 					sDescripcion.PlaceHolder = RemoveHtml(sDescripcion.Caption);
 
@@ -1726,6 +1748,8 @@ namespace AspNetMaker2019.Models {
 
 					// sDescripcion
 					sDescripcion.EditAttrs["class"] = "form-control";
+					if (Config.RemoveXss)
+						sDescripcion.CurrentValue = HtmlDecode(sDescripcion.CurrentValue);
 					sDescripcion.EditValue = sDescripcion.CurrentValue; // DN
 					sDescripcion.PlaceHolder = RemoveHtml(sDescripcion.Caption);
 
@@ -2143,13 +2167,13 @@ namespace AspNetMaker2019.Models {
 					var sql = fld.Lookup.GetSql(false, "", lookupFilter, this);
 
 					// Set up lookup cache
-					if (fld.UseLookupCache && !Empty(sql) && fld.Lookup.Options.Count == 0) {
+					if (fld.UseLookupCache && !Empty(sql) && fld.Lookup.ParentFields.Count == 0 && fld.Lookup.Options.Count == 0) {
 						int totalCnt = await TryGetRecordCount(sql);
 						if (totalCnt > fld.LookupCacheCount) // Total count > cache count, do not cache
 							return;
 						var ar = new Dictionary<string, Dictionary<string, object>>();
 						var values = new List<object>();
-						var conn = GetConnection();
+						var conn = await GetConnectionAsync();
 						List<Dictionary<string, object>> rs = await conn.GetRowsAsync(sql);
 						if (rs != null) {
 							foreach (var row in rs) {

@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -196,7 +196,7 @@ fAntecedenteDentaladd.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fAntecedenteDentaladd.lists["x_nExpedienteID"] = @Html.Raw(AntecedenteDental_Add.nExpedienteID.Lookup.ToClientList());
-fAntecedenteDentaladd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nExpedienteID.LookupOptions()));
+fAntecedenteDentaladd.lists["x_nExpedienteID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nExpedienteID.LookupOptions));
 fAntecedenteDentaladd.lists["x_nTratamientoQuirurgico"] = @Html.Raw(AntecedenteDental_Add.nTratamientoQuirurgico.Lookup.ToClientList());
 fAntecedenteDentaladd.lists["x_nTratamientoQuirurgico"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nTratamientoQuirurgico.Options(false))); // DN
 fAntecedenteDentaladd.lists["x_nTratamientoRestauracion"] = @Html.Raw(AntecedenteDental_Add.nTratamientoRestauracion.Lookup.ToClientList());
@@ -214,7 +214,7 @@ fAntecedenteDentaladd.lists["x_nColocadoAnestesia"].options = @Html.Raw(ConvertT
 fAntecedenteDentaladd.lists["x_nReaccionAlergicaAnestesia"] = @Html.Raw(AntecedenteDental_Add.nReaccionAlergicaAnestesia.Lookup.ToClientList());
 fAntecedenteDentaladd.lists["x_nReaccionAlergicaAnestesia"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nReaccionAlergicaAnestesia.Options(false))); // DN
 fAntecedenteDentaladd.lists["x_nEstadoID"] = @Html.Raw(AntecedenteDental_Add.nEstadoID.Lookup.ToClientList());
-fAntecedenteDentaladd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nEstadoID.LookupOptions()));
+fAntecedenteDentaladd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(AntecedenteDental_Add.nEstadoID.LookupOptions));
 
 // Form object for search
 </script>
@@ -238,13 +238,13 @@ fAntecedenteDentaladd.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Ant
 		<div class="@AntecedenteDental_Add.RightColumnClass"><div @Html.Raw(AntecedenteDental.nExpedienteID.CellAttributes)>
 <span id="el_AntecedenteDental_nExpedienteID">
 <div class="input-group ew-lookup-list">
-	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@(SameString(AntecedenteDental.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : AntecedenteDental.nExpedienteID.ViewValue)</div>
+	<div class="form-control ew-lookup-text" tabindex="-1" id="lu_x_nExpedienteID">@Html.Raw(SameString(AntecedenteDental.nExpedienteID.ViewValue, "") ? Language.Phrase("PleaseSelect") : (Config.RemoveXss ? HtmlDecode(AntecedenteDental.nExpedienteID.ViewValue) : AntecedenteDental.nExpedienteID.ViewValue))</div>
 	<div class="input-group-append">
 		<button type="button" title="@Language.Phrase("LookupLink", true).Replace("%s", RemoveHtml(AntecedenteDental.nExpedienteID.Caption))" class="ew-lookup-btn btn btn-default"@((AntecedenteDental.nExpedienteID.ReadOnly || AntecedenteDental.nExpedienteID.Disabled) ? " disabled" : "") onclick="ew.modalLookupShow({lnk:this,el:'x_nExpedienteID',m:0,n:10});"><i class="fa fa-search ew-icon"></i></button>
 	</div>
 </div>
 @Html.Raw(AntecedenteDental.nExpedienteID.Lookup.GetParamTag("p_x_nExpedienteID"))
-<input type="hidden" data-table="AntecedenteDental" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@AntecedenteDental.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@AntecedenteDental.nExpedienteID.CurrentValue"@Html.Raw(AntecedenteDental.nExpedienteID.EditAttributes)>
+<input type="hidden" data-table="AntecedenteDental" data-field="x_nExpedienteID" data-multiple="0" data-lookup="1" data-value-separator="@AntecedenteDental.nExpedienteID.DisplayValueSeparatorAttribute" name="x_nExpedienteID" id="x_nExpedienteID" value="@Html.Raw(AntecedenteDental.nExpedienteID.CurrentValue)"@Html.Raw(AntecedenteDental.nExpedienteID.EditAttributes)>
 </span>
 @Html.Raw(AntecedenteDental.nExpedienteID.CustomMessage)</div></div>
 	</div>

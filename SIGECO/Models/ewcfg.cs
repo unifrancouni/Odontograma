@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models
 namespace AspNetMaker2019.Models {
@@ -83,9 +83,10 @@ namespace AspNetMaker2019.Models {
 			}
 
 			// Product version
-			public const string ProductVersion = "16.0.2";
+			public const string ProductVersion = "16.0.5";
 
 			// Project
+			public const string ProjectNamespace = "AspNetMaker2019";
 			public const string ProjectClassName = "AspNetMaker2019.Models.prjSIGECO"; // DN
 			public static string PathDelimiter = Convert.ToString(Path.DirectorySeparatorChar); // Physical path delimiter // DN
 			public static short UnformatYear = 50; // Unformat year
@@ -95,7 +96,7 @@ namespace AspNetMaker2019.Models {
 			public const string ConfigFileFolder = ProjectName; // Config file name
 			public const string ProjectId = "{9B083C8B-EE2F-4356-BE8D-9A26D5707365}"; // Project ID (GUID)
 			public static string RelatedLanguageFolder = "";
-			public static string RandomKey = "89N48xfki3aXZMQk"; // Random key for encryption
+			public static string RandomKey = "qt3c6UVnReNkhbkh"; // Random key for encryption
 			public static string EncryptionKey = ""; // Encryption key for data protection
 			public static string ProjectStylesheetFilename = "css/prjSIGECO.css"; // Project stylesheet file name (relative to wwwroot)
 			public static string Charset = "utf-8"; // Project charset
@@ -316,7 +317,7 @@ namespace AspNetMaker2019.Models {
 			public const string ParentUserIdFieldName = "";
 			public const string UserLevelFieldName = "";
 			public const string UserProfileFieldName = "";
-			public const string RegisterActivateFieldName = "nActivo";
+			public const string RegisterActivateFieldName = "";
 			public const string UserEmailFieldName = "sEmail";
 
 			// User table filters
@@ -471,12 +472,12 @@ namespace AspNetMaker2019.Models {
 
 			// Full URL protocols ("http" or "https")
 			public static Dictionary<string, string> FullUrlProtocols = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-				{"href", null}, // Field hyperlink
-				{"upload", null}, // Upload page
-				{"resetpwd", null}, // Reset password
-				{"activate", null}, // Register page activate link
-				{"tmpfile", null}, // Upload temp file
-				{"auth", null} // OAuth base URL
+				{"href", null},
+				{"upload", null},
+				{"resetpwd", null},
+				{"activate", null},
+				{"tmpfile", null},
+				{"auth", null},
 			};
 
 			// Table class names
@@ -506,6 +507,12 @@ namespace AspNetMaker2019.Models {
 				{"vwSimbolosIncompatibles", "_vwSimbolosIncompatibles"},
 				{"vwPacienteExpediente", "_vwPacienteExpediente"},
 				{"vwOdontogramaInfoPaciente", "_vwOdontogramaInfoPaciente"},
+				{"PlanTratamiento", "_PlanTratamiento"},
+				{"PlanTratamientoDetalle", "_PlanTratamientoDetalle"},
+				{"vwCita", "_vwCita"},
+				{"vwPlacagramaDetalle", "_vwPlacagramaDetalle"},
+				{"vwPlacagramaInfoPaciente", "_vwPlacagramaInfoPaciente"},
+				{"vwTratamientos", "_vwTratamientos"},
 			};
 
 			// Boolean html attributes

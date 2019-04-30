@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -50,7 +50,7 @@ fPacienteview.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fPacienteview.lists["x_nGeneroID"] = @Html.Raw(Paciente_View.nGeneroID.Lookup.ToClientList());
-fPacienteview.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_View.nGeneroID.LookupOptions()));
+fPacienteview.lists["x_nGeneroID"].options = @Html.Raw(ConvertToJson(Paciente_View.nGeneroID.LookupOptions));
 fPacienteview.lists["x_nActivo"] = @Html.Raw(Paciente_View.nActivo.Lookup.ToClientList());
 fPacienteview.lists["x_nActivo"].options = @Html.Raw(ConvertToJson(Paciente_View.nActivo.Options(false))); // DN
 

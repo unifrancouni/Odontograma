@@ -22,11 +22,11 @@
 	#pragma warning disable 168
 
 	// Local variables (Temp data)
+	string sqlWrk, filterWrk, whereWrk, curVal;
 	List<Dictionary<string, object>> rswrk;
 	string[] arWrk;
 	List<object> listWrk;
 	Func<string> lookupFilter;
-	string sqlWrk, filterWrk, whereWrk, curVal;
 
 	#pragma warning restore 168
 
@@ -51,9 +51,9 @@ fTratamientolist.validateRequired = @ConvertToJson(Config.ClientValidate);
 
 // Dynamic selection lists
 fTratamientolist.lists["x_nMonedaCostoID"] = @Html.Raw(Tratamiento_List.nMonedaCostoID.Lookup.ToClientList());
-fTratamientolist.lists["x_nMonedaCostoID"].options = @Html.Raw(ConvertToJson(Tratamiento_List.nMonedaCostoID.LookupOptions()));
+fTratamientolist.lists["x_nMonedaCostoID"].options = @Html.Raw(ConvertToJson(Tratamiento_List.nMonedaCostoID.LookupOptions));
 fTratamientolist.lists["x_nEstadoID"] = @Html.Raw(Tratamiento_List.nEstadoID.Lookup.ToClientList());
-fTratamientolist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Tratamiento_List.nEstadoID.LookupOptions()));
+fTratamientolist.lists["x_nEstadoID"].options = @Html.Raw(ConvertToJson(Tratamiento_List.nEstadoID.LookupOptions));
 
 // Form object for search
 var fTratamientolistsrch = currentSearchForm = new ew.Form("fTratamientolistsrch");
@@ -302,52 +302,7 @@ while (Tratamiento_List.RecordCount < Tratamiento_List.StopRecord) { // Begin Wh
 		<div class="card-footer ew-grid-lower-panel">
 		@if (!Tratamiento_List.IsGridAdd) {
 			<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="@AppPath(CurrentPageName())">
-@{ Tratamiento_List.Pager = Tratamiento_List.Pager ?? new PrevNextPager(Tratamiento_List.StartRecord, Tratamiento_List.DisplayRecords, Tratamiento_List.TotalRecords, Tratamiento_List.AutoHidePager); }
-@if (Tratamiento_List.Pager.RecordCount > 0 && Tratamiento_List.Pager.Visible) {
-<div class="ew-pager">
-<span>@Html.Raw(Language.Phrase("Page"))&nbsp;</span>
-<div class="ew-prev-next"><div class="input-group input-group-sm">
-<div class="input-group-prepend">
-<!--first page button-->
-	@if (Tratamiento_List.Pager.FirstButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerFirst")" href="@AppPath(Tratamiento_List.PageUrl)start=@Tratamiento_List.Pager.FirstButton.Start"><i class="icon-first ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerFirst")"><i class="icon-first ew-icon"></i></a>
-	}
-<!--previous page button-->
-	@if (Tratamiento_List.Pager.PrevButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerPrevious")" href="@AppPath(Tratamiento_List.PageUrl)start=@Tratamiento_List.Pager.PrevButton.Start"><i class="icon-prev ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerPrevious")"><i class="icon-prev ew-icon"></i></a>
-	}
-</div>
-<!--current page number-->
-	<input class="form-control" type="text" name="@Config.TablePageNumber" value="@Tratamiento_List.Pager.CurrentPageNumber">
-<div class="input-group-append">
-<!--next page button-->
-	@if (Tratamiento_List.Pager.NextButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerNext")" href="@AppPath(Tratamiento_List.PageUrl)start=@Tratamiento_List.Pager.NextButton.Start"><i class="icon-next ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerNext")"><i class="icon-next ew-icon"></i></a>
-	}
-<!--last page button-->
-	@if (Tratamiento_List.Pager.LastButton.Enabled) {
-	<a class="btn btn-default" title="@Language.Phrase("PagerLast")" href="@AppPath(Tratamiento_List.PageUrl)start=@Tratamiento_List.Pager.LastButton.Start"><i class="icon-last ew-icon"></i></a>
-	} else {
-	<a class="btn btn-default disabled" title="@Language.Phrase("PagerLast")"><i class="icon-last ew-icon"></i></a>
-	}
-</div>
-</div>
-</div>
-<span>&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@Tratamiento_List.Pager.PageCount</span>
-<div class="clearfix"></div>
-</div>
-}
-@if (Tratamiento_List.Pager.RecordCount > 0) {
-	<div class="ew-pager ew-rec">
-		<span>@Html.Raw(Language.Phrase("Record"))&nbsp;@(Tratamiento_List.Pager.FromIndex)&nbsp;@Html.Raw(Language.Phrase("To"))&nbsp;@(Tratamiento_List.Pager.ToIndex)&nbsp;@Html.Raw(Language.Phrase("Of"))&nbsp;@(Tratamiento_List.Pager.RecordCount)</span>
-	</div>
-}
+			@Tratamiento_List.Pager.Render()
 			</form>
 		}
 		<div class="ew-list-other-options">

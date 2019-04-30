@@ -1,5 +1,5 @@
 // ASP.NET Maker 2019
-// Copyright (c) e.World Technology Limited. All rights reserved.
+// Copyright (c) 2019 e.World Technology Limited. All rights reserved.
 
 using System;
 using System.Collections;
@@ -60,11 +60,11 @@ using MimeDetective.InMemory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using static AspNetMaker2019.Models.prjSIGECO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.html;
 using iTextSharp.text.html.simpleparser;
+using static AspNetMaker2019.Models.prjSIGECO;
 
 // Models (Table)
 namespace AspNetMaker2019.Models {
@@ -199,10 +199,10 @@ namespace AspNetMaker2019.Models {
 				nExpedienteID.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nExpedienteID.Lookup = new Lookup("nExpedienteID", "vwPacienteExpediente", true, "nExpedienteID", new List<string> {"nCodigoExpediente", "sNombre", "sApellido1", "sCedula"}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigoExpediente] ASC", "");
+						nExpedienteID.Lookup = new Lookup<DbField>("nExpedienteID", "vwPacienteExpediente", true, "nExpedienteID", new List<string> {"nCodigoExpediente", "sNombre", "sApellido1", "sCedula"}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigoExpediente] ASC", "");
 						break;
 					default:
-						nExpedienteID.Lookup = new Lookup("nExpedienteID", "vwPacienteExpediente", true, "nExpedienteID", new List<string> {"nCodigoExpediente", "sNombre", "sApellido1", "sCedula"}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigoExpediente] ASC", "");
+						nExpedienteID.Lookup = new Lookup<DbField>("nExpedienteID", "vwPacienteExpediente", true, "nExpedienteID", new List<string> {"nCodigoExpediente", "sNombre", "sApellido1", "sCedula"}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigoExpediente] ASC", "");
 						break;
 				}
 				Fields.Add("nExpedienteID", nExpedienteID);
@@ -310,10 +310,10 @@ namespace AspNetMaker2019.Models {
 				nTratamientoQuirurgico.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nTratamientoQuirurgico.Lookup = new Lookup("nTratamientoQuirurgico", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoQuirurgico.Lookup = new Lookup<DbField>("nTratamientoQuirurgico", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nTratamientoQuirurgico.Lookup = new Lookup("nTratamientoQuirurgico", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoQuirurgico.Lookup = new Lookup<DbField>("nTratamientoQuirurgico", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nTratamientoQuirurgico", nTratamientoQuirurgico);
@@ -348,10 +348,10 @@ namespace AspNetMaker2019.Models {
 				nTratamientoRestauracion.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nTratamientoRestauracion.Lookup = new Lookup("nTratamientoRestauracion", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoRestauracion.Lookup = new Lookup<DbField>("nTratamientoRestauracion", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nTratamientoRestauracion.Lookup = new Lookup("nTratamientoRestauracion", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoRestauracion.Lookup = new Lookup<DbField>("nTratamientoRestauracion", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nTratamientoRestauracion", nTratamientoRestauracion);
@@ -386,10 +386,10 @@ namespace AspNetMaker2019.Models {
 				nTratamientoPeridoncia.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nTratamientoPeridoncia.Lookup = new Lookup("nTratamientoPeridoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoPeridoncia.Lookup = new Lookup<DbField>("nTratamientoPeridoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nTratamientoPeridoncia.Lookup = new Lookup("nTratamientoPeridoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoPeridoncia.Lookup = new Lookup<DbField>("nTratamientoPeridoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nTratamientoPeridoncia", nTratamientoPeridoncia);
@@ -424,10 +424,10 @@ namespace AspNetMaker2019.Models {
 				nTratamientoEndodoncia.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nTratamientoEndodoncia.Lookup = new Lookup("nTratamientoEndodoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoEndodoncia.Lookup = new Lookup<DbField>("nTratamientoEndodoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nTratamientoEndodoncia.Lookup = new Lookup("nTratamientoEndodoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoEndodoncia.Lookup = new Lookup<DbField>("nTratamientoEndodoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nTratamientoEndodoncia", nTratamientoEndodoncia);
@@ -462,10 +462,10 @@ namespace AspNetMaker2019.Models {
 				nTratamientoOrtodoncia.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nTratamientoOrtodoncia.Lookup = new Lookup("nTratamientoOrtodoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoOrtodoncia.Lookup = new Lookup<DbField>("nTratamientoOrtodoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nTratamientoOrtodoncia.Lookup = new Lookup("nTratamientoOrtodoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoOrtodoncia.Lookup = new Lookup<DbField>("nTratamientoOrtodoncia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nTratamientoOrtodoncia", nTratamientoOrtodoncia);
@@ -500,10 +500,10 @@ namespace AspNetMaker2019.Models {
 				nTratamientoProtesis.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nTratamientoProtesis.Lookup = new Lookup("nTratamientoProtesis", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoProtesis.Lookup = new Lookup<DbField>("nTratamientoProtesis", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nTratamientoProtesis.Lookup = new Lookup("nTratamientoProtesis", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nTratamientoProtesis.Lookup = new Lookup<DbField>("nTratamientoProtesis", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nTratamientoProtesis", nTratamientoProtesis);
@@ -538,10 +538,10 @@ namespace AspNetMaker2019.Models {
 				nColocadoAnestesia.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nColocadoAnestesia.Lookup = new Lookup("nColocadoAnestesia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nColocadoAnestesia.Lookup = new Lookup<DbField>("nColocadoAnestesia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nColocadoAnestesia.Lookup = new Lookup("nColocadoAnestesia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nColocadoAnestesia.Lookup = new Lookup<DbField>("nColocadoAnestesia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nColocadoAnestesia", nColocadoAnestesia);
@@ -576,10 +576,10 @@ namespace AspNetMaker2019.Models {
 				nReaccionAlergicaAnestesia.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nReaccionAlergicaAnestesia.Lookup = new Lookup("nReaccionAlergicaAnestesia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nReaccionAlergicaAnestesia.Lookup = new Lookup<DbField>("nReaccionAlergicaAnestesia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 					default:
-						nReaccionAlergicaAnestesia.Lookup = new Lookup("nReaccionAlergicaAnestesia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
+						nReaccionAlergicaAnestesia.Lookup = new Lookup<DbField>("nReaccionAlergicaAnestesia", "AntecedenteDental", false, "", new List<string> {"", "", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "", "");
 						break;
 				}
 				Fields.Add("nReaccionAlergicaAnestesia", nReaccionAlergicaAnestesia);
@@ -685,10 +685,10 @@ namespace AspNetMaker2019.Models {
 				nEstadoID.Init(this); // DN
 				switch (CurrentLanguage) {
 					case "en":
-						nEstadoID.Lookup = new Lookup("nEstadoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nEstadoID.Lookup = new Lookup<DbField>("nEstadoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 					default:
-						nEstadoID.Lookup = new Lookup("nEstadoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
+						nEstadoID.Lookup = new Lookup<DbField>("nEstadoID", "ValorCatalogo", true, "nValorCatalogoID", new List<string> {"nCodigo", "sDescripcion", "", ""}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, new List<string> {}, "[nCodigo] ASC", "");
 						break;
 				}
 				nEstadoID.GetSelectFilter = () => "nCatalogoID=10";
@@ -1149,28 +1149,6 @@ namespace AspNetMaker2019.Models {
 				LoadDbValues(row);
 			}
 
-			// Record filter WHERE clause
-			private string _sqlKeyFilter => "[nAntecedenteDentalID] = @nAntecedenteDentalID@";
-
-			#pragma warning disable 168
-
-			// Get record filter
-			public string GetRecordFilter(Dictionary<string, object> row = null)
-			{
-				string keyFilter = _sqlKeyFilter;
-				object val, result;
-				val = !Empty(row) ? (row.TryGetValue("nAntecedenteDentalID", out result) ? result : null) : nAntecedenteDentalID.CurrentValue;
-				if (!IsNumeric(val))
-					return "0=1"; // Invalid key
-				if (val == null)
-					return "0=1"; // Invalid key
-				else
-					keyFilter = keyFilter.Replace("@nAntecedenteDentalID@", AdjustSql(val, DbId)); // Replace key value
-				return keyFilter;
-			}
-
-			#pragma warning restore 168
-
 			// Return URL
 			public string ReturnUrl {
 				get {
@@ -1368,6 +1346,28 @@ namespace AspNetMaker2019.Models {
 
 			#pragma warning restore 618
 
+			// Record filter WHERE clause
+			private string _sqlKeyFilter => "[nAntecedenteDentalID] = @nAntecedenteDentalID@";
+
+			#pragma warning disable 168
+
+			// Get record filter
+			public string GetRecordFilter(Dictionary<string, object> row = null)
+			{
+				string keyFilter = _sqlKeyFilter;
+				object val, result;
+				val = !Empty(row) ? (row.TryGetValue("nAntecedenteDentalID", out result) ? result : null) : nAntecedenteDentalID.CurrentValue;
+				if (!IsNumeric(val))
+					return "0=1"; // Invalid key
+				if (val == null)
+					return "0=1"; // Invalid key
+				else
+					keyFilter = keyFilter.Replace("@nAntecedenteDentalID@", AdjustSql(val, DbId)); // Replace key value
+				return keyFilter;
+			}
+
+			#pragma warning restore 168
+
 			// Load row values from recordset
 			public void LoadListRowValues(DbDataReader rs) {
 				nAntecedenteDentalID.SetDbValue(rs["nAntecedenteDentalID"]);
@@ -1435,19 +1435,19 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(curVal)) {
 					nExpedienteID.ViewValue = nExpedienteID.LookupCacheOption(curVal);
 					if (nExpedienteID.ViewValue == null) { // Lookup from database
-					filterWrk = "[nExpedienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+						filterWrk = "[nExpedienteID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 						sqlWrk = nExpedienteID.Lookup.GetSql(false, filterWrk, null, this);
-						rswrk = Connection.GetRows(sqlWrk);
-					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-						var listwrk = rswrk[0].Values.ToList();
-						listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-						listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-						listwrk[3] = Convert.ToString(FormatNumber(listwrk[3], 0, -2, -2, -2));
-						listwrk[4] = Convert.ToString(FormatNumber(listwrk[4], 0, -2, -2, -2));
-						nExpedienteID.ViewValue = nExpedienteID.DisplayValue(listwrk);
-					} else {
-						nExpedienteID.ViewValue = nExpedienteID.CurrentValue;
-					}
+						rswrk = await Connection.GetRowsAsync(sqlWrk);
+						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+							var listwrk = rswrk[0].Values.ToList();
+							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+							listwrk[2] = Convert.ToString(listwrk[2]);
+							listwrk[3] = Convert.ToString(listwrk[3]);
+							listwrk[4] = Convert.ToString(listwrk[4]);
+							nExpedienteID.ViewValue = nExpedienteID.DisplayValue(listwrk);
+						} else {
+							nExpedienteID.ViewValue = nExpedienteID.CurrentValue;
+						}
 					}
 				} else {
 					nExpedienteID.ViewValue = System.DBNull.Value;
@@ -1533,18 +1533,18 @@ namespace AspNetMaker2019.Models {
 				if (!Empty(curVal)) {
 					nEstadoID.ViewValue = nEstadoID.LookupCacheOption(curVal);
 					if (nEstadoID.ViewValue == null) { // Lookup from database
-					filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
+						filterWrk = "[nValorCatalogoID]" + SearchString("=", curVal.Trim(), Config.DataTypeNumber, "");
 						lookupFilter = () => "nCatalogoID=10";
 						sqlWrk = nEstadoID.Lookup.GetSql(false, filterWrk, lookupFilter, this);
-						rswrk = Connection.GetRows(sqlWrk);
-					if (rswrk != null && rswrk.Count > 0) { // Lookup values found
-						var listwrk = rswrk[0].Values.ToList();
-						listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
-						listwrk[2] = Convert.ToString(FormatNumber(listwrk[2], 0, -2, -2, -2));
-						nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
-					} else {
-						nEstadoID.ViewValue = nEstadoID.CurrentValue;
-					}
+						rswrk = await Connection.GetRowsAsync(sqlWrk);
+						if (rswrk != null && rswrk.Count > 0) { // Lookup values found
+							var listwrk = rswrk[0].Values.ToList();
+							listwrk[1] = Convert.ToString(FormatNumber(listwrk[1], 0, -2, -2, -2));
+							listwrk[2] = Convert.ToString(listwrk[2]);
+							nEstadoID.ViewValue = nEstadoID.DisplayValue(listwrk);
+						} else {
+							nEstadoID.ViewValue = nEstadoID.CurrentValue;
+						}
 					}
 				} else {
 					nEstadoID.ViewValue = System.DBNull.Value;
@@ -1949,7 +1949,7 @@ namespace AspNetMaker2019.Models {
 				}
 
 				// Create lookup object and output JSON
-				var lookup = new Lookup(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
+				var lookup = new Lookup<DbField>(linkField, TableVar, distinct, linkField, displayFields, parentFields, childFields, filterFields, filterFieldVars, autoFillSourceFields);
 				for (int i = 0; i < filterFields.Count; i++) { // Set up filter operators
 					if (!Empty(filterOperators[i]))
 						lookup.SetFilterOperator(filterFields[i], filterOperators[i]);
